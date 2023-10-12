@@ -3,6 +3,8 @@
 #include "cBullet.h"
 #include <iostream>
 #include <vector>
+#include <chrono>
+#include <thread>
 
 //#include "cWeapon.h"
 //#include "cRayGun.h"
@@ -33,9 +35,31 @@ int main()
 
 	pTheGame->Init(1, 1);
 
+	std::chrono::high_resolution_clock theClock;
+
+	std::chrono::steady_clock::time_point lastTime = theClock.now();
+
+	std::chrono::steady_clock::time_point startTime = lastTime;
+
 	std::cout << std::endl;
 	std::cout << "Game loop starting..." << std::endl;
-	pTheGame->Update();
+
+	while ( true )
+	{
+		std::this_thread::sleep_for(std::chrono::milliseconds(100));
+
+		std::chrono::steady_clock::time_point currentTime = theClock.now();
+
+		std::chrono::steady_clock::duration deltaTime = currentTime - lastTime;
+		lastTime = currentTime;
+
+		std::cout 
+			<< std::chrono::duration_cast<std::chrono::seconds>(currentTime - startTime).count() << " "
+			<< std::chrono::duration_cast<std::chrono::seconds>(deltaTime).count() 
+			<< std::endl;
+
+		pTheGame->Update(0.0f);
+	}
 
 	
 

@@ -69,6 +69,7 @@ bool cPhysics::m_Sphere_TriMeshIndirect_IntersectionTest(sPhsyicsProperties* pSp
 //	glm::vec3 closestPointToTriangle = glm::vec3(FLT_MAX, FLT_MAX, FLT_MAX);
 	float closestDistanceSoFar = FLT_MAX;
 	glm::vec3 closestTriangleVertices[3] = { glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(0.0f) };
+	glm::vec3 closestContactPoint = glm::vec3(0.0f);
 	unsigned int indexOfClosestTriangle = INT_MAX;
 
 
@@ -78,6 +79,7 @@ bool cPhysics::m_Sphere_TriMeshIndirect_IntersectionTest(sPhsyicsProperties* pSp
 	{
 		glm::vec3 verts[3];
 
+		// This is TERRIBLE for cache misses
 		verts[0].x = theMeshDrawInfo.pVertices[theMeshDrawInfo.pIndices[index]].x;
 		verts[0].y = theMeshDrawInfo.pVertices[theMeshDrawInfo.pIndices[index]].y;
 		verts[0].z = theMeshDrawInfo.pVertices[theMeshDrawInfo.pIndices[index]].z;
@@ -120,12 +122,12 @@ bool cPhysics::m_Sphere_TriMeshIndirect_IntersectionTest(sPhsyicsProperties* pSp
 										   pTriMesh_General->orientation.z,
 										   glm::vec3(0.0f, 0.0, 1.0f));
 
-//		// Scaling matrix
+		// Scaling matrix
 //		glm::mat4 matScale = glm::scale(glm::mat4(1.0f),
 //										glm::vec3(pTriMesh->scale,
 //												  pTheGround->scale,
 //												  pTheGround->scale));
-		//--------------------------------------------------------------
+		--------------------------------------------------------------
 
 		// Combine all these transformation
 		matModel = matModel * matTranslate;
@@ -165,6 +167,8 @@ bool cPhysics::m_Sphere_TriMeshIndirect_IntersectionTest(sPhsyicsProperties* pSp
 			closestTriangleVertices[0] = vertsWorld[0];
 			closestTriangleVertices[1] = vertsWorld[1];
 			closestTriangleVertices[2] = vertsWorld[2];
+
+			closestContactPoint = thisTriangleClosestPoint;
 		}
 
 
@@ -187,6 +191,14 @@ bool cPhysics::m_Sphere_TriMeshIndirect_IntersectionTest(sPhsyicsProperties* pSp
 		// Answer: it's based on the REFLECTION vector around the normal.
 		// The sphere is travelling along its VELOCITY vector (at this moment)
 		//	and will "bounce off" along an angle reflected by the normal
+
+		// The object HAS PENETRATED the triangle
+		// Instead of using the CURRENT location, 
+		//	calculate everything based on the LAST location of the object. 
+		// i.e. JUST BEFORE the object collided.
+		
+// Add whatever information we might need later to do something for the response.
+
 
 		// Calculate the current "direction" vector 
 		// We're using the velocity
@@ -211,6 +223,28 @@ bool cPhysics::m_Sphere_TriMeshIndirect_IntersectionTest(sPhsyicsProperties* pSp
 		glm::vec3 newVelocity = reflectionVec * sphereSpeed;
 
 		pSphere_General->velocity = newVelocity;
+
+
+		// We add this "collision event" to the list or queue of collisions
+		sCollisionEvent theCollision;
+		theCollision.pObjectA = pSphere_General;
+		// 
+		theCollision.contactPoint = closestContactPoint;
+		theCollision.reflectionNormal = reflectionVec;
+//		theCollision.velocityAtCollision = reflectionVec;
+		
+		// TODO: We'll have a problem later: what deletes this?
+		sPhsyicsProperties* pTriangleWeHit = new sPhsyicsProperties();
+
+		pTriangleWeHit->setShape(new sPhsyicsProperties::sTriangle(closestTriangleVertices[0],
+																   closestTriangleVertices[1],
+																   closestTriangleVertices[2]));
+		theCollision.pObjectB = pTriangleWeHit;
+		
+		this->m_vecCollisionsThisFrame.push_back(theCollision);
+
+// Or we 
+//		pSphere_General->velocity = glm::vec3(0.0f);
 
 		return true;
 	}

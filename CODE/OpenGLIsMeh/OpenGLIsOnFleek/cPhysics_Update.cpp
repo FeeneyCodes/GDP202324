@@ -23,12 +23,15 @@ void cPhysics::Update(double deltaTime)
 		// Infinite mass? 
 		if (pObject->inverse_mass >= 0.0f)
 		{
-		// Explicit forward Euler "integration step"
-		//		NewVelocity = LastVel + (Accel * DeltaTime)
-		//		NewPosition = LastPos + (Vel * DeltaTime)	
+			// Explicit forward Euler "integration step"
+			//		NewVelocity = LastVel + (Accel * DeltaTime)
+			//		NewPosition = LastPos + (Vel * DeltaTime)	
 
-		// Velocity change is based on the acceleration over this time frame 
-		// This part: (Accel * DeltaTime)
+			// Update the "old" position
+			pObject->oldPosition = pObject->position;
+
+			// Velocity change is based on the acceleration over this time frame 
+			// This part: (Accel * DeltaTime)
 			glm::vec3 deltaVelocityThisFrame = pObject->acceleration * (float)deltaTime;
 
 			// Update the velocity based on this delta velocity
@@ -46,6 +49,7 @@ void cPhysics::Update(double deltaTime)
 			pObject->position.x += deltaPosition.x;
 			pObject->position.y += deltaPosition.y;
 			pObject->position.z += deltaPosition.z;
+
 		}//if (pObject->inverse_mass >= 0.0f)
 
 	}//for (sPhsyicsProperties* pObject
@@ -206,6 +210,26 @@ void cPhysics::Update(double deltaTime)
 			pObject->pTheAssociatedMesh->setDrawOrientation(pObject->orientation);
 		}
 	}//for (sPhsyicsProperties* pObjectA
+
+
+	// HACK:
+	if ( ! this->m_vecCollisionsThisFrame.empty())
+	{
+		std::cout << "BREAK ME!" << std::endl;
+		
+		std::cout << this->m_vecCollisionsThisFrame.size() << std::endl;
+		for (sCollisionEvent col:  this->m_vecCollisionsThisFrame)
+		{
+			std::cout
+				<< col.pObjectA->getShapeTypeAsString()
+				<< " hit "
+				<< col.pObjectB->getShapeTypeAsString()
+				<< std::endl;
+		}
+		std::cout << "******************************************" << std::endl;
+		// HACK:
+		this->m_vecCollisionsThisFrame.clear();
+	}
 
 	return;
 }

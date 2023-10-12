@@ -50,6 +50,8 @@ cMesh* g_pDebugSphereMesh = NULL;
 // Used by g_DrawDebugSphere()
 GLuint g_DebugSphereMesh_shaderProgramID = 0;
 
+std::vector<double> g_vecLastFrameTimes;
+
 
 
 // Smart array of cMesh object
@@ -323,6 +325,12 @@ int main(void)
         // Time per frame (more or less)
         double currentTime = glfwGetTime();
         double deltaTime = currentTime - lastTime;
+        // We should add this to a list of times, and get the average frame time
+        const double LARGEST_DELTA_TIME = 1.0f / 30.0f; // 30FPS  (16 ms)
+        if ( deltaTime > LARGEST_DELTA_TIME )
+        {
+            deltaTime = LARGEST_DELTA_TIME;
+        }
 //        std::cout << deltaTime << std::endl;
         lastTime = currentTime;
 

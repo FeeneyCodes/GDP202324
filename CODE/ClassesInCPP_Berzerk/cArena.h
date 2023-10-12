@@ -13,7 +13,7 @@ public:
 	void Init(int numRobots, int numPlayers);
 
 
-	void Update(void);
+	void Update(double deltaTime);
 
 	// Any static variable is available even if the object
 	//	isn't created yet;

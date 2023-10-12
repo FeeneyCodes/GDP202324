@@ -84,7 +84,7 @@ void cArena::Init(int numRobots, int numPlayers)
 	return;
 }
 
-void cArena::Update(void)
+void cArena::Update(double deltaTime)
 {
 
 	for (unsigned int index = 0; index != this->vecRobots.size(); index++)

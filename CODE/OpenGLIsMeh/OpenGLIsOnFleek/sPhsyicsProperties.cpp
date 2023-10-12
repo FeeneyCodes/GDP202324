@@ -21,14 +21,19 @@ std::string sPhsyicsProperties::getShapeTypeAsString(void)
 	switch (this->shapeType)
 	{
 	case SPHERE:
+		return "SPHERE";
 		break;
 	case PLANE:
+		return "PLANE";
 		break;
 	case TRIANGLE:
+		return "TRIANGLE";
 		break;
 	case AABB:
+		return "AABB";
 		break;
 	case CAPSULE:
+		return "CAPSULE";
 		break;
 	case MESH_OF_TRIANGLES_INDIRECT:
 		return "MESH_OF_TRIANGLES_INDIRECT";

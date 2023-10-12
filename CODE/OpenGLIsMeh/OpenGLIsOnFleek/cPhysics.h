@@ -54,6 +54,20 @@ private:
 	glm::vec3 m_ClosestPtPointTriangle(glm::vec3 p, glm::vec3 a, glm::vec3 b, glm::vec3 c);
 
 	cVAOManager* m_pMeshManager = NULL;
+
+
+	// this is a list of all the objects that collided this past frame
+	struct sCollisionEvent
+	{
+		sPhsyicsProperties* pObjectA;		// Sphere
+		sPhsyicsProperties* pObjectB;		// Triangle
+		// .. And other information we might need
+		glm::vec3 contactPoint;
+		glm::vec3 velocityAtCollision;
+		glm::vec3 reflectionNormal;
+
+	};
+	std::vector< sCollisionEvent > m_vecCollisionsThisFrame;
 };
 
 #endif // _cPhysics_HG_

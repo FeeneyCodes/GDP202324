@@ -72,8 +72,8 @@ bool LoadModels(void)
 
     cMesh* pGroundMesh = new cMesh();
 //    pFlat_1x1_planeMesh->meshName = "Flat_1x1_plane.ply";
-//    pFlat_1x1_planeMesh->meshName = "Terrain_xyz_n_rgba.ply";
-    pGroundMesh->meshName = "HilbertRamp_stl (rotated).ply";
+    pGroundMesh->meshName = "Terrain_xyz_n_rgba.ply";
+//    pGroundMesh->meshName = "HilbertRamp_stl (rotated).ply";
     pGroundMesh->friendlyName = "Ground";
     ::g_vec_pMeshesToDraw.push_back(pGroundMesh);
 
@@ -81,15 +81,21 @@ bool LoadModels(void)
     sPhsyicsProperties* pGroundMeshShape = new sPhsyicsProperties();
     pGroundMeshShape->shapeType = sPhsyicsProperties::MESH_OF_TRIANGLES_INDIRECT;
 
-    pGroundMeshShape->setShape( new sPhsyicsProperties::sMeshOfTriangles_Indirect("HilbertRamp_stl (rotated).ply") );
+//    pGroundMeshShape->setShape( new sPhsyicsProperties::sMeshOfTriangles_Indirect("HilbertRamp_stl (rotated).ply") );
+    pGroundMeshShape->setShape( new sPhsyicsProperties::sMeshOfTriangles_Indirect(pGroundMesh->meshName) );
 
 
 
     // Tie this phsyics object to the associated mesh
     pGroundMeshShape->pTheAssociatedMesh = pGroundMesh;
+    // If it's infinite, the physics intrator ignores it
     pGroundMeshShape->inverse_mass = 0.0f;  // Infinite, so won't move
-    pGroundMeshShape->position.x = -10.0f;
+
+//    pGroundMeshShape->acceleration.y = (-9.81f / 5.0f);
+
+//    pGroundMeshShape->position.x = -10.0f;
     pGroundMeshShape->position.y = -40.0f;
+    pGroundMeshShape->orientation.z = glm::radians(-45.0f);
     pGroundMeshShape->friendlyName = "Ground";
     ::g_pPhysics->AddShape(pGroundMeshShape);
    
@@ -132,6 +138,8 @@ bool LoadModels(void)
 
         pSphereMesh->friendlyName = "Sphere";
 
+        pSphereMesh->setUniformDrawScale(5.0f);
+
         // Add drawing mesh to the things to draw
         ::g_vec_pMeshesToDraw.push_back(pSphereMesh);
 
@@ -151,6 +159,7 @@ bool LoadModels(void)
         // Mass of 10 somethings? kg?
         pSpherePhysProps->inverse_mass = 1.0f / 10.0f;
 
+
         pSpherePhysProps->shapeType = sPhsyicsProperties::SPHERE;
 
         // The rendered graphical object that moves with this physics object
@@ -159,7 +168,7 @@ bool LoadModels(void)
 //        sPhsyicsProperties::sSphere* pTemp = new sPhsyicsProperties::sSphere(1.0f);
 //        pSpherePhysProps->setShape(pTemp);
 
-        pSpherePhysProps->setShape( new sPhsyicsProperties::sSphere(1.0f) );
+        pSpherePhysProps->setShape( new sPhsyicsProperties::sSphere(5.0f) );
         ::g_pPhysics->AddShape(pSpherePhysProps);
 
 
