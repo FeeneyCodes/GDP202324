@@ -1,5 +1,6 @@
 #include "cMesh.h"
 //#include "sPhsyicsProperties.h"
+#include "cVAOManager/cVAOManager.h"
 #include "cPhysics.h"
 #include <vector>
 
@@ -8,6 +9,9 @@ extern std::vector< cMesh* > g_vec_pMeshesToDraw;
 extern cPhysics* g_pPhysics;    //
 
 extern cMesh* g_pDebugSphereMesh;
+
+extern cVAOManager* g_pMeshManager;
+
 
 float getRandomFloat(float a, float b);
 
@@ -178,6 +182,44 @@ bool LoadModels(void)
 
 
     }//for ( unsigned int count...
+
+
+
+
+
+    float spiderScale = 20.0f;
+
+    cMesh* pSpiderManBody = new cMesh();
+    pSpiderManBody->setUniformDrawScale(spiderScale);
+    pSpiderManBody->meshName = "legospiderman_body_xyz_n_rgba.ply";
+    pSpiderManBody->drawOrientation.x = glm::radians(-90.0f);
+    pSpiderManBody->drawOrientation.z = glm::radians(-90.0f);
+    ::g_vec_pMeshesToDraw.push_back(pSpiderManBody);
+
+    cMesh* pSpiderManHead = new cMesh();
+    pSpiderManHead->setUniformDrawScale(spiderScale);
+    pSpiderManHead->meshName = "legospiderman_head_xyz_n_rgba.ply";
+    ::g_vec_pMeshesToDraw.push_back(pSpiderManHead);
+
+    cMesh* pSpiderManLeft_arm = new cMesh();
+    pSpiderManLeft_arm->meshName = "legospiderman_Left_arm_xyz_n_rgba.ply";
+    ::g_vec_pMeshesToDraw.push_back(pSpiderManLeft_arm);
+
+    cMesh* pSpiderManLeft_leg = new cMesh();
+    pSpiderManLeft_leg->setUniformDrawScale(spiderScale);
+    pSpiderManLeft_leg->meshName = "legospiderman_Left_leg_xyz_n_rgba.ply";
+    ::g_vec_pMeshesToDraw.push_back(pSpiderManLeft_leg);
+
+        
+
+
+
+
+
+
+
+
+
 
 
     return true;

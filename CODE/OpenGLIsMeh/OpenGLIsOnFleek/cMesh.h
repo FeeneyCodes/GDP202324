@@ -38,6 +38,8 @@ public:
 	bool bIsWireframe;
 	bool bDoNotLight;
 
+	std::vector<cMesh*> vec_pChildMeshes;
+
 	//void Update(double deltaTime);
 
 	unsigned int getUniqueID(void);

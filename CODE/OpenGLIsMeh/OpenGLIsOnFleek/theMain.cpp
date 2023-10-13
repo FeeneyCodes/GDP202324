@@ -206,6 +206,18 @@ int main(void)
                                        Flat_1x1_planeDrawingInfo, shaderProgramID);
     std::cout << "Loaded: " << Flat_1x1_planeDrawingInfo.numberOfVertices << " vertices" << std::endl;
 
+    // Spiderman
+    sModelDrawInfo spiderMan;
+
+    ::g_pMeshManager->LoadModelIntoVAO("legospiderman_body_xyz_n_rgba.ply", spiderMan, shaderProgramID);
+    ::g_pMeshManager->LoadModelIntoVAO("legospiderman_head_xyz_n_rgba.ply", spiderMan, shaderProgramID);
+    ::g_pMeshManager->LoadModelIntoVAO("legospiderman_Left_arm_xyz_n_rgba.ply", spiderMan, shaderProgramID);
+    ::g_pMeshManager->LoadModelIntoVAO("legospiderman_Left_leg_xyz_n_rgba.ply", spiderMan, shaderProgramID);
+    // ... and so on
+
+
+
+
 
     // This handles the phsyics objects
     ::g_pPhysics = new cPhysics();
@@ -244,11 +256,12 @@ int main(void)
     ::g_pTheLights->theLights[0].atten.z = 0.01f;        // Quadratic attenuation
 
     // Light #1 is a directional light 
-    ::g_pTheLights->theLights[1].param2.x = 0.0f;   // Turn on
-//    ::g_pTheLights->theLights[1].param1.x = 2.0f;   // 0 = point light
+    ::g_pTheLights->theLights[1].param2.x = 1.0f;   // Turn on
+    ::g_pTheLights->theLights[1].param1.x = 2.0f;   // Directional
 
     // Direction with respect of the light.
     ::g_pTheLights->theLights[1].direction = glm::vec4(0.0f, -1.0f, 0.0f, 1.0f);
+//    float lightBrightness = 0.7f;
     ::g_pTheLights->theLights[1].diffuse = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
     ::g_pTheLights->theLights[1].specular = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 
