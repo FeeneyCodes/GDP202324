@@ -187,28 +187,76 @@ bool LoadModels(void)
 
 
 
-    float spiderScale = 20.0f;
+    float spiderScale = 10.0f;
 
-    cMesh* pSpiderManBody = new cMesh();
-    pSpiderManBody->setUniformDrawScale(spiderScale);
-    pSpiderManBody->meshName = "legospiderman_body_xyz_n_rgba.ply";
-    pSpiderManBody->drawOrientation.x = glm::radians(-90.0f);
-    pSpiderManBody->drawOrientation.z = glm::radians(-90.0f);
-    ::g_vec_pMeshesToDraw.push_back(pSpiderManBody);
+    cMesh* pSpiderMan_body = new cMesh();
+    pSpiderMan_body->setUniformDrawScale(spiderScale);
+    pSpiderMan_body->friendlyName = "SpiderManBody";
+    pSpiderMan_body->meshName = "legospiderman_body_xyz_n_rgba.ply";
+    pSpiderMan_body->drawOrientation.x = glm::radians(-90.0f);
+    pSpiderMan_body->drawOrientation.z = glm::radians(-90.0f);
+    ::g_vec_pMeshesToDraw.push_back(pSpiderMan_body);
 
-    cMesh* pSpiderManHead = new cMesh();
-    pSpiderManHead->setUniformDrawScale(spiderScale);
-    pSpiderManHead->meshName = "legospiderman_head_xyz_n_rgba.ply";
-    ::g_vec_pMeshesToDraw.push_back(pSpiderManHead);
+    // Now add these as child meshes
+    cMesh* pSpiderMan_head = new cMesh();
+    pSpiderMan_head->setUniformDrawScale(spiderScale);
+    pSpiderMan_head->meshName = "legospiderman_head_xyz_n_rgba.ply";
+    pSpiderMan_body->vec_pChildMeshes.push_back(pSpiderMan_head);
+//    ::g_vec_pMeshesToDraw.push_back(pSpiderManHead);
 
-    cMesh* pSpiderManLeft_arm = new cMesh();
-    pSpiderManLeft_arm->meshName = "legospiderman_Left_arm_xyz_n_rgba.ply";
-    ::g_vec_pMeshesToDraw.push_back(pSpiderManLeft_arm);
+    cMesh* pSpiderMan_Hips = new cMesh();
+    pSpiderMan_Hips->setUniformDrawScale(spiderScale);
+    pSpiderMan_Hips->meshName = "legospiderman_Hips_xyz_n_rgba.ply";
+    pSpiderMan_body->vec_pChildMeshes.push_back(pSpiderMan_Hips);
 
-    cMesh* pSpiderManLeft_leg = new cMesh();
-    pSpiderManLeft_leg->setUniformDrawScale(spiderScale);
-    pSpiderManLeft_leg->meshName = "legospiderman_Left_leg_xyz_n_rgba.ply";
-    ::g_vec_pMeshesToDraw.push_back(pSpiderManLeft_leg);
+    cMesh* pSpiderMan_Left_arm = new cMesh();
+    pSpiderMan_Left_arm->meshName = "legospiderman_Left_arm_xyz_n_rgba.ply";
+    pSpiderMan_Left_arm->setUniformDrawScale(spiderScale);
+    pSpiderMan_body->vec_pChildMeshes.push_back(pSpiderMan_Left_arm);
+//    ::g_vec_pMeshesToDraw.push_back(pSpiderManLeft_arm);
+
+    cMesh* pSpiderMan_Left_hand = new cMesh();
+    pSpiderMan_Left_hand->meshName = "legospiderman_Left_hand_xyz_n_rgba.ply";
+    pSpiderMan_Left_hand->setUniformDrawScale(spiderScale);
+    pSpiderMan_body->vec_pChildMeshes.push_back(pSpiderMan_Left_hand);
+
+    cMesh* pSpiderMan_Right_arm = new cMesh();
+    pSpiderMan_Right_arm->meshName = "legospiderman_Right_arm_xyz_n_rgba.ply";
+    pSpiderMan_Right_arm->setUniformDrawScale(spiderScale);
+    pSpiderMan_body->vec_pChildMeshes.push_back(pSpiderMan_Right_arm);
+
+    cMesh* pSpiderMan_Right_hand = new cMesh();
+    pSpiderMan_Right_hand->meshName = "legospiderman_Right_hand_xyz_n_rgba.ply";
+    pSpiderMan_Right_hand->setUniformDrawScale(spiderScale);
+    pSpiderMan_body->vec_pChildMeshes.push_back(pSpiderMan_Right_hand);
+
+    cMesh* pSpiderMan_Left_leg = new cMesh();
+    pSpiderMan_Left_leg->setUniformDrawScale(spiderScale);
+    pSpiderMan_Left_leg->meshName = "legospiderman_Left_leg_xyz_n_rgba.ply";
+    pSpiderMan_body->vec_pChildMeshes.push_back(pSpiderMan_Left_leg);
+//    ::g_vec_pMeshesToDraw.push_back(pSpiderManLeft_leg);
+
+    cMesh* pSpiderMan_Right_leg = new cMesh();
+    pSpiderMan_Right_leg->setUniformDrawScale(spiderScale);
+    pSpiderMan_Right_leg->meshName = "legospiderman_Right_leg_xyz_n_rgba.ply";
+    pSpiderMan_body->vec_pChildMeshes.push_back(pSpiderMan_Right_leg);
+
+
+
+
+//    cMesh* pSpiderManHead = new cMesh();
+//    pSpiderManHead->setUniformDrawScale(spiderScale);
+//    pSpiderManHead->meshName = "legospiderman_head_xyz_n_rgba.ply";
+//    ::g_vec_pMeshesToDraw.push_back(pSpiderManHead);
+//
+//    cMesh* pSpiderManLeft_arm = new cMesh();
+//    pSpiderManLeft_arm->meshName = "legospiderman_Left_arm_xyz_n_rgba.ply";
+//    ::g_vec_pMeshesToDraw.push_back(pSpiderManLeft_arm);
+//
+//    cMesh* pSpiderManLeft_leg = new cMesh();
+//    pSpiderManLeft_leg->setUniformDrawScale(spiderScale);
+//    pSpiderManLeft_leg->meshName = "legospiderman_Left_leg_xyz_n_rgba.ply";
+//    ::g_vec_pMeshesToDraw.push_back(pSpiderManLeft_leg);
 
         
 

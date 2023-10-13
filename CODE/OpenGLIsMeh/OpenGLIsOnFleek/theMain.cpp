@@ -211,8 +211,19 @@ int main(void)
 
     ::g_pMeshManager->LoadModelIntoVAO("legospiderman_body_xyz_n_rgba.ply", spiderMan, shaderProgramID);
     ::g_pMeshManager->LoadModelIntoVAO("legospiderman_head_xyz_n_rgba.ply", spiderMan, shaderProgramID);
+    ::g_pMeshManager->LoadModelIntoVAO("legospiderman_Hips_xyz_n_rgba.ply", spiderMan, shaderProgramID);
+
     ::g_pMeshManager->LoadModelIntoVAO("legospiderman_Left_arm_xyz_n_rgba.ply", spiderMan, shaderProgramID);
+    ::g_pMeshManager->LoadModelIntoVAO("legospiderman_Left_hand_xyz_n_rgba.ply", spiderMan, shaderProgramID);
+
+    ::g_pMeshManager->LoadModelIntoVAO("legospiderman_Right_arm_xyz_n_rgba.ply", spiderMan, shaderProgramID);
+    ::g_pMeshManager->LoadModelIntoVAO("legospiderman_Right_hand_xyz_n_rgba.ply", spiderMan, shaderProgramID);
+
     ::g_pMeshManager->LoadModelIntoVAO("legospiderman_Left_leg_xyz_n_rgba.ply", spiderMan, shaderProgramID);
+    ::g_pMeshManager->LoadModelIntoVAO("legospiderman_Right_leg_xyz_n_rgba.ply", spiderMan, shaderProgramID);
+
+        
+        
     // ... and so on
 
 
@@ -260,7 +271,7 @@ int main(void)
     ::g_pTheLights->theLights[1].param1.x = 2.0f;   // Directional
 
     // Direction with respect of the light.
-    ::g_pTheLights->theLights[1].direction = glm::vec4(0.0f, -1.0f, 0.0f, 1.0f);
+    ::g_pTheLights->theLights[1].direction = glm::normalize(glm::vec4(-0.5f, -1.0f, 0.0f, 1.0f));
 //    float lightBrightness = 0.7f;
     ::g_pTheLights->theLights[1].diffuse = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
     ::g_pTheLights->theLights[1].specular = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
@@ -370,6 +381,12 @@ int main(void)
 
             ::g_pTheLights->theLights[0].direction = glm::vec4(bathTubToLightRay, 1.0f);
         }
+
+        // HACK:
+        cMesh* pSpidey = g_pFindMeshByFriendlyName("SpiderManBody");
+        pSpidey->drawOrientation.y += 0.01f;
+        pSpidey->drawPosition.y += 0.01f;
+
 
 //        // HACK: See where the sphere is on the surface of the "ground"
 //        cMesh* pBouncingSphere = g_pFindMeshByFriendlyName("Sphere");
@@ -567,6 +584,7 @@ void DrawObject(cMesh* pCurrentMesh, glm::mat4 matModelParent, GLuint shaderProg
     matModel = matModel * matRotateY;
     matModel = matModel * matRotateZ;
 
+
     matModel = matModel * matScale;
 
 //        m = m * rotateZ;
@@ -653,6 +671,34 @@ void DrawObject(cMesh* pCurrentMesh, glm::mat4 matModelParent, GLuint shaderProg
         glBindVertexArray(0); 			            // disable VAO (and everything else)
 
     }
+
+    // Are there any child meshes on this mesh
+    // std::vector<cMesh*> vec_pChildMeshes;
+
+    glm::mat4 matRemoveScaling = glm::scale(glm::mat4(1.0f),
+                                            glm::vec3( 
+                                                1.0f / pCurrentMesh->drawScale.x,
+                                                1.0f / pCurrentMesh->drawScale.y,
+                                                1.0f / pCurrentMesh->drawScale.z));
+
+    matModel = matModel * matRemoveScaling;
+
+   for ( cMesh* pChild : pCurrentMesh->vec_pChildMeshes )
+   {
+
+       // Notice we are passing the "parent" (already transformed) matrix
+       // NOT an identiy matrix
+
+       // if you are using scaling, you can "undo" the scaling
+       // i.e. add the opposite of the scale the parent had
+
+
+
+       DrawObject(pChild, matModel, shaderProgramID);
+
+   }//for ( cMesh* pChild 
+
+
 
     return;
 }

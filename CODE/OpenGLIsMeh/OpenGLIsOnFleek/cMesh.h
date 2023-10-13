@@ -20,6 +20,7 @@ public:
 
 	glm::vec3 drawPosition;
 	glm::vec3 drawOrientation;
+
 	glm::vec3 drawScale;
 	void setUniformDrawScale(float scale);
 
