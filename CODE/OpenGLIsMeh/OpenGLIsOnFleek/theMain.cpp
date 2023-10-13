@@ -38,7 +38,7 @@
 #include "cLightManager.h"
 #include "cLightHelper.h"
 
-glm::vec3 g_cameraEye = glm::vec3(0.0, 5.0, +90.0f);
+glm::vec3 g_cameraEye = glm::vec3(0.0, 70.0, 181.0f);
 glm::vec3 g_cameraTarget = glm::vec3(0.0f, 5.0f, 0.0f);
 glm::vec3 g_upVector = glm::vec3(0.0f, 1.0f, 0.0f);
 
@@ -176,10 +176,10 @@ int main(void)
     //                               bunnyDrawingInfo, shaderProgramID);
     //std::cout << "Loaded: " << bunnyDrawingInfo.numberOfVertices << " vertices" << std::endl;
 
-    //sModelDrawInfo bathtubDrawingInfo;
-    //pMeshManager->LoadModelIntoVAO("bathtub_xyz_n_rgba.ply",
-    //                               bathtubDrawingInfo, shaderProgramID);
-    //std::cout << "Loaded: " << bathtubDrawingInfo.numberOfVertices << " vertices" << std::endl;
+    sModelDrawInfo bathtubDrawingInfo;
+    ::g_pMeshManager->LoadModelIntoVAO("bathtub_xyz_n_rgba.ply",
+                                   bathtubDrawingInfo, shaderProgramID);
+    std::cout << "Loaded: " << bathtubDrawingInfo.numberOfVertices << " vertices" << std::endl;
 
     sModelDrawInfo terrainDrawingInfo;
     ::g_pMeshManager->LoadModelIntoVAO("Terrain_xyz_n_rgba.ply",
@@ -220,12 +220,21 @@ int main(void)
     // 
     ::g_pTheLights->SetUniformLocations(shaderProgramID);
 
-    ::g_pTheLights->theLights[0].param2.x = 0.0f;   // Turn on
-    ::g_pTheLights->theLights[0].param1.x = 0.0f;   // 0 = point light
+    ::g_pTheLights->theLights[0].param2.x = 1.0f;   // Turn on
+//    ::g_pTheLights->theLights[0].param1.x = 0.0f;   // 0 = point light
+    ::g_pTheLights->theLights[0].param1.x = 1.0f;   // 1 = spot light
+    // With spots, set direction (relative)
+    ::g_pTheLights->theLights[0].direction = glm::vec4(0.0f, -1.0f, 0.0f, 1.0f);
+    //	vec4 param1;	// x = lightType, y = inner angle, z = outer angle, w = TBD
+    ::g_pTheLights->theLights[0].param1.y = 15.0f;
+    ::g_pTheLights->theLights[0].param1.z = 25.0f;
 
-    ::g_pTheLights->theLights[0].position.x = 0.0f;
-    ::g_pTheLights->theLights[0].position.y = 25.0f;
-    ::g_pTheLights->theLights[0].position.z = 0.0f;
+
+    ::g_pTheLights->theLights[0].position.x = -46.0f;
+    ::g_pTheLights->theLights[0].position.y = 23.0f;
+    ::g_pTheLights->theLights[0].position.z = -26.0f;
+
+
 
     // How "bright" the lights is
     // Really the opposite of brightness.
@@ -235,8 +244,8 @@ int main(void)
     ::g_pTheLights->theLights[0].atten.z = 0.01f;        // Quadratic attenuation
 
     // Light #1 is a directional light 
-    ::g_pTheLights->theLights[1].param2.x = 1.0f;   // Turn on
-    ::g_pTheLights->theLights[1].param1.x = 2.0f;   // 0 = point light
+    ::g_pTheLights->theLights[1].param2.x = 0.0f;   // Turn on
+//    ::g_pTheLights->theLights[1].param1.x = 2.0f;   // 0 = point light
 
     // Direction with respect of the light.
     ::g_pTheLights->theLights[1].direction = glm::vec4(0.0f, -1.0f, 0.0f, 1.0f);
@@ -338,6 +347,17 @@ int main(void)
         DrawLightDebugSpheres(matProjection, matView, shaderProgramID);
 
 
+        // Point the spotlight at the bathtub
+        cMesh* pBathTub = g_pFindMeshByFriendlyName("bathtub");
+        if ( pBathTub )
+        {
+            glm::vec3 bathTubToLightRay = pBathTub->drawPosition - glm::vec3(::g_pTheLights->theLights[0].position);
+
+            bathTubToLightRay = glm::normalize(bathTubToLightRay);
+
+            ::g_pTheLights->theLights[0].direction = glm::vec4(bathTubToLightRay, 1.0f);
+        }
+
 //        // HACK: See where the sphere is on the surface of the "ground"
 //        cMesh* pBouncingSphere = g_pFindMeshByFriendlyName("Sphere");
 //        if ( pBouncingSphere )
@@ -383,7 +403,9 @@ int main(void)
             << ::g_pTheLights->theLights[::g_selectedLight].position.z << "  "
             << "const:" << ::g_pTheLights->theLights[::g_selectedLight].atten.x << " "
             << "linear:" << ::g_pTheLights->theLights[::g_selectedLight].atten.y << " "
-            << "quad:" << ::g_pTheLights->theLights[::g_selectedLight].atten.z;
+            << "quad:" << ::g_pTheLights->theLights[::g_selectedLight].atten.z << " "
+            << "inner: " << ::g_pTheLights->theLights[::g_selectedLight].param1.y << " "
+            << "outer: " << ::g_pTheLights->theLights[::g_selectedLight].param1.z << " ";
 
 //        glfwSetWindowTitle(window, "HEY!");
 
@@ -634,6 +656,8 @@ void g_DrawDebugSphere(glm::vec3 position, float scale, glm::vec4 colourRGBA)
     ::g_pDebugSphereMesh->bIsVisible = true;
     ::g_pDebugSphereMesh->drawPosition = position;
     ::g_pDebugSphereMesh->setUniformDrawScale(scale);
+    ::g_pDebugSphereMesh->bDoNotLight = true;
+    ::g_pDebugSphereMesh->bUseDebugColours = true;
     ::g_pDebugSphereMesh->wholeObjectDebugColourRGBA = colourRGBA;
 
    

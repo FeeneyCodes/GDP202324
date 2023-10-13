@@ -95,6 +95,25 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
             ::g_pTheLights->theLights[::g_selectedLight].atten.z *= 1.01f;      // 1% more
         }
 
+        // 5 & 8 are outter angle
+        if (key == GLFW_KEY_5 )
+        {
+            ::g_pTheLights->theLights[::g_selectedLight].param1.z -= 0.1f;      // 0.1 degree
+        }
+        if (key == GLFW_KEY_8 )
+        {
+            ::g_pTheLights->theLights[::g_selectedLight].param1.z += 0.1f;      // 0.1 degree
+        }
+        // 6 & 7 are inner angle
+        if (key == GLFW_KEY_6 )
+        {
+            ::g_pTheLights->theLights[::g_selectedLight].param1.y -= 0.1f;      // 0.1 degree
+        }
+        if (key == GLFW_KEY_7 )
+        {
+            ::g_pTheLights->theLights[::g_selectedLight].param1.y += 0.1f;      // 0.1 degree
+        }
+
         // quadratic attenuation 
         if (key == GLFW_KEY_9 )
         {

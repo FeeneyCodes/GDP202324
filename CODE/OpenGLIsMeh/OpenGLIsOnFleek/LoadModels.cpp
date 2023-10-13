@@ -41,10 +41,14 @@ bool LoadModels(void)
 //    bunny2.scale = 7.5f;
 //    bunny2.orientation.y = glm::radians(135.0f);
 //
-//    cMesh bathtub;
-//    bathtub.meshName = "bathtub_xyz_n_rgba.ply";
-//    //bunny2.position = glm::vec3(1.0f, 0.0f, 0.0f);
-//    bathtub.scale = 0.25f;
+    cMesh* pBathtub = new cMesh();
+    pBathtub->meshName = "bathtub_xyz_n_rgba.ply";
+    pBathtub->friendlyName = "bathtub";
+ //   pBathtub->bDoNotLight = true;
+    pBathtub->drawPosition = glm::vec3(0.0f, -30.0f, 0.0f);
+    //bunny2.position = glm::vec3(1.0f, 0.0f, 0.0f);
+    ::g_vec_pMeshesToDraw.push_back(pBathtub);
+
 //
 ////    // Smart array of cMesh object
 ////    std::vector<cMesh> vecMeshesToDraw;
@@ -94,8 +98,8 @@ bool LoadModels(void)
 //    pGroundMeshShape->acceleration.y = (-9.81f / 5.0f);
 
 //    pGroundMeshShape->position.x = -10.0f;
-    pGroundMeshShape->position.y = -40.0f;
-    pGroundMeshShape->orientation.z = glm::radians(-45.0f);
+    pGroundMeshShape->position.y = -50.0f;
+//    pGroundMeshShape->orientation.z = glm::radians(-45.0f);
     pGroundMeshShape->friendlyName = "Ground";
     ::g_pPhysics->AddShape(pGroundMeshShape);
    
@@ -123,6 +127,7 @@ bool LoadModels(void)
     pFlat_1x1_planeMesh_DEBUG->drawPosition = pGroundMeshShape->position;
     pFlat_1x1_planeMesh_DEBUG->drawOrientation = pGroundMeshShape->orientation;
     pFlat_1x1_planeMesh_DEBUG->setUniformDrawScale(1.001f);
+    pFlat_1x1_planeMesh_DEBUG->bIsVisible = false;
     ::g_vec_pMeshesToDraw.push_back(pFlat_1x1_planeMesh_DEBUG);
 
 
