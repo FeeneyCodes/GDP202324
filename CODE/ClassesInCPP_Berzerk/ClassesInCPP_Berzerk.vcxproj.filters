@@ -69,6 +69,24 @@
     <ClInclude Include="iRobot.h">
       <Filter>RobotFactory</Filter>
     </ClInclude>
+    <ClInclude Include="iRobotPlacement.h">
+      <Filter>RobotFactory</Filter>
+    </ClInclude>
+    <ClInclude Include="cDog.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="cCat.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="iRobotQuery.h">
+      <Filter>Arena</Filter>
+    </ClInclude>
+    <ClInclude Include="iAssignRobotQuery.h">
+      <Filter>RobotFactory</Filter>
+    </ClInclude>
+    <ClInclude Include="iMediator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="cPlayer.cpp">
@@ -112,6 +130,12 @@
     </ClCompile>
     <ClCompile Include="cRobotBuilder.cpp">
       <Filter>RobotFactory</Filter>
+    </ClCompile>
+    <ClCompile Include="cCat.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="cDog.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -5,6 +5,6 @@ class cGameBrain
 {
 public:
 
-
+	void Update(void);
 
 };

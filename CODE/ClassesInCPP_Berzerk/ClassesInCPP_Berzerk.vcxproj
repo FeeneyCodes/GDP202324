@@ -135,6 +135,8 @@
   <ItemGroup>
     <ClInclude Include="cArena.h" />
     <ClInclude Include="cBullet.h" />
+    <ClInclude Include="cCat.h" />
+    <ClInclude Include="cDog.h" />
     <ClInclude Include="cGameBrain.h" />
     <ClInclude Include="cMissleLanucher.h" />
     <ClInclude Include="cPlayer.h" />
@@ -146,10 +148,16 @@
     <ClInclude Include="cSword.h" />
     <ClInclude Include="cWeapon.h" />
     <ClInclude Include="cWeaponMaker.h" />
+    <ClInclude Include="iAssignRobotQuery.h" />
+    <ClInclude Include="iMediator.h" />
     <ClInclude Include="iRobot.h" />
+    <ClInclude Include="iRobotPlacement.h" />
+    <ClInclude Include="iRobotQuery.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="cBullet.cpp" />
+    <ClCompile Include="cCat.cpp" />
+    <ClCompile Include="cDog.cpp" />
     <ClCompile Include="cMissleLauncher.cpp" />
     <ClCompile Include="cPlayer.cpp" />
     <ClCompile Include="cRailGun.cpp" />

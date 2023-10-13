@@ -365,7 +365,7 @@ int main(void)
         // 
 //        DoPhysicUpdate(deltaTime);
 
-        ::g_pPhysics->Update(deltaTime);
+//        ::g_pPhysics->Update(deltaTime);
 
 
         glfwSwapBuffers(window);

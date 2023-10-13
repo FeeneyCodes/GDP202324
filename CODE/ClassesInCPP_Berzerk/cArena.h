@@ -5,12 +5,22 @@
 //#include "cSuperRobot.h"
 #include "cWeaponMaker.h"	// Factory object
 #include <vector>
+#include <glm/glm.hpp>
+#include <glm/vec2.hpp>
 
-class cArena
+#include "iRobotQuery.h"
+
+#include "iMediator.h"
+
+class cArena :
+	public iRobotQuery,
+	public iMediator
 {
 public:
 	~cArena();
-	void Init(int numRobots, int numPlayers);
+	// Assume arena is square. 
+	void Init(int numRobots, int numPlayers, 
+			  float arenaSizeInMeters = 250.0f);
 
 
 	void Update(double deltaTime);
@@ -19,7 +29,17 @@ public:
 	//	isn't created yet;
 	static cArena* getTheArena(void);
 
-	static int hi;
+	// from the iRobotQuery interface
+	virtual glm::vec2 findClosestRobot(glm::vec2 whereIAm);
+
+
+	// iGetRobotLocations()
+//	std::vector< iRobot* > getTheVectorOfRobotsYo(void)
+//	{
+//		return vecRobots;
+//	}
+
+//	static int hi;
 
 private:
 	cArena();		// Can't be called by anything but "me" (i.e. the cArena class)
@@ -31,5 +51,7 @@ private:
 
 	// Static means "shared" because there's only one
 	static cArena* m_pTheOneAndOnlyArena;
+
+	float m_arenaSizeInMeters;
 
 };

@@ -9,8 +9,15 @@
 #include "iRobot.h"
 #include "iWeapon.h"
 #include "cSword.h"
+#include "iRobotPlacement.h"
+#include "iAssignRobotQuery.h"
+#include "iRobotQuery.h"
 
-class cSuperRobot : public iRobot
+class cSuperRobot : 
+	public iRobot, 
+	public iRobotPlacement,
+	public iAssignRobotQuery
+
 {
 public:
 	cSuperRobot();
@@ -23,6 +30,23 @@ public:
 
 	// From iRobot interface
 	virtual void Attack(void);
-	virtual void Move(glm::vec2 toWhere);
+//	virtual void Move(glm::vec2 toWhere);
+	virtual void Update(double deltaTime);
+
+	glm::vec2 position;	// xy position
+	bool bIsDead;
+	glm::vec2 dir;	// direction
+	bool bNoticedPlayer;
+
+	// From iRobotPlacement interface
+	virtual void setInitalLocation(glm::vec2 startingPosition);
+	virtual glm::vec2 getLocation(void);
+
+	virtual void set_RobotQuery(iRobotQuery* pTheArena);
+
+
+	iRobotQuery* m_pTheMediator;
+
+
 };
 
