@@ -34,5 +34,7 @@ private:
 	// https://assimp.sourceforge.net/lib_html/postprocess_8h.html#a64795260b95f5a4b3f3dc1be4f52e410a8857a0e30688127a82c7b8939958c6dc
 	unsigned int m_loadAssimpPostProcessingFlags(AssimpHelper::cFileLoader::sPostProcessFlags postProcessOptions);
 
+	unsigned int numberOfModelLoaded;
+
 };
 

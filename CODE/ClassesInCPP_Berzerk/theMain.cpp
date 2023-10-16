@@ -31,7 +31,8 @@ int main()
 {
 //	cArena* pTheGame = new cArena();
 	cArena* pTheGame = cArena::getTheArena();
-	cArena* pTheGame2 = cArena::getTheArena();
+//	cArena* pTheGame2 = cArena::getTheArena();
+
 
 	pTheGame->Init(3, 1);
 

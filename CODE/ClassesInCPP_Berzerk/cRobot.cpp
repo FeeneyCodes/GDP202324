@@ -19,7 +19,21 @@ cRobot::cRobot()
 
 	// Get the robots
 	//pArena->getTheVectorOfRobotsYo(
+
+	// Set the ID
+	this->m_MyUniqueID = cRobot::m_NextUniqueID;
+	cRobot::m_NextUniqueID += 5;	// Ids go up by 5
+//	cRobot::m_NextUniqueID += (rand() % 10);	// Up by a sort of random number
+
 }
+
+unsigned int cRobot::getUniqueID(void)
+{
+	return this->m_MyUniqueID;
+}
+
+//static 
+unsigned int cRobot::m_NextUniqueID = 100;			// 1st robot has ID 100
 
 void cRobot::setInitalLocation(glm::vec2 startingPosition)
 {
@@ -27,9 +41,9 @@ void cRobot::setInitalLocation(glm::vec2 startingPosition)
 	return;
 }
 
-void cRobot::set_RobotQuery(iRobotQuery* pTheArena)
+void cRobot::set_RobotQuery(iMediator* pTheArena)
 {
-	this->m_pTheMediator = pTheArena;
+	this->m_pTheArena = pTheArena;
 	return;
 }
 
@@ -66,11 +80,21 @@ void cRobot::Update(double deltaTime)
 	{
 	case SEARCHING_FOR_NEW_TARGET:		// Find another robot : 
 		// Ask the mediator
-		this->m_TargetRobotLocation = this->m_pTheMediator->findClosestRobot(this->pos);
-		
-		std::cout << "Am moving towards a robot at "
-			<< this->m_TargetRobotLocation.x << ", "
-			<< this->m_TargetRobotLocation.y << std::endl;
+//		this->m_TargetRobotLocation = this->m_pTheMediator->findClosestRobot(this->pos);
+//		
+//		std::cout << "Am moving towards a robot at "
+//			<< this->m_TargetRobotLocation.x << ", "
+//			<< this->m_TargetRobotLocation.y << std::endl;
+		{
+			sMessage getNewTarget;
+			getNewTarget.sData = "Find the closest robot";
+//			getNewTarget.sData = "findClosestRobot(0.0, 10.0f, 10.0)";
+			getNewTarget.vecData.push_back(glm::vec3(this->pos, 0.0f));
+			getNewTarget.UniqueIDofSender = this->getUniqueID();
+
+			// Blocking (syncronous) call:
+			sMessage ArenaResponse = this->m_pTheArena->getMessage(getNewTarget);
+		}
 
 		// 
 		this->m_currentState = MOVING_TOWARD_TARGET;
@@ -88,3 +112,20 @@ void cRobot::Update(double deltaTime)
 
 	return;
 }
+
+
+	// From the iMediator interface
+sMessage cRobot::getMessage(sMessage theMessage)
+{
+
+
+
+	return theMessage;
+}
+
+void cRobot::recieveMessage(sMessage theMessage)
+{
+	return;
+}
+
+

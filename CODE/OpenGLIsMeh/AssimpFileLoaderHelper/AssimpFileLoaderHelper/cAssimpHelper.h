@@ -309,6 +309,7 @@ namespace AssimpHelper
 		// It's OK with the forward declaration because we're using a pointer, 
 		//	and it knows how large a pointer is (it's just an int).
 		cFileLoader_Imp* m_pImp;
+
 	};
 
 };//namespace ah

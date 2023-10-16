@@ -47,6 +47,13 @@ public:
 
 	iRobotQuery* m_pTheMediator;
 
+	// From the iMediator interface
+	virtual sMessage getMessage(sMessage theMessage);
+	virtual void recieveMessage(sMessage theMessage);
 
+	virtual unsigned int getUniqueID(void);
+private:
+	unsigned int m_MyUniqueID;
+	static unsigned int m_NextUniqueID;
 };
 

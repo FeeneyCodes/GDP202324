@@ -7,6 +7,10 @@ class cCat;		// Forward declaration
 class cDog
 {
 public:
+	cDog()
+	{
+		this->theEvilCat = nullptr;
+	}
 	void Woof(void);
 	cCat* theEvilCat;
 };

@@ -10,16 +10,16 @@
 #include "iRobotPlacement.h"
 
 // The arena
-#include "iRobotQuery.h"
-#include "iAssignRobotQuery.h"
+//#include "iRobotQuery.h"
+//#include "iAssignRobotQuery.h"
 
 #include <vector>
 
 
-class cRobot : 
-	public iRobot,
-	public iRobotPlacement,
-	public iAssignRobotQuery
+class cRobot :
+	public iRobot
+//	public iRobotPlacement,
+//	public iAssignRobotQuery
 {
 public:
 	cRobot();		// constructor (c'tor)
@@ -42,7 +42,7 @@ public:
 	virtual void setInitalLocation(glm::vec2 startingPosition);
 	virtual glm::vec2 getLocation(void);
 
-	virtual void set_RobotQuery(iRobotQuery* pTheArena);
+	virtual void set_RobotQuery(iMediator* pTheArena);
 
 
 	enum eState
@@ -58,9 +58,21 @@ public:
 
 	std::vector< iRobot* > vecRobots;
 
-	iRobotQuery* m_pTheMediator;
+//	iRobotQuery* m_pTheMediator;
+
+	iMediator* m_pTheArena;
 
 	glm::vec2 m_TargetRobotLocation;
+
+	// From the iMediator interface
+	virtual sMessage getMessage(sMessage theMessage);
+	virtual void recieveMessage(sMessage theMessage);
+
+
+	virtual unsigned int getUniqueID(void);
+private:
+	unsigned int m_MyUniqueID;
+	static unsigned int m_NextUniqueID;
 };
 
 

@@ -87,6 +87,9 @@
     <ClInclude Include="iMediator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="cArena_Implementation.h">
+      <Filter>Arena</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="cPlayer.cpp">
@@ -136,6 +139,9 @@
     </ClCompile>
     <ClCompile Include="cDog.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="cArena_Implementation.cpp">
+      <Filter>Arena</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

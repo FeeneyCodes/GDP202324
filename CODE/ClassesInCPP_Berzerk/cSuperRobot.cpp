@@ -6,7 +6,19 @@ cSuperRobot::cSuperRobot()
 {
 	std::cout << "SuperRobot!" << std::endl;
 	// Make it stop....
+		// Set the ID
+	this->m_MyUniqueID = cSuperRobot::m_NextUniqueID;
+	cSuperRobot::m_NextUniqueID += 5;	// Ids go up by 5
 }
+
+
+unsigned int cSuperRobot::getUniqueID(void)
+{
+	return this->m_MyUniqueID;
+}
+
+//static 
+unsigned int cSuperRobot::m_NextUniqueID = 90000;			// 1st robot has ID 90000
 
 void cSuperRobot::setInitalLocation(glm::vec2 startingPosition)
 {
@@ -48,5 +60,20 @@ void cSuperRobot::Update(double deltaTime)
 {
 
 
+	return;
+}
+
+
+	// From the iMediator interface
+sMessage cSuperRobot::getMessage(sMessage theMessage)
+{
+
+
+
+	return theMessage;
+}
+
+void cSuperRobot::recieveMessage(sMessage theMessage)
+{
 	return;
 }
