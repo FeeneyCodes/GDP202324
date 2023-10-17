@@ -207,7 +207,8 @@ void cPhysics::Update(double deltaTime)
 		if (pObject->pTheAssociatedMesh)
 		{
 			pObject->pTheAssociatedMesh->setDrawPosition(pObject->position);
-			pObject->pTheAssociatedMesh->setDrawOrientation(pObject->orientation);
+//			pObject->pTheAssociatedMesh->setDrawOrientation(pObject->orientation);
+			pObject->pTheAssociatedMesh->setDrawOrientation(pObject->get_qOrientation());
 		}
 	}//for (sPhsyicsProperties* pObjectA
 

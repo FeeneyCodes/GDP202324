@@ -2,6 +2,7 @@
 
 #include <glm/glm.hpp>
 #include <glm/vec3.hpp>
+#include <glm/gtc/quaternion.hpp>
 #include "iPhysicsMeshTransformAccess.h"
 #include <string>
 #include <limits.h>
@@ -174,7 +175,26 @@ struct sPhsyicsProperties
 	glm::vec3 position = glm::vec3(0.0f);
 	// Save the old position
 	glm::vec3 oldPosition = glm::vec3(0.0f);
-	glm::vec3 orientation = glm::vec3(0.0f);
+
+//	glm::vec3 orientation = glm::vec3(0.0f);
+	void setRotationFromEuler(glm::vec3 newEulerAngleXYZ)
+	{
+		this->m_qOrientation = glm::quat(newEulerAngleXYZ);
+	}
+
+	void adjustRoationAngleFromEuler(glm::vec3 EulerAngleXYZ_Adjust)
+	{
+		glm::quat qChange = glm::quat(EulerAngleXYZ_Adjust);
+		this->m_qOrientation *= qChange;
+	}
+
+	glm::quat get_qOrientation(void)
+	{
+		return this->m_qOrientation;
+	}
+private:
+	glm::quat m_qOrientation;
+public:
 
 	glm::vec3 velocity = glm::vec3(0.0f);
 	glm::vec3 acceleration = glm::vec3(0.0f);

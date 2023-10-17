@@ -11,7 +11,8 @@
 cMesh::cMesh()
 {
 	this->drawPosition = glm::vec3(0.0f, 0.0f, 0.0f);
-	this->drawOrientation = glm::vec3(0.0f, 0.0f, 0.0f);
+//	this->drawOrientation = glm::vec3(0.0f, 0.0f, 0.0f);
+	this->setRotationFromEuler(glm::vec3(0.0f, 0.0f, 0.0f));
 	this->drawScale = glm::vec3(1.0f);
 
 	this->bIsWireframe = false;
@@ -62,15 +63,29 @@ void cMesh::setDrawPosition(const glm::vec3& newPosition)
 
 glm::vec3 cMesh::getDrawOrientation(void)
 {
-	return this->drawOrientation;
+//	return this->drawOrientation;
+
+	// Be a little careful because quaterion to Euler can return unexpected things
+	return glm::eulerAngles(this->get_qOrientation());
 }
 
 void cMesh::setDrawOrientation(const glm::vec3& newOrientation)
 {
-	this->drawOrientation = newOrientation;
+//	this->drawOrientation = newOrientation;
+
+	this->setRotationFromEuler(newOrientation);
+
 	return;
 }
-// ENDOF: iPhysicsMeshTransformAccess interface
+
+void cMesh::setDrawOrientation(const glm::quat& newOrientation)
+{
+//	this->drawOrientation = newOrientation;
+
+	this->m_qOrientation = newOrientation;
+
+	return;
+}// ENDOF: iPhysicsMeshTransformAccess interface
 
 
 //void cMesh::Update(double deltaTime)

@@ -109,18 +109,19 @@ bool cPhysics::m_Sphere_TriMeshIndirect_IntersectionTest(sPhsyicsProperties* pSp
 														  pTriMesh_General->position.z));
 
 		   // Rotation matrix generation
-		glm::mat4 matRotateX = glm::rotate(glm::mat4(1.0f),
-										   pTriMesh_General->orientation.x,
-										   glm::vec3(1.0f, 0.0, 0.0f));
-
-
-		glm::mat4 matRotateY = glm::rotate(glm::mat4(1.0f),
-										   pTriMesh_General->orientation.y,
-										   glm::vec3(0.0f, 1.0, 0.0f));
-
-		glm::mat4 matRotateZ = glm::rotate(glm::mat4(1.0f),
-										   pTriMesh_General->orientation.z,
-										   glm::vec3(0.0f, 0.0, 1.0f));
+//		glm::mat4 matRotateX = glm::rotate(glm::mat4(1.0f),
+//										   pTriMesh_General->orientation.x,
+//										   glm::vec3(1.0f, 0.0, 0.0f));
+//
+//
+//		glm::mat4 matRotateY = glm::rotate(glm::mat4(1.0f),
+//										   pTriMesh_General->orientation.y,
+//										   glm::vec3(0.0f, 1.0, 0.0f));
+//
+//		glm::mat4 matRotateZ = glm::rotate(glm::mat4(1.0f),
+//										   pTriMesh_General->orientation.z,
+//										   glm::vec3(0.0f, 0.0, 1.0f));
+		glm::mat4 matRotation = glm::mat4(pTriMesh_General->get_qOrientation());
 
 		// Scaling matrix
 //		glm::mat4 matScale = glm::scale(glm::mat4(1.0f),
@@ -132,9 +133,11 @@ bool cPhysics::m_Sphere_TriMeshIndirect_IntersectionTest(sPhsyicsProperties* pSp
 		// Combine all these transformation
 		matModel = matModel * matTranslate;
 
-		matModel = matModel * matRotateX;
-		matModel = matModel * matRotateY;
-		matModel = matModel * matRotateZ;
+//		matModel = matModel * matRotateX;
+//		matModel = matModel * matRotateY;
+//		matModel = matModel * matRotateZ;
+
+		matModel = matModel * matRotation;
 
 //		matModel = matModel * matScale;
 

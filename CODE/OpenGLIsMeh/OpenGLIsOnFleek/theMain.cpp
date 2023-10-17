@@ -384,8 +384,11 @@ int main(void)
 
         // HACK:
         cMesh* pSpidey = g_pFindMeshByFriendlyName("SpiderManBody");
-        pSpidey->drawOrientation.y += 0.01f;
-        pSpidey->drawPosition.y += 0.01f;
+
+//        pSpidey->drawOrientation.y += 0.001f;
+        pSpidey->adjustRoationAngleFromEuler(glm::vec3(0.0f, 0.0f, 0.001f));
+
+//        pSpidey->drawPosition.x += 0.01f;
 
 
 //        // HACK: See where the sphere is on the surface of the "ground"
@@ -549,6 +552,7 @@ void DrawObject(cMesh* pCurrentMesh, glm::mat4 matModelParent, GLuint shaderProg
 
 
 
+
     // Translation
     glm::mat4 matTranslate = glm::translate(glm::mat4(1.0f),
                                             glm::vec3(pCurrentMesh->drawPosition.x,
@@ -557,18 +561,22 @@ void DrawObject(cMesh* pCurrentMesh, glm::mat4 matModelParent, GLuint shaderProg
 
 
        // Rotation matrix generation
-    glm::mat4 matRotateX = glm::rotate(glm::mat4(1.0f),
-                                       pCurrentMesh->drawOrientation.x, // (float)glfwGetTime(),
-                                       glm::vec3(1.0f, 0.0, 0.0f));
+//    glm::mat4 matRotateX = glm::rotate(glm::mat4(1.0f),
+//                                       pCurrentMesh->drawOrientation.x, // (float)glfwGetTime(),
+//                                       glm::vec3(1.0f, 0.0, 0.0f));
+//
+//
+//    glm::mat4 matRotateY = glm::rotate(glm::mat4(1.0f),
+//                                       pCurrentMesh->drawOrientation.y, // (float)glfwGetTime(),
+//                                       glm::vec3(0.0f, 1.0, 0.0f));
+//
+//    glm::mat4 matRotateZ = glm::rotate(glm::mat4(1.0f),
+//                                       pCurrentMesh->drawOrientation.z, // (float)glfwGetTime(),
+//                                       glm::vec3(0.0f, 0.0, 1.0f));
 
+    // Now we are all bougie, using quaternions
+    glm::mat4 matRotation = glm::mat4( pCurrentMesh->get_qOrientation() );
 
-    glm::mat4 matRotateY = glm::rotate(glm::mat4(1.0f),
-                                       pCurrentMesh->drawOrientation.y, // (float)glfwGetTime(),
-                                       glm::vec3(0.0f, 1.0, 0.0f));
-
-    glm::mat4 matRotateZ = glm::rotate(glm::mat4(1.0f),
-                                       pCurrentMesh->drawOrientation.z, // (float)glfwGetTime(),
-                                       glm::vec3(0.0f, 0.0, 1.0f));
 
     // Scaling matrix
     glm::mat4 matScale = glm::scale(glm::mat4(1.0f),
@@ -578,14 +586,16 @@ void DrawObject(cMesh* pCurrentMesh, glm::mat4 matModelParent, GLuint shaderProg
     //--------------------------------------------------------------
 
     // Combine all these transformation
-    matModel = matModel * matTranslate;
+    matModel = matModel * matTranslate;         // Done last
 
-    matModel = matModel * matRotateX;
-    matModel = matModel * matRotateY;
-    matModel = matModel * matRotateZ;
+//    matModel = matModel * matRotateX;
+//    matModel = matModel * matRotateY;
+//    matModel = matModel * matRotateZ;
+    //
+    matModel = matModel * matRotation;
 
 
-    matModel = matModel * matScale;
+    matModel = matModel * matScale;             // Mathematically done 1st
 
 //        m = m * rotateZ;
 //        m = m * rotateY;

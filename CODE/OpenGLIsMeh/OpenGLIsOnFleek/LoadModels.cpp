@@ -129,7 +129,8 @@ bool LoadModels(void)
     pFlat_1x1_planeMesh_DEBUG->wholeObjectDebugColourRGBA = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 
     pFlat_1x1_planeMesh_DEBUG->drawPosition = pGroundMeshShape->position;
-    pFlat_1x1_planeMesh_DEBUG->drawOrientation = pGroundMeshShape->orientation;
+//    pFlat_1x1_planeMesh_DEBUG->drawOrientation = pGroundMeshShape->orientation;
+    pFlat_1x1_planeMesh_DEBUG->setDrawOrientation(pGroundMeshShape->get_qOrientation());
     pFlat_1x1_planeMesh_DEBUG->setUniformDrawScale(1.001f);
     pFlat_1x1_planeMesh_DEBUG->bIsVisible = false;
     ::g_vec_pMeshesToDraw.push_back(pFlat_1x1_planeMesh_DEBUG);
@@ -193,8 +194,14 @@ bool LoadModels(void)
     pSpiderMan_body->setUniformDrawScale(spiderScale);
     pSpiderMan_body->friendlyName = "SpiderManBody";
     pSpiderMan_body->meshName = "legospiderman_body_xyz_n_rgba.ply";
-    pSpiderMan_body->drawOrientation.x = glm::radians(-90.0f);
-    pSpiderMan_body->drawOrientation.z = glm::radians(-90.0f);
+//    pSpiderMan_body->drawOrientation.x = glm::radians(-90.0f);
+//    pSpiderMan_body->drawOrientation.z = glm::radians(-90.0f);
+
+    pSpiderMan_body->adjustRoationAngleFromEuler( glm::vec3(-90.0f, 0.0f, 0.0f) );
+//    pSpiderMan_body->adjustRoationAngleFromEuler( glm::vec3(0.0f, 0.0f, -90.0f) );
+
+
+
     ::g_vec_pMeshesToDraw.push_back(pSpiderMan_body);
 
     // Now add these as child meshes

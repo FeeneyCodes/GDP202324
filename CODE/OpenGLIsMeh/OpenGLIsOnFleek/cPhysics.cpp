@@ -26,7 +26,8 @@ void cPhysics::AddShape(sPhsyicsProperties* pNewShape)
 	{
 		// Update the drawing positions from the physics information
 		pNewShape->pTheAssociatedMesh->setDrawPosition(pNewShape->position);
-		pNewShape->pTheAssociatedMesh->setDrawOrientation(pNewShape->orientation);
+		//pNewShape->pTheAssociatedMesh->setDrawOrientation(pNewShape->orientation);
+		pNewShape->pTheAssociatedMesh->setDrawOrientation(pNewShape->get_qOrientation());
 	}
 
 	return;
