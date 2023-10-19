@@ -1,0 +1,11 @@
+x	O	O	O	x
+x	W	O	W	x
+x	O	W	O	x
+x	x	O	x	x
+R	R	R	R	W
+W	R	R	R	W
+W	R	R	R	x
+x	R	x	R	x
+W	W	x	R	x
+x	x	x	R	x
+x	x	x	W	W

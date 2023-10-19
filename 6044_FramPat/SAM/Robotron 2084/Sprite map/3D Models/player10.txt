@@ -1,0 +1,12 @@
+B	B	O	O	O	B	B
+B	O	O	O	O	O	B
+B	O	O	O	O	O	B
+x	x	O	O	O	x	x
+x	x	x	W	x	x	x
+x	W	W	W	W	W	x
+P	W	W	W	W	W	P
+P	x	W	W	W	x	P
+P	x	W	x	W	x	P
+x	x	W	x	W	x	x
+x	W	W	x	W	W	x
+x	x	x	x	x	x	x

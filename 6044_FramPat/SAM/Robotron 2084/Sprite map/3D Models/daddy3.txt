@@ -1,0 +1,13 @@
+x	x	x	O	Y	Y	x	x	x
+x	x	x	W	O	Y	x	x	x
+x	x	x	O	O	Y	x	x	x
+x	x	x	B	B	B	x	x	x
+x	x	x	B	B	B	B	x	x
+x	x	x	B	B	B	B	x	x
+x	x	B	B	B	B	B	x	x
+x	x	O	B	B	B	O	x	x
+g	g	g	g	x	B	x	x	x
+g	g	g	g	x	B	x	x	x
+g	g	g	g	x	B	x	x	x
+x	O	O	x	O	O	x	x	x
+x	x	x	x	x	x	x	x	x

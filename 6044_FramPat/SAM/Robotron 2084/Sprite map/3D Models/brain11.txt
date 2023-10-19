@@ -1,0 +1,16 @@
+x	x	x	x	x	B	V	x	x	x	x	x	x
+x	x	B	V	B	x	V	B	V	B	B	x	x
+x	V	B	x	V	B	V	V	V	B	V	B	x
+B	V	x	x	V	B	x	V	x	V	x	B	B
+B	V	V	B	B	V	V	V	B	V	B	V	V
+B	B	B	V	V	x	V	x	V	B	V	B	B
+B	B	x	x	V	V	x	V	x	B	V	B	B
+x	B	B	V	B	B	V	V	V	V	B	B	x
+x	x	V	B	B	x	V	B	B	B	B	x	x
+x	x	x	x	x	B	B	B	x	x	x	x	x
+x	x	x	x	x	B	G	B	x	x	x	x	x
+x	x	x	x	G	G	G	G	G	x	x	x	x
+x	x	x	G	x	x	G	G	x	G	x	x	x
+x	x	x	x	x	G	x	G	G	x	x	x	x
+x	x	x	x	x	G	x	x	x	x	x	x	x
+x	x	x	x	G	G	x	x	x	x	x	x	x

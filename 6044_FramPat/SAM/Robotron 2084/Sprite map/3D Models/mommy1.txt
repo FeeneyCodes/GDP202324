@@ -1,0 +1,14 @@
+x	x	Y	Y	x	x	x
+x	x	O	Y	Y	x	x
+x	x	G	O	Y	x	x
+x	x	O	O	Y	Y	x
+x	x	x	P	P	x	x
+x	x	P	O	P	x	x
+x	x	x	O	P	x	x
+x	x	P	W	P	x	x
+x	P	P	P	P	P	x
+x	x	G	W	G	x	x
+x	x	x	W	x	x	x
+x	x	x	W	x	x	x
+x	x	P	P	x	x	x
+x	x	x	x	x	x	x

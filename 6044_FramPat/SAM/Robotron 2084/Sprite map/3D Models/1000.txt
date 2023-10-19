@@ -1,0 +1,5 @@
+R	R	x	R	R	R	R	R	R	R
+x	R	x	R	x	R	x	R	x	R
+x	R	x	R	x	R	x	R	x	R
+x	R	x	R	x	R	x	R	x	R
+R	R	R	R	R	R	R	R	R	R

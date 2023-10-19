@@ -1,0 +1,16 @@
+x	x	x	x	x	R	R	R	x	x	x	x	x
+x	x	x	x	x	R	W	R	x	x	x	x	x
+x	x	x	R	R	R	R	R	R	R	x	x	x
+x	x	x	R	G	G	x	G	G	R	x	x	x
+x	x	x	R	G	x	G	x	G	R	x	x	x
+x	x	x	R	R	R	R	R	R	R	x	x	x
+x	x	x	W	B	B	W	B	B	W	x	x	x
+x	x	x	x	B	W	B	B	W	x	x	x	x
+x	x	x	x	x	x	x	x	x	x	x	x	x
+x	x	x	x	x	x	x	x	x	x	x	x	x
+x	x	x	x	x	x	x	x	x	x	x	x	x
+x	x	x	x	x	x	x	x	x	x	x	x	x
+x	x	x	x	x	x	x	x	x	x	x	x	x
+x	x	x	x	x	x	x	x	x	x	x	x	x
+x	x	x	x	x	x	x	x	x	x	x	x	x
+x	x	x	x	x	x	x	x	x	x	x	x	x

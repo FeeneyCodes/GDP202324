@@ -1,0 +1,12 @@
+x	B	O	O	O	x	x
+x	B	B	B	B	B	x
+x	B	O	O	O	B	x
+x	x	O	O	O	x	x
+x	x	x	W	x	x	x
+x	x	x	W	W	x	x
+x	P	P	P	W	P	x
+x	x	x	W	W	P	x
+x	x	W	x	W	P	x
+x	x	W	x	W	x	x
+x	W	W	x	W	x	x
+x	x	x	x	x	x	x

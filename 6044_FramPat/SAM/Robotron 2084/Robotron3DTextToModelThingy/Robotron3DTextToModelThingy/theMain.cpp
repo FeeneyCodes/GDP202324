@@ -95,6 +95,24 @@ void centreOnX(std::vector<cVertex>& vecVertices)
 	return;
 }
 
+void centreOnX(std::vector<cVertex>& vecVertices, float minX, float maxX)
+{
+	if (vecVertices.empty())
+	{
+		return;
+	}
+
+	float midX = (maxX - minX - CUBE_WIDTH) / 2.0f;
+
+	for (unsigned int vertIndex = 0; vertIndex != vecVertices.size(); vertIndex++)
+	{
+		vecVertices[vertIndex].x -= midX;
+	}
+
+	return;
+}
+
+
 void alightBaseToXZPlane(std::vector<cVertex>& vecVertices)
 {
 	if (vecVertices.empty())
@@ -159,10 +177,66 @@ void addCubeToVector(std::vector<cVertex>& vecVertices,
 	return;
 }
 
+
+void calcBoundingBoxMinMax( cCube& cube, float xOffset, float yOffset, float zOffset,
+						    float boundingBoxminXYZ[], float boundingBoxmaxXYZ[])
+{
+	for (unsigned int triIndex = 0; triIndex != cube.vecTris.size(); triIndex++)
+	{
+		// Get triangle vertices
+		cVertex vert0 = cube.vecVertices[(cube.vecTris[triIndex].index[0])];
+		cVertex vert1 = cube.vecVertices[(cube.vecTris[triIndex].index[1])];
+		cVertex vert2 = cube.vecVertices[(cube.vecTris[triIndex].index[2])];
+
+		vert0.x += xOffset;
+		vert0.y += yOffset;
+		vert0.z += zOffset;
+
+		vert1.x += xOffset;
+		vert1.y += yOffset;
+		vert1.z += zOffset;
+
+		vert2.x += xOffset;
+		vert2.y += yOffset;
+		vert2.z += zOffset;
+
+		if ( vert0.x < boundingBoxminXYZ[0] ) {	boundingBoxminXYZ[0] = vert0.x; }
+		if ( vert0.y < boundingBoxminXYZ[0] ) {	boundingBoxminXYZ[1] = vert0.y; }
+		if ( vert0.z < boundingBoxminXYZ[0] ) {	boundingBoxminXYZ[2] = vert0.z; }
+
+		if ( vert1.x < boundingBoxminXYZ[0] ) {	boundingBoxminXYZ[0] = vert1.x; }
+		if ( vert1.y < boundingBoxminXYZ[0] ) {	boundingBoxminXYZ[1] = vert1.y; }
+		if ( vert1.z < boundingBoxminXYZ[0] ) {	boundingBoxminXYZ[2] = vert1.z; }
+
+		if ( vert2.x < boundingBoxminXYZ[0] ) {	boundingBoxminXYZ[0] = vert2.x; }
+		if ( vert2.y < boundingBoxminXYZ[0] ) {	boundingBoxminXYZ[1] = vert2.y; }
+		if ( vert2.z < boundingBoxminXYZ[0] ) {	boundingBoxminXYZ[2] = vert2.z; }
+
+
+		if ( vert0.x > boundingBoxmaxXYZ[0] ) {	boundingBoxmaxXYZ[0] = vert0.x; }
+		if ( vert0.y > boundingBoxmaxXYZ[0] ) {	boundingBoxmaxXYZ[1] = vert0.y; }
+		if ( vert0.z > boundingBoxmaxXYZ[0] ) {	boundingBoxmaxXYZ[2] = vert0.z; }
+
+		if ( vert1.x > boundingBoxmaxXYZ[0] ) {	boundingBoxmaxXYZ[0] = vert1.x; }
+		if ( vert1.y > boundingBoxmaxXYZ[0] ) {	boundingBoxmaxXYZ[1] = vert1.y; }
+		if ( vert1.z > boundingBoxmaxXYZ[0] ) {	boundingBoxmaxXYZ[2] = vert1.z; }
+
+		if ( vert2.x > boundingBoxmaxXYZ[0] ) {	boundingBoxmaxXYZ[0] = vert2.x; }
+		if ( vert2.y > boundingBoxmaxXYZ[0] ) {	boundingBoxmaxXYZ[1] = vert2.y; }
+		if ( vert2.z > boundingBoxmaxXYZ[0] ) {	boundingBoxmaxXYZ[2] = vert2.z; }
+	}
+
+	return;
+}
+
+
 void printPlyFile(std::string inputFileName, std::vector<cVertex>& vecVertices, std::vector<cTriangle>& vecTris);
 
 void setCubeColour(cCube& theCube, unsigned char charRed255, unsigned char charGreen255, unsigned char charBlue255);
 void setCubeColour(cCube& theCube, float fRed, float fGreen, float fBlue);
+
+void calcBoundingBoxMinMax( cCube& cube, float xOffset, float yOffset, float zOffset,
+						    float boundingBoxminXYZ[], float boundingBoxmaxXYZ[]);
 
 int main(int argc, char* argv[])
 {
@@ -258,6 +332,9 @@ int main(int argc, char* argv[])
 	std::vector<cVertex> vecVertices;
 	std::vector<cTriangle> vecTriangles;
 
+	float boundingBoxminXYZ[3] = { FLT_MAX, FLT_MAX, FLT_MAX };
+	float boundingBoxmaxXYZ[3] = { 0.0f, 0.0f, 0.0f };
+
 	// Convert the block file into ply blocks
 	for (unsigned int row = 0; row != vecBlockChars.size(); row++)
 	{
@@ -302,9 +379,12 @@ int main(int argc, char* argv[])
 				break;
 			case 'x':	// Black
 			default:
-//				setCubeColour(theCube, 0.0f, 0.0f, 0.0f);
+				setCubeColour(theCube, 0.0f, 0.0f, 0.0f);
 				break;
 			}//switch (vecBlockChars[row][col])
+
+			calcBoundingBoxMinMax(theCube, col_offset, row_offset, 0.0f, boundingBoxminXYZ, boundingBoxmaxXYZ);
+
 
 			// If it's black, DON'T add a cube
 			if (vecBlockChars[row][col] != 'x')
@@ -317,8 +397,10 @@ int main(int argc, char* argv[])
 		}//for ( unsigned int col
 	}//for ( unsigned int row
 
-	centreOnX(vecVertices);
-	alightBaseToXZPlane(vecVertices);
+
+	centreOnX(vecVertices, boundingBoxminXYZ[0], boundingBoxmaxXYZ[0]);
+//	centreOnX(vecVertices);
+//	alightBaseToXZPlane(vecVertices);
 
 	printPlyFile(fileName, vecVertices, vecTriangles);
 

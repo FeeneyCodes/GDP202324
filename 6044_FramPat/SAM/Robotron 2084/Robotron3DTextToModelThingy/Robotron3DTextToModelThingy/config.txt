@@ -1,0 +1,7 @@
+// This is the config file for the robotron thing.
+// Defaults:
+// - Centres on the middle of the bounding box
+// - Doesn't draw black coloured blocks
+//
+centre_on_bounding_box 		true
+align_bounding_box_to_xz_plane	true
