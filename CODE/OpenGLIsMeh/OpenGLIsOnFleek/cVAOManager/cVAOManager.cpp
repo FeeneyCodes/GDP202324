@@ -19,7 +19,17 @@ void cVAOManager::setBasePath(std::string basePathWithoutSlash)
     return;
 }
 
+std::string cVAOManager::getBasePath(void)
+{
+    return this->m_basePathWithoutSlash;
+}
 
+bool cVAOManager::LoadModelIntoVAO(std::string fileName,
+                      unsigned int shaderProgramID)
+{
+    sModelDrawInfo tempModelInfo;
+    return this->LoadModelIntoVAO(fileName, tempModelInfo, shaderProgramID);
+}
 
 bool cVAOManager::LoadModelIntoVAO(
 		std::string fileName, 

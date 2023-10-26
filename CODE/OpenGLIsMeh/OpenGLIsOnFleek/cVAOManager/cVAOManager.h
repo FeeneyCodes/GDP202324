@@ -18,6 +18,10 @@ public:
 						  unsigned int shaderProgramID,
 						  bool bIsDynamicBuffer = false);
 
+	// Simpler one that doesn't need the draw info passed
+	bool LoadModelIntoVAO(std::string fileName, 
+						  unsigned int shaderProgramID);
+
 	// We don't want to return an int, likely
 	bool FindDrawInfoByModelName(std::string filename,
 								 sModelDrawInfo &drawInfo);
@@ -25,6 +29,7 @@ public:
 	std::string getLastError(bool bAndClear = true);
 
 	void setBasePath(std::string basePathWithoutSlash);
+	std::string getBasePath(void);
 
 	// Here you have to be a little careful about what you pass. 
 	// It will use the vertex and element (triangle) buffer IDs 

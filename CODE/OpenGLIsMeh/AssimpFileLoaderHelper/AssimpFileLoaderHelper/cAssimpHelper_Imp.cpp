@@ -15,7 +15,7 @@
 
 cFileLoader_Imp::cFileLoader_Imp()
 {
-
+	this->numberOfModelLoaded = 0;
 }
 
 cFileLoader_Imp::~cFileLoader_Imp()
@@ -23,24 +23,24 @@ cFileLoader_Imp::~cFileLoader_Imp()
 
 }
 
-bool cFileLoader_Imp::Load3DModelFile(std::string filename, AssimpHelper::cFileLoader::sPostProcessFlags postProcessOptions)
+bool cFileLoader_Imp::Load3DModelFile(AH::cString filename, AH::cFileLoader::sPostProcessFlags postProcessOptions)
 {
-    std::string filename_and_path = filename;
+	std::string filename_and_path = this->m_cString_to_std_string(filename);
 
-    if (this->m_basePath_no_end_slash != "")
-    {
-        filename_and_path = this->m_basePath_no_end_slash + '/' + filename;
-    }
+	if (this->m_basePath_no_end_slash != "")
+	{
+		filename_and_path = this->m_basePath_no_end_slash + '/' + this->m_cString_to_std_string(filename);
+	}
 
 	// Translate the boolean helper flags to the assimp post processing flags
-    unsigned int assimpPostProcessingFlags = this->m_loadAssimpPostProcessingFlags(postProcessOptions);
+	unsigned int assimpPostProcessingFlags = this->m_loadAssimpPostProcessingFlags(postProcessOptions);
 
-    // This is from the assimp help documentation
-    // Create an instance of the Importer class
-    Assimp::Importer importer;
-    // And have it read the given file with some example postprocessing
-    // Usually - if speed is not the most important aspect for you - you'll 
-    // propably to request more postprocessing than we do in this example.
+	// This is from the assimp help documentation
+	// Create an instance of the Importer class
+	Assimp::Importer importer;
+	// And have it read the given file with some example postprocessing
+	// Usually - if speed is not the most important aspect for you - you'll 
+	// propably to request more postprocessing than we do in this example.
 	const aiScene* scene = importer.ReadFile(filename_and_path.c_str(), assimpPostProcessingFlags);
 
 //    const aiScene* scene = importer.ReadFile(filename_and_path.c_str(),
@@ -48,37 +48,37 @@ bool cFileLoader_Imp::Load3DModelFile(std::string filename, AssimpHelper::cFileL
 //                                             aiProcess_Triangulate |
 //                                             aiProcess_JoinIdenticalVertices |
 //                                             aiProcess_SortByPType);
-    // aiProcess_CalcTangentSpace:      Calculates the tangents and bitangents for the imported meshes.
-    // aiProcess_Triangulate:           Triangulates all faces of all meshes.
-    // aiProcess_JoinIdenticalVertices: Identifies and joins identical vertex data sets within all imported meshes.
-    // aiProcess_SortByPType:           This step splits meshes with more than one primitive type in homogeneous sub-meshes.,
-    // aiProcess_GenNormals:            Generates normals for all faces of all meshes.
-    //                                  (is ignored if normals are already there at the time this flag is evaluated.)
-    //                                  (can *NOT* be used with aiProcess_GenSmoothNormals)
-    // aiProcess_GenSmoothNormals:      Generates smooth normals for all vertices in the mesh.
-    //                                  (...is ignored if normals are already there at the time this flag is evaluated.)
-    //                                  (can *NOT* be used with aiProcess_GenNormals)
-    // aiProcess_FixInfacingNormals:    This step tries to determine which meshes have normal vectors that are facing inwards and inverts them.
+	// aiProcess_CalcTangentSpace:      Calculates the tangents and bitangents for the imported meshes.
+	// aiProcess_Triangulate:           Triangulates all faces of all meshes.
+	// aiProcess_JoinIdenticalVertices: Identifies and joins identical vertex data sets within all imported meshes.
+	// aiProcess_SortByPType:           This step splits meshes with more than one primitive type in homogeneous sub-meshes.,
+	// aiProcess_GenNormals:            Generates normals for all faces of all meshes.
+	//                                  (is ignored if normals are already there at the time this flag is evaluated.)
+	//                                  (can *NOT* be used with aiProcess_GenSmoothNormals)
+	// aiProcess_GenSmoothNormals:      Generates smooth normals for all vertices in the mesh.
+	//                                  (...is ignored if normals are already there at the time this flag is evaluated.)
+	//                                  (can *NOT* be used with aiProcess_GenNormals)
+	// aiProcess_FixInfacingNormals:    This step tries to determine which meshes have normal vectors that are facing inwards and inverts them.
 
-                                       // If the import failed, report it
-    if (!scene)
-    {
-        std::string errorString(importer.GetErrorString());
-        this->m_AppendErrorString(errorString);
-        return false;
-    }
-    // Now we can access the file's contents. 
+									   // If the import failed, report it
+	if (!scene)
+	{
+		std::string errorString(importer.GetErrorString());
+		this->m_AppendErrorString(errorString);
+		return false;
+	}
+	// Now we can access the file's contents. 
 
-	AssimpHelper::ass_cScene theScene;
+	AH::cScene theScene;
 	theScene.scene_flags.DecodeSceneFlags(scene->mFlags);
-	
-	
+
+
 	//    DoTheSceneProcessing(scene);
-    // We're done. Everything will be cleaned up by the importer destructor
-    return true;
+	// We're done. Everything will be cleaned up by the importer destructor
+	return true;
 }
 
-unsigned int cFileLoader_Imp::m_loadAssimpPostProcessingFlags(AssimpHelper::cFileLoader::sPostProcessFlags postProcessOptions)
+unsigned int cFileLoader_Imp::m_loadAssimpPostProcessingFlags(AH::cFileLoader::sPostProcessFlags postProcessOptions)
 {
 	unsigned int assimpPostProcessingFlags = 0;
 
@@ -195,33 +195,42 @@ unsigned int cFileLoader_Imp::m_loadAssimpPostProcessingFlags(AssimpHelper::cFil
 }
 
 
-std::string cFileLoader_Imp::getLastError(bool bAndClearErrors /*=true*/)
+AH::cString cFileLoader_Imp::getLastError(bool bAndClearErrors /*=true*/)
 {
-    std::string error = this->m_LastError;
-    
-    if ( bAndClearErrors )
-    {
-        this->m_LastError = "";
-    }
-    return error;
+	std::string error = this->m_LastError;
+
+	if (bAndClearErrors)
+	{
+		this->m_LastError = "";
+	}
+	return this->m_std_string_to_cString(error);
 }
 
 void cFileLoader_Imp::m_AppendErrorString(std::string errorString)
 {
-    std::stringstream ssError;
-    if ( ! this->m_LastError.empty() ) 
-    {
-        ssError << this->m_LastError;
-        ssError << std::endl;
-    }
-    ssError << errorString;
-    return;
-}
-
-
-void cFileLoader_Imp::SetBasePath(std::string basepath_no_end_slash)
-{
-	this->m_basePath_no_end_slash = basepath_no_end_slash;
+	std::stringstream ssError;
+	if (!this->m_LastError.empty())
+	{
+		ssError << this->m_LastError;
+		ssError << std::endl;
+	}
+	ssError << errorString;
 	return;
 }
 
+
+void cFileLoader_Imp::SetBasePath(AH::cString basepath_no_end_slash)
+{
+	this->m_basePath_no_end_slash = this->m_cString_to_std_string(basepath_no_end_slash);
+	return;
+}
+
+std::string cFileLoader_Imp::m_cString_to_std_string(AH::cString theString)
+{
+	return std::string(theString.c_str());
+}
+
+AH::cString cFileLoader_Imp::m_std_string_to_cString(std::string theString)
+{
+	return AH::cString(theString.c_str());
+}

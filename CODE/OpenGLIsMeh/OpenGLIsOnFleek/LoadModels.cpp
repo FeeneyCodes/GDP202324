@@ -265,7 +265,7 @@ bool LoadModels(void)
 //    pSpiderManLeft_leg->meshName = "legospiderman_Left_leg_xyz_n_rgba.ply";
 //    ::g_vec_pMeshesToDraw.push_back(pSpiderManLeft_leg);
 
-        
+
 
 
 

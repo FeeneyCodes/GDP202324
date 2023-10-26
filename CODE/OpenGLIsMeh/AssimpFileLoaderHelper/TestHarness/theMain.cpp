@@ -1,5 +1,7 @@
 #include "../AssimpFileLoaderHelper/AssimpFileLoaderHelper.h"
 
+#include "../
+
 #include <iostream>
 
 int main()

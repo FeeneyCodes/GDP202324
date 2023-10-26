@@ -1,0 +1,11 @@
+x	x	R	R	R	R	x	x
+x	R	R	x	x	R	R	x
+R	R	R	R	R	R	R	R
+R	x	R	R	R	R	x	R
+R	x	R	R	R	R	x	R
+R	x	R	R	R	R	x	R
+x	x	R	R	R	R	x	x
+x	x	R	x	x	R	x	x
+x	x	R	x	x	R	x	x
+x	x	R	x	x	R	x	x
+x	R	R	x	x	R	R	x

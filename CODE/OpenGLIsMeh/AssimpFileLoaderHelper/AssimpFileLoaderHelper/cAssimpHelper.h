@@ -1,29 +1,45 @@
 #pragma once
 
-#include <string>
-#include <vector>
+#define WIN32_LEAN_AND_MEAN             // Exclude rarely-used stuff from Windows headers
+
 #include <glm/glm.hpp>
 #include <glm/vec3.hpp>
 #include <glm/vec4.hpp>
 
+// ASSIMP_HELPER_LIBRARY_EXPORT defined in:
+// 
+// Project properties: 
+// - Configuration Properties
+//   - C,C++
+//     - Preprocessor
+//       - Preprocessor Definitions
+//         ASSIMP_HELPER_LIBRARY_EXPORT
+// 
+#if defined(ASSIMP_HELPER_LIBRARY_EXPORT) // inside DLL
+#   define ASSIMP_HELPER_LIBRARY   __declspec(dllexport)
+#else // outside DLL
+#   define ASSIMP_HELPER_LIBRARY   __declspec(dllimport)
+#endif  // XYZLIBRARY_EXPORT
+
+
 // Forward declaration of the implementation class
 class cFileLoader_Imp;
 
-namespace AssimpHelper
+namespace AH
 {
-	struct __declspec(dllexport) ass_sVec3
+	struct ASSIMP_HELPER_LIBRARY sVec3
 	{
 		float x = 0.0f;
 		float y = 0.0f;
 		float z = 0.0f;
 	};
-	struct __declspec(dllexport) ass_sColourRGB
+	struct ASSIMP_HELPER_LIBRARY sColourRGB
 	{
 		float r = 0.0f;
 		float g = 0.0f;
 		float b = 0.0f;
 	};
-	struct __declspec(dllexport) ass_sColourRGBA
+	struct ASSIMP_HELPER_LIBRARY sColourRGBA
 	{
 		float r = 0.0f;
 		float g = 0.0f;
@@ -31,15 +47,15 @@ namespace AssimpHelper
 		float a = 0.0f;
 	};
 
-	class __declspec(dllexport) ass_cString
+	class ASSIMP_HELPER_LIBRARY cString
 	{
 	public:
-		ass_cString();
-		ass_cString(const char* const c_str);
-		ass_cString(const ass_cString&copyString);				// Copy constructor
-		ass_cString& operator=(const ass_cString&copyString);	// Copy assignment 
-		ass_cString operator+(const ass_cString& concatString);	// concatenation
-		~ass_cString();
+		cString();
+		cString(const char* const c_str);
+		cString(const cString& copyString);				// Copy constructor
+		cString& operator=(const cString& copyString);	// Copy assignment 
+		cString operator+(const cString& concatString);	// concatenation
+		~cString();
 		unsigned int getLength();
 		const char* c_str(void) const;
 	private:
@@ -48,28 +64,28 @@ namespace AssimpHelper
 		unsigned int m_numCharacters = 0;
 	};
 
-	class __declspec(dllexport) ass_cFace
+	class ASSIMP_HELPER_LIBRARY cFace
 	{
 	public:
-		ass_cFace() {};
+		cFace() {};
 		unsigned int number_of_indices = 0;
 		unsigned int* indicies = NULL;
 	};
 
-	class __declspec(dllexport) ass_cMesh
+	class ASSIMP_HELPER_LIBRARY cMesh
 	{
 	public:
-		ass_cMesh() {};
-		ass_cString name;
-		ass_sVec3* vertices = NULL;
-		ass_sVec3* normals = NULL;
-		ass_sVec3* tangents = NULL;
-		ass_sVec3* bitangents = NULL;
-		ass_sColourRGBA* coloursRGBA = NULL;
-		ass_sVec3* texture_coordinates = NULL;
+		cMesh() {};
+		cString name;
+		sVec3* vertices = NULL;
+		sVec3* normals = NULL;
+		sVec3* tangents = NULL;
+		sVec3* bitangents = NULL;
+		sColourRGBA* coloursRGBA = NULL;
+		sVec3* texture_coordinates = NULL;
 		unsigned int number_of_vertices = 0;
 
-		ass_cFace* faces = NULL;
+		cFace* faces = NULL;
 		unsigned int number_of_faces = 0;
 
 		enum ePrimitiveType
@@ -82,7 +98,7 @@ namespace AssimpHelper
 			NGON				// aiPrimitiveType_NGONEncodingFlag = 0x10,
 		};
 		ePrimitiveType primitive_type = UNKNOWN_OR_UNDEFINED;
-		ass_cString getPrimitiveTypeString(void);
+		cString getPrimitiveTypeString(void);
 
 		unsigned int GetNumColorChannels();	// Get the number of vertex color channels the mesh contains.
 		unsigned int GetNumUVChannels();	// Get the number of UV channels the mesh contains.
@@ -96,21 +112,21 @@ namespace AssimpHelper
 		bool HasVertexColors (unsigned int pIndex);		// Check whether the mesh contains a vertex color set.
 	};//cMesh
 
-	class __declspec(dllexport) cCamera
+	class ASSIMP_HELPER_LIBRARY cCamera
 	{
 	public:
 		float aspect_ratio = 0.0f;				// Screen aspect ratio.
 		float near_clipping_plane = 0.0f;
 		float far_clipping_plane = 0.0f;
 		float half_horizontal_FOV = 0.0f;		// Half horizontal field of view angle, in radians.
-		ass_sVec3 target_or_at_vector;
-		ass_sVec3 position_or_eye_vector;
-		ass_sVec3 up_vector;
-		ass_cString name;
+		sVec3 target_or_at_vector;
+		sVec3 position_or_eye_vector;
+		sVec3 up_vector;
+		cString name;
 	};
 
 
-	class __declspec(dllexport) cLight
+	class ASSIMP_HELPER_LIBRARY cLight
 	{
 	public:
 		float spotlight_inner_cone_angle;		// Spot light inner cone angle
@@ -118,12 +134,12 @@ namespace AssimpHelper
 		float attenuation_constant;
 		float attenuation_linear;
 		float attenuation_quadratic;
-		ass_sVec3 colour_ambient_RGB;
-		ass_sVec3 colour_diffuse_RGB;
-		ass_sVec3 colour_specular_RGB;
-		ass_sVec3 position;
-		ass_sVec3 direction;
-		ass_cString name;
+		sVec3 colour_ambient_RGB;
+		sVec3 colour_diffuse_RGB;
+		sVec3 colour_specular_RGB;
+		sVec3 position;
+		sVec3 direction;
+		cString name;
 		enum eLightType
 		{
 			UNKNOWN_OR_UNDEFINED,			// aiLightSource_UNDEFINED = 0x0
@@ -134,11 +150,11 @@ namespace AssimpHelper
 		eLightType lightType;
 	};
 
-	class __declspec(dllexport) cMaterialProperty
+	class ASSIMP_HELPER_LIBRARY cMaterialProperty
 	{
 	public:
 		cMaterialProperty() {};
-		ass_cString key;
+		cString key;
 		unsigned int semantic = 0;
 		unsigned int index = 0;
 		unsigned int data_length = 0;
@@ -176,18 +192,18 @@ namespace AssimpHelper
 		char* data = NULL;
 	};
 
-	class __declspec(dllexport) ass_cMaterial
+	class ASSIMP_HELPER_LIBRARY cMaterial
 	{
 	public:
-		ass_cMaterial() {};
+		cMaterial() {};
 	};
 
-	class __declspec(dllexport) ass_cScene
+	class ASSIMP_HELPER_LIBRARY cScene
 	{
 	public:
-		ass_cScene();
+		cScene();
 
-		struct ass_sSceneFlags
+		struct sSceneFlags
 		{
 			bool incomplete = false;			// #define AI_SCENE_FLAGS_INCOMPLETE			0x1
 			bool validated = false;				// #define AI_SCENE_FLAGS_VALIDATED				0x2
@@ -197,11 +213,11 @@ namespace AssimpHelper
 			bool allow_shared = false;			// #define AI_SCENE_FLAGS_ALLOW_SHARED			0x20
 			void DecodeSceneFlags(unsigned int flags);
 		};
-		ass_sSceneFlags scene_flags;
+		sSceneFlags scene_flags;
 
 	};//cScene
 
-	class __declspec(dllexport) cFileLoader
+	class ASSIMP_HELPER_LIBRARY cFileLoader
 	{
 	public:
 
@@ -224,7 +240,7 @@ namespace AssimpHelper
 			// aiProcess_GenNormals: Generates normals for all faces of all meshes.
 			//                             (is ignored if normals are already there at the time this flag is evaluated.)
 			//                             (can *NOT* be used with aiProcess_GenSmoothNormals)
-			bool bProcess_GenSmoothNormals= false;
+			bool bProcess_GenSmoothNormals = false;
 			// aiProcess_GenSmoothNormals: Generates smooth normals for all vertices in the mesh.
 			//                             (...is ignored if normals are already there at the time this flag is evaluated.)
 			//                             (can *NOT* be used with aiProcess_GenNormals)
@@ -244,7 +260,7 @@ namespace AssimpHelper
 			// aiProcess_ImproveCacheLocality: Reorders triangles for better vertex cache locality.
 			bool bProcess_RemoveRedundantMaterials = false;
 			// aiProcess_RemoveRedundantMaterials: Searches for redundant or unreferenced materials and removes them.
-			bool bProcess_FixInfacingNormals= false;
+			bool bProcess_FixInfacingNormals = false;
 			// aiProcess_FixInfacingNormals: This step tries to determine which meshes have normal vectors that are facing inwards 
 			//                               and inverts them. The algorithm is simple but effective : the bounding box of all 
 			//                               vertices + their normals is compared against the volume of the bounding box of all 
@@ -288,11 +304,11 @@ namespace AssimpHelper
 		~cFileLoader();
 
 		// Uses the default sPostProcessFlags settings
-		bool Load3DModelFile(std::string filename);
-		bool Load3DModelFile(std::string filename, sPostProcessFlags postProcessOptions);
-		void SetBasePath(std::string basepath_no_end_slash);
+		bool Load3DModelFile(cString filename);
+		bool Load3DModelFile(cString filename, sPostProcessFlags postProcessOptions);
+		void SetBasePath(cString basepath_no_end_slash);
 
-		ass_cString getLastError(bool bAndClearErrors = true);
+		cString getLastError(bool bAndClearErrors = true);
 
 	//	void GetVertexPosistionsXYZ(std::vector< glm::vec3 >& vecPositions);
 	//	void GetVertexNormalsXYZ(std::vector< glm::vec3 >& vecPositions);

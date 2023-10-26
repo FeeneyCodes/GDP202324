@@ -94,15 +94,12 @@ cMesh* g_pFindMeshByFriendlyName(std::string friendlyNameToFind);
 void DrawLightDebugSpheres(glm::mat4 matProjection, glm::mat4 matView,
                            GLuint shaderProgramID);
 
+float getRandomFloat(float a, float b);
+
+void LoadTheRobotronModels(GLuint shaderProgram);
 
 
-// https://stackoverflow.com/questions/5289613/generate-random-float-between-two-floats
-float getRandomFloat(float a, float b) {
-    float random = ((float)rand()) / (float)RAND_MAX;
-    float diff = b - a;
-    float r = random * diff;
-    return a + r;
-}
+
 
 
 static void error_callback(int error, const char* description)
@@ -238,6 +235,8 @@ int main(void)
     // 
     LoadModels();
 
+    LoadTheRobotronModels(shaderProgramID);
+
 
     ::g_pTheLights = new cLightManager();
     // 
@@ -322,8 +321,8 @@ int main(void)
 //       //mat4x4_ortho(p, -ratio, ratio, -1.f, 1.f, 1.f, -1.f);
         glm::mat4 matProjection = glm::perspective(0.6f,
                                                    ratio,
-                                                   0.1f,
-                                                   1000.0f);
+                                                   0.1f,        // Near (as big)
+                                                   10'000.0f);    // Far (as small)
 
         glm::mat4 matView = glm::lookAt(::g_cameraEye,
                                         ::g_cameraTarget,
@@ -736,6 +735,100 @@ void g_DrawDebugSphere(glm::vec3 position, float scale, glm::vec4 colourRGBA)
     ::g_pDebugSphereMesh->drawPosition = OLD_position;
     ::g_pDebugSphereMesh->drawScale = OLD_scale;
     ::g_pDebugSphereMesh->wholeObjectDebugColourRGBA = OLD_colours;
+
+    return;
+}
+
+// https://stackoverflow.com/questions/5289613/generate-random-float-between-two-floats
+float getRandomFloat(float a, float b) {
+    float random = ((float)rand()) / (float)RAND_MAX;
+    float diff = b - a;
+    float r = random * diff;
+    return a + r;
+}
+
+
+void LoadTheRobotronModels(GLuint shaderProgram)
+{
+
+    // Load the Robotron: 2084 models
+
+    std::string oldBasePath = ::g_pMeshManager->getBasePath();
+
+    ::g_pMeshManager->setBasePath("Robotron_2084");
+
+    std::vector<std::string> vecRobotronModels;
+    vecRobotronModels.push_back("player1_xyz_rgba_n.ply");
+    vecRobotronModels.push_back("player2_xyz_rgba_n.ply");
+    vecRobotronModels.push_back("player3_xyz_rgba_n.ply");
+    vecRobotronModels.push_back("player4_xyz_rgba_n.ply");
+    vecRobotronModels.push_back("player5_xyz_rgba_n.ply");
+    vecRobotronModels.push_back("player6_xyz_rgba_n.ply");
+    vecRobotronModels.push_back("player7_xyz_rgba_n.ply");
+
+    vecRobotronModels.push_back("mommy1_xyz_rgba_n.ply");
+    vecRobotronModels.push_back("mommy2_xyz_rgba_n.ply");
+    vecRobotronModels.push_back("mommy3_xyz_rgba_n.ply");
+    //vecRobotronModels.push_back("mommy4.ply");
+    //vecRobotronModels.push_back("mommy5.ply");
+
+    vecRobotronModels.push_back("hulk1_xyz_rgba_n.ply");
+    vecRobotronModels.push_back("hulk2_xyz_rgba_n.ply");
+    vecRobotronModels.push_back("hulk3_xyz_rgba_n.ply");
+
+    vecRobotronModels.push_back("daddy1_xyz_rgba_n.ply");
+    vecRobotronModels.push_back("daddy2_xyz_rgba_n.ply");
+    //vecRobotronModels.push_back("daddy3.ply");
+    //vecRobotronModels.push_back("daddy4.ply");
+    //vecRobotronModels.push_back("daddy5.ply");
+
+    vecRobotronModels.push_back("grunt1_xyz_rgba_n.ply");
+    vecRobotronModels.push_back("grunt2_xyz_rgba_n.ply");
+    vecRobotronModels.push_back("grunt3_xyz_rgba_n.ply");
+
+    //vecRobotronModels.push_back("enforcer1.ply");
+    //vecRobotronModels.push_back("enforcer2.ply");
+    //vecRobotronModels.push_back("enforcer3.ply");
+    //vecRobotronModels.push_back("enforcer4.ply");
+    vecRobotronModels.push_back("enforcer5_xyz_rgba_n.ply");
+    vecRobotronModels.push_back("enforcer6_xyz_rgba_n.ply");
+
+    vecRobotronModels.push_back("brain1_xyz_rgba_n.ply");
+    vecRobotronModels.push_back("brain2_xyz_rgba_n.ply");
+    //vecRobotronModels.push_back("brain3.ply");
+    //vecRobotronModels.push_back("brain4.ply");
+    //vecRobotronModels.push_back("brain5.ply");
+
+    vecRobotronModels.push_back("tank1_xyz_rgba_n.ply");
+    vecRobotronModels.push_back("tank2_xyz_rgba_n.ply");
+    vecRobotronModels.push_back("tank3_xyz_rgba_n.ply");
+    vecRobotronModels.push_back("tank4_xyz_rgba_n.ply");
+ //   vecRobotronModels.push_back("tank5_xyz_rgba_n.ply");
+
+    for (std::string modelName : vecRobotronModels)
+    {
+        ::g_pMeshManager->LoadModelIntoVAO(modelName, shaderProgram);
+    }
+
+    // Place them everywhere
+    const float DRAW_LIMIT = 500.0f;
+    unsigned int numberOfModels = vecRobotronModels.size();
+    for (unsigned int count = 0; count != 100; count++)
+    {
+        cMesh* pTempMesh = new cMesh();
+        pTempMesh->drawPosition.x = getRandomFloat(-DRAW_LIMIT, DRAW_LIMIT);
+        pTempMesh->drawPosition.y = getRandomFloat(0.0f, DRAW_LIMIT);
+        pTempMesh->drawPosition.z = getRandomFloat(-DRAW_LIMIT, DRAW_LIMIT);
+        pTempMesh->bDoNotLight = true;
+
+        pTempMesh->meshName = vecRobotronModels[rand() % numberOfModels];
+
+        ::g_vec_pMeshesToDraw.push_back(pTempMesh);
+    }
+
+
+
+    ::g_pMeshManager->setBasePath(oldBasePath);
 
     return;
 }

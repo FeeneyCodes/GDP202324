@@ -4,6 +4,7 @@
 in vec4 colour;
 in vec4 vertexWorldPos;			// vertex in "world space"
 in vec4 vertexWorldNormal;	
+//in vec2 textureCoords;
 
 out vec4 outputColour;		// To the frame buffer (aka screen)
 
@@ -46,6 +47,9 @@ uniform sLight theLights[NUMBEROFLIGHTS];  	// 70 uniforms
 //uniform vec4 theLights[2].position;
 // etc...
 
+//uniform sampler2D texture_00;
+//uniform samplerCube skyBox;
+
 
 vec4 calculateLightContrib( vec3 vertexMaterialColour, vec3 vertexNormal, 
                             vec3 vertexWorldPos, vec4 vertexSpecular );
@@ -54,6 +58,9 @@ vec4 calculateLightContrib( vec3 vertexMaterialColour, vec3 vertexNormal,
 void main()
 {
 //	gl_FragColor = vec4(color, 1.0);
+
+//	vec4 textureColour = texture( texture_00, textureCoords.xy ).rgba;
+
 
 	vec4 vertexRGBA = colour;
 	
