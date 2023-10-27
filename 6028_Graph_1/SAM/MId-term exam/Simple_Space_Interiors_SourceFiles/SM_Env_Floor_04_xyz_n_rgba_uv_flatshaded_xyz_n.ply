@@ -1,0 +1,22 @@
+ply
+format ascii 1.0
+comment Feeney's Flatenator generated
+comment TextureFile SpaceInteriors_Texture.png
+element vertex 6
+property float x
+property float y
+property float z
+property float nx
+property float ny
+property float nz
+element face 2
+property list uchar int vertex_indices
+end_header
+0 0 3.75 0 12.5 0 
+0 0 1.25 0 12.5 0 
+-5 0 1.25 0 12.5 0 
+0 0 3.75 0 12.5 0 
+-5 0 1.25 0 12.5 0 
+-5 0 3.75 0 12.5 0 
+3 0 1 2
+3 3 4 5

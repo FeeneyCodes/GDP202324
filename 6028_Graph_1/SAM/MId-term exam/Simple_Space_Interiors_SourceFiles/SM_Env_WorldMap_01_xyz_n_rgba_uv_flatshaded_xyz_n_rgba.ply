@@ -1,0 +1,34 @@
+ply
+format ascii 1.0
+comment Feeney's Flatenator generated
+comment TextureFile WorldMap.png
+element vertex 12
+property float x
+property float y
+property float z
+property float nx
+property float ny
+property float nz
+property uchar red
+property uchar green
+property uchar blue
+property uchar alpha
+element face 4
+property list uchar int vertex_indices
+end_header
+-3.9705 3.54157 -0.148858 0 0 14.4713 206 206 206 255 
+3.9705 3.54157 -0.148858 0 0 14.4713 206 206 206 255 
+3.9705 5.36392 -0.148858 0 0 14.4713 206 206 206 255 
+-3.9705 3.54157 -0.148858 0 0 14.4713 206 206 206 255 
+3.9705 5.36392 -0.148858 0 0 14.4713 206 206 206 255 
+-3.9705 5.36392 -0.148858 0 0 14.4713 206 206 206 255 
+-3.9705 1.71923 -0.148858 0 0 14.4712 206 206 206 255 
+3.9705 1.71923 -0.148858 0 0 14.4712 206 206 206 255 
+3.9705 3.54157 -0.148858 0 0 14.4712 206 206 206 255 
+-3.9705 1.71923 -0.148858 0 0 14.4712 206 206 206 255 
+3.9705 3.54157 -0.148858 0 0 14.4712 206 206 206 255 
+-3.9705 3.54157 -0.148858 0 0 14.4712 206 206 206 255 
+3 0 1 2
+3 3 4 5
+3 6 7 8
+3 9 10 11
