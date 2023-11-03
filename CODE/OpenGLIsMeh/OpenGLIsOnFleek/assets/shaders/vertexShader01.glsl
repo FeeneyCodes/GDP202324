@@ -10,13 +10,15 @@ uniform mat4 matModel_IT;		// Inverse transpose of the model matrix
 //uniform vec3 modelScale;
 //uniform vec3 modelOffset;
 
-in vec4 vCol;		// was vec3
-in vec4 vPos;		// was vec3
-in vec4 vNormal;	// NEW for 2023!
+in vec4 vPos;		
+in vec4 vCol;
+in vec4 vNormal;	
+in vec2 vTextureCoords;		// NOTE this is a vec2 not vec4
 
 out vec4 colour;
 out vec4 vertexWorldPos;	
 out vec4 vertexWorldNormal;
+out vec2 textureCoords;		// ADDED
 
 void main()
 {
@@ -36,4 +38,7 @@ void main()
 	vertexWorldPos = matModel * vec4( vPos.xyz, 1.0f);
 	
 	colour = vCol;
+	
+	// Copy the UV coordinates unchanged (to the fragment shader)
+	textureCoords = vTextureCoords;
 }

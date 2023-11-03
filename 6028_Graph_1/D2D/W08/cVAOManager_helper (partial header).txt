@@ -1,0 +1,27 @@
+	void CalculateExtents(sModelDrawInfo& drawInfo);
+
+	enum enumTEXCOORDBIAS
+	{
+		// For spherical
+		POSITIVE_X, POSITIVE_Y, POSITIVE_Z,
+		// For planar
+		PLANAR_XY, PLANAR_XZ, PLANAR_YZ,
+		PLANAR_ON_WIDEST_AXES
+	};
+	void GenTextureCoordsSpherical(sModelDrawInfo &modelDrawInfo, enumTEXCOORDBIAS uBias, enumTEXCOORDBIAS vBias, bool basedOnNormals, float scale, bool fast);
+	void GenTextureCoordsLinear(sModelDrawInfo &modelDrawInfo, enumTEXCOORDBIAS uBias, float scale);
+
+	enum ePLYFileType
+	{
+		XYZ_ONLY,
+		XYZ_NORMAL,
+		XYZ_NORMAL_RGBA,
+		XYZ_RGBA,
+		XYZ_UV,
+		XYZ_NORMAL_UV,
+		XYZ_NORMAL_UV_RGBA,		// Blender
+		XYZ_NORMAL_RGBA_UV,		// MeshLab (VCGLIB)
+		XYZ_UV_RGBA,		// Blender
+		XYZ_RGBA_UV,		// MeshLab (VCGLIB)
+		UNKNOWN_FORMAT
+	};

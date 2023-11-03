@@ -38,6 +38,8 @@
 #include "cLightManager.h"
 #include "cLightHelper.h"
 
+#include "TextureManager/cBasicTextureManager.h"
+
 glm::vec3 g_cameraEye = glm::vec3(0.0, 70.0, 181.0f);
 glm::vec3 g_cameraTarget = glm::vec3(0.0f, 5.0f, 0.0f);
 glm::vec3 g_upVector = glm::vec3(0.0f, 1.0f, 0.0f);
@@ -45,6 +47,8 @@ glm::vec3 g_upVector = glm::vec3(0.0f, 1.0f, 0.0f);
 
 
 cVAOManager* g_pMeshManager = NULL;
+
+cBasicTextureManager* g_pTextureManager = NULL;
 
 cMesh* g_pDebugSphereMesh = NULL;
 // Used by g_DrawDebugSphere()
@@ -173,58 +177,69 @@ int main(void)
     //                               bunnyDrawingInfo, shaderProgramID);
     //std::cout << "Loaded: " << bunnyDrawingInfo.numberOfVertices << " vertices" << std::endl;
 
-    sModelDrawInfo bathtubDrawingInfo;
-    ::g_pMeshManager->LoadModelIntoVAO("bathtub_xyz_n_rgba.ply",
-                                   bathtubDrawingInfo, shaderProgramID);
-    std::cout << "Loaded: " << bathtubDrawingInfo.numberOfVertices << " vertices" << std::endl;
+//    sModelDrawInfo bathtubDrawingInfo;
+//    ::g_pMeshManager->LoadModelIntoVAO("bathtub_xyz_n_rgba.ply",
+//                                   bathtubDrawingInfo, shaderProgramID);
+//    std::cout << "Loaded: " << bathtubDrawingInfo.numberOfVertices << " vertices" << std::endl;
 
     sModelDrawInfo terrainDrawingInfo;
-    ::g_pMeshManager->LoadModelIntoVAO("Terrain_xyz_n_rgba.ply",
+//    ::g_pMeshManager->LoadModelIntoVAO("Terrain_xyz_n_rgba.ply",
+    ::g_pMeshManager->LoadModelIntoVAO("Terrain_xyz_n_rgba_uv.ply",
                                    terrainDrawingInfo, shaderProgramID);
     std::cout << "Loaded: " << terrainDrawingInfo.numberOfVertices << " vertices" << std::endl;
 
-    sModelDrawInfo HilbertRampDrawingInfo;
-    ::g_pMeshManager->LoadModelIntoVAO("HilbertRamp_stl (rotated).ply",
-                                       HilbertRampDrawingInfo, shaderProgramID);
-    std::cout << "Loaded: " << HilbertRampDrawingInfo.numberOfVertices << " vertices" << std::endl;
-
-    sModelDrawInfo gridDrawingInfo;
-    ::g_pMeshManager->LoadModelIntoVAO("Flat_Grid_100x100.ply",
-                                   gridDrawingInfo, shaderProgramID);
-    std::cout << "Loaded: " << gridDrawingInfo.numberOfVertices << " vertices" << std::endl;
+//    sModelDrawInfo HilbertRampDrawingInfo;
+//    ::g_pMeshManager->LoadModelIntoVAO("HilbertRamp_stl (rotated).ply",
+//                                       HilbertRampDrawingInfo, shaderProgramID);
+//    std::cout << "Loaded: " << HilbertRampDrawingInfo.numberOfVertices << " vertices" << std::endl;
+//
+//    sModelDrawInfo gridDrawingInfo;
+//    ::g_pMeshManager->LoadModelIntoVAO("Flat_Grid_100x100.ply",
+//                                   gridDrawingInfo, shaderProgramID);
+//    std::cout << "Loaded: " << gridDrawingInfo.numberOfVertices << " vertices" << std::endl;
 
     sModelDrawInfo sphereDrawingInfo;
-    ::g_pMeshManager->LoadModelIntoVAO("Sphere_1_unit_Radius.ply",
+//    ::g_pMeshManager->LoadModelIntoVAO("Sphere_1_unit_Radius.ply",
+    ::g_pMeshManager->LoadModelIntoVAO("Sphere_1_unit_Radius_xyz_n_rgba_uv.ply",
                                    sphereDrawingInfo, shaderProgramID);
     std::cout << "Loaded: " << sphereDrawingInfo.numberOfVertices << " vertices" << std::endl;
 
-    sModelDrawInfo Flat_1x1_planeDrawingInfo;
-    ::g_pMeshManager->LoadModelIntoVAO("Flat_1x1_plane.ply",
-                                       Flat_1x1_planeDrawingInfo, shaderProgramID);
-    std::cout << "Loaded: " << Flat_1x1_planeDrawingInfo.numberOfVertices << " vertices" << std::endl;
+//    sModelDrawInfo Flat_1x1_planeDrawingInfo;
+//    ::g_pMeshManager->LoadModelIntoVAO("Flat_1x1_plane.ply",
+//                                       Flat_1x1_planeDrawingInfo, shaderProgramID);
+//    std::cout << "Loaded: " << Flat_1x1_planeDrawingInfo.numberOfVertices << " vertices" << std::endl;
 
     // Spiderman
     sModelDrawInfo spiderMan;
 
-    ::g_pMeshManager->LoadModelIntoVAO("legospiderman_body_xyz_n_rgba.ply", spiderMan, shaderProgramID);
-    ::g_pMeshManager->LoadModelIntoVAO("legospiderman_head_xyz_n_rgba.ply", spiderMan, shaderProgramID);
-    ::g_pMeshManager->LoadModelIntoVAO("legospiderman_Hips_xyz_n_rgba.ply", spiderMan, shaderProgramID);
+    ::g_pMeshManager->LoadModelIntoVAO("legospiderman_body_xyz_n_rgba_uv.ply", spiderMan, shaderProgramID);
+    ::g_pMeshManager->LoadModelIntoVAO("legospiderman_head_xyz_n_rgba_uv.ply", spiderMan, shaderProgramID);
+    ::g_pMeshManager->LoadModelIntoVAO("legospiderman_Hips_xyz_n_rgba_uv.ply", spiderMan, shaderProgramID);
 
-    ::g_pMeshManager->LoadModelIntoVAO("legospiderman_Left_arm_xyz_n_rgba.ply", spiderMan, shaderProgramID);
-    ::g_pMeshManager->LoadModelIntoVAO("legospiderman_Left_hand_xyz_n_rgba.ply", spiderMan, shaderProgramID);
+    ::g_pMeshManager->LoadModelIntoVAO("legospiderman_Left_arm_xyz_n_rgba_uv.ply", spiderMan, shaderProgramID);
+    ::g_pMeshManager->LoadModelIntoVAO("legospiderman_Left_hand_xyz_n_rgba_uv.ply", spiderMan, shaderProgramID);
 
-    ::g_pMeshManager->LoadModelIntoVAO("legospiderman_Right_arm_xyz_n_rgba.ply", spiderMan, shaderProgramID);
-    ::g_pMeshManager->LoadModelIntoVAO("legospiderman_Right_hand_xyz_n_rgba.ply", spiderMan, shaderProgramID);
+    ::g_pMeshManager->LoadModelIntoVAO("legospiderman_Right_arm_xyz_n_rgba_uv.ply", spiderMan, shaderProgramID);
+    ::g_pMeshManager->LoadModelIntoVAO("legospiderman_Right_hand_xyz_n_rgba_uv.ply", spiderMan, shaderProgramID);
 
-    ::g_pMeshManager->LoadModelIntoVAO("legospiderman_Left_leg_xyz_n_rgba.ply", spiderMan, shaderProgramID);
-    ::g_pMeshManager->LoadModelIntoVAO("legospiderman_Right_leg_xyz_n_rgba.ply", spiderMan, shaderProgramID);
+    ::g_pMeshManager->LoadModelIntoVAO("legospiderman_Left_leg_xyz_n_rgba_uv.ply", spiderMan, shaderProgramID);
+    ::g_pMeshManager->LoadModelIntoVAO("legospiderman_Right_leg_xyz_n_rgba_uv.ply", spiderMan, shaderProgramID);
 
         
         
     // ... and so on
 
+    ::g_pTextureManager = new cBasicTextureManager();
 
-
+    ::g_pTextureManager->SetBasePath("assets/textures"); 
+    if ( ::g_pTextureManager->Create2DTextureFromBMPFile("TaylorSwift_Eras_Poster.bmp", true) )
+    {
+        std::cout << "Loaded the Taylor Swift texture" << std::endl;
+    }
+    else
+    {
+        std::cout << "ERROR: no Taylor Swift!!" << std::endl;
+    }
 
 
     // This handles the phsyics objects
@@ -235,7 +250,7 @@ int main(void)
     // 
     LoadModels();
 
-    LoadTheRobotronModels(shaderProgramID);
+//    LoadTheRobotronModels(shaderProgramID);
 
 
     ::g_pTheLights = new cLightManager();
@@ -383,9 +398,11 @@ int main(void)
 
         // HACK:
         cMesh* pSpidey = g_pFindMeshByFriendlyName("SpiderManBody");
-
 //        pSpidey->drawOrientation.y += 0.001f;
-        pSpidey->adjustRoationAngleFromEuler(glm::vec3(0.0f, 0.0f, 0.001f));
+        if ( pSpidey )
+        {
+            pSpidey->adjustRoationAngleFromEuler(glm::vec3(0.0f, 0.0f, 0.001f));
+        }
 
 //        pSpidey->drawPosition.x += 0.01f;
 
@@ -667,6 +684,27 @@ void DrawObject(cMesh* pCurrentMesh, glm::mat4 matModelParent, GLuint shaderProg
 
 
 
+    // FOR NOW, hardcode the texture settings
+    
+    // uniform bool bUseVertexColours;
+    GLint bUseVertexColours_UL = glGetUniformLocation(shaderProgramID, "bUseVertexColours");
+    glUniform1f(bUseVertexColours_UL, (GLfloat)GL_FALSE);
+
+
+// ***************************************************************
+
+    GLuint TaylorSwiftTextureNumber = ::g_pTextureManager->getTextureIDFromName("TaylorSwift_Eras_Poster.bmp");
+
+    // We are just going to pick texture unit 5 (for no reason, just as an example)
+    glActiveTexture(GL_TEXTURE5);       // #5
+    glBindTexture(GL_TEXTURE_2D, TaylorSwiftTextureNumber);
+
+    //uniform sampler2D texture_00;
+    GLint texture_00_UL = glGetUniformLocation(shaderProgramID, "texture_00");
+    glUniform1i(texture_00_UL, 5 );     // <- 5, an integer, because it's "Texture Unit #5"
+// ***************************************************************
+
+
     sModelDrawInfo modelInfo;
     if (::g_pMeshManager->FindDrawInfoByModelName(pCurrentMesh->meshName, modelInfo))
     {
@@ -812,7 +850,7 @@ void LoadTheRobotronModels(GLuint shaderProgram)
 
     // Place them everywhere
     const float DRAW_LIMIT = 500.0f;
-    unsigned int numberOfModels = vecRobotronModels.size();
+    unsigned int numberOfModels = (unsigned int)vecRobotronModels.size();
     for (unsigned int count = 0; count != 100; count++)
     {
         cMesh* pTempMesh = new cMesh();

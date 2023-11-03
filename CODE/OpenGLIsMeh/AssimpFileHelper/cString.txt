@@ -1,0 +1,193 @@
+class cString
+{
+public:
+	cString();
+	cString(const char* const c_str);
+	cString(const cString& copyString);				// Copy constructor
+	cString& operator=(const cString& copyString);	// Copy assignment 
+	cString operator+(const cString& concatString);	// concatenation
+	~cString();
+	unsigned int getLength() const;
+	const char* c_str(void) const;
+private:
+	void m_reset(void);
+	char* m_data = NULL;
+	unsigned int m_numCharacters = 0;
+};
+
+
+// *****************************************************************
+
+
+
+
+cString::cString()
+{
+    this->m_reset();
+}
+
+cString::cString(const char* const c_str)
+{
+    this->m_reset();
+
+    this->m_numCharacters = (unsigned int)strlen(c_str);
+    this->m_data = new char[this->m_numCharacters + 1];
+
+    strncpy_s(this->m_data, this->m_numCharacters + 1, c_str, this->m_numCharacters);
+}
+
+// Copy constructor
+cString::cString(const cString& copyString)
+{
+    this->m_reset();
+
+    this->m_numCharacters = copyString.m_numCharacters;
+
+    this->m_data = new char[this->m_numCharacters + 1];
+
+    strncpy_s(this->m_data, this->m_numCharacters + 1, copyString.m_data, this->m_numCharacters);
+}
+
+// Copy assignment 
+cString& cString::operator=(const cString& copyString)
+{
+    this->m_reset();
+
+    this->m_numCharacters = copyString.m_numCharacters;
+
+    this->m_data = new char[this->m_numCharacters + 1];
+
+    strncpy_s(this->m_data, this->m_numCharacters + 1, copyString.m_data, this->m_numCharacters);
+
+    return *this;
+}
+
+// concatenation
+cString cString::operator+(const cString& concatString)
+{
+    unsigned int newSize = this->getLength() + concatString.getLength();
+
+    char* pNewString = new char[newSize + 1];
+
+    for ( unsigned int index = 0; index != this->getLength(); index++ )
+    {
+        pNewString[index] = this->m_data[index];
+    }
+
+    unsigned int startIndex = this->getLength();
+    for ( unsigned int index = 0; index != concatString.getLength(); index++ )
+    {
+        pNewString[index + startIndex] = concatString.m_data[index];
+    }
+    pNewString[newSize] = '\0';
+    
+    cString newString(pNewString);
+
+    delete [] pNewString;
+
+    return newString;
+}
+
+cString::~cString()
+{
+    this->m_reset();
+}
+
+unsigned int cString::getLength() const
+{
+    return this->m_numCharacters;
+}
+
+const char* cString::c_str(void) const
+{
+    return this->m_data;
+}
+
+void cString::m_reset(void)
+{
+    if ( this->m_data )
+    {
+        delete[] this->m_data;
+        this->m_numCharacters = 0;
+    }
+    return;
+}
+
+
+
+
+AH::cString::cString()
+{
+    this->m_reset();
+}
+
+AH::cString::cString(const char* const c_str)
+{
+    this->m_reset();
+
+    this->m_numCharacters = (unsigned int)strlen(c_str);
+    this->m_data = new char[this->m_numCharacters + 1];
+
+    strncpy_s(this->m_data, this->m_numCharacters + 1, c_str, this->m_numCharacters);
+}
+
+// Copy constructor
+AH::cString::cString(const cString& copyString)
+{
+    this->m_reset();
+
+    this->m_numCharacters = copyString.m_numCharacters;
+
+    this->m_data = new char[this->m_numCharacters + 1];
+
+    strncpy_s(this->m_data, this->m_numCharacters + 1, copyString.m_data, this->m_numCharacters);
+}
+
+// Copy assignment 
+AH::cString& AH::cString::operator=(const cString& copyString)
+{
+    this->m_reset();
+
+    this->m_numCharacters = copyString.m_numCharacters;
+
+    this->m_data = new char[this->m_numCharacters + 1];
+
+    strncpy_s(this->m_data, this->m_numCharacters + 1, copyString.m_data, this->m_numCharacters);
+
+    return *this;
+}
+
+// concatenation
+AH::cString AH::cString::operator+(const cString& concatString)
+{
+    cString newString;
+
+    // TODO
+
+    return newString;
+}
+
+AH::cString::~cString()
+{
+    this->m_reset();
+}
+
+unsigned int AH::cString::getLength()
+{
+    return this->m_numCharacters;
+}
+
+const char* AH::cString::c_str(void) const
+{
+    return this->m_data;
+}
+
+void AH::cString::m_reset(void)
+{
+    if (this->m_data)
+    {
+        delete[] this->m_data;
+        this->m_numCharacters = 0;
+    }
+    return;
+}

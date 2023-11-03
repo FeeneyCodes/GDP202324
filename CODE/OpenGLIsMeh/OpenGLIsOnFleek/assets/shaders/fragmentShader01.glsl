@@ -4,7 +4,7 @@
 in vec4 colour;
 in vec4 vertexWorldPos;			// vertex in "world space"
 in vec4 vertexWorldNormal;	
-//in vec2 textureCoords;
+in vec2 textureCoords;			// u is x or red, v is y or green
 
 out vec4 outputColour;		// To the frame buffer (aka screen)
 
@@ -20,6 +20,15 @@ uniform vec4 eyeLocation;
 
 uniform bool bUseDebugColour;	// if this is true, then use debugColourRGBA for the colour
 uniform vec4 debugColourRGBA;		
+
+// If FALSE, we use the texture colour as the vertex colour
+// (NOT the one from the model file)
+uniform bool bUseVertexColours;		// If true, then DOESN'T use texture colours
+
+uniform sampler2D texture_00;			// 2D meaning x,y or s,t or u,v
+//uniform sampler2D texture_01;
+//uniform sampler2D texture_02;
+//uniform samplerCube skyBox;
 
 struct sLight
 {
@@ -47,8 +56,6 @@ uniform sLight theLights[NUMBEROFLIGHTS];  	// 70 uniforms
 //uniform vec4 theLights[2].position;
 // etc...
 
-//uniform sampler2D texture_00;
-//uniform samplerCube skyBox;
 
 
 vec4 calculateLightContrib( vec3 vertexMaterialColour, vec3 vertexNormal, 
@@ -59,10 +66,17 @@ void main()
 {
 //	gl_FragColor = vec4(color, 1.0);
 
-//	vec4 textureColour = texture( texture_00, textureCoords.xy ).rgba;
+	vec4 textureColour = texture( texture_00, textureCoords.st ).rgba;		// s,t is the x,y
 
-
-	vec4 vertexRGBA = colour;
+	// Make the 'vertex colour' the texture colour we sampled...
+	vec4 vertexRGBA = textureColour;	
+	
+	// ...unless we want to use the vertex colours from the model
+	if (bUseVertexColours)
+	{
+		// Use model vertex colour and NOT the texture colour
+		vertexRGBA = colour;
+	}
 	
 	if ( bUseDebugColour )
 	{	
@@ -92,6 +106,11 @@ void main()
 	outputColour.rgb *= 1.35f;
 	
 	outputColour.a = 1.0f;
+	
+	
+	// DEBUG HACK
+//	outputColour.rgb *= 0.0001f;
+//	outputColour.rgb += vec3( textureCoords.st, 0.0f);
 }
 
 

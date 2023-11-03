@@ -9,11 +9,10 @@
 // So dictated from THE SHADER
 struct sVertex
 {
-//	float x, y, z;		
-//	float r, g, b;
-	float x, y, z, w;		// w 'cause math
-	float r, g, b, a;
-	float nx, ny, nz, nw;	// Won't use nw
+	float x, y, z, w;		// vPos
+	float r, g, b, a;		// vCol
+	float nx, ny, nz, nw;	// vNormal
+	float u, v;				// vTextureCoords		<--- NEW!!
 };
 
 struct sModelDrawInfo

@@ -80,32 +80,34 @@ bool LoadModels(void)
 
     cMesh* pGroundMesh = new cMesh();
 //    pFlat_1x1_planeMesh->meshName = "Flat_1x1_plane.ply";
-    pGroundMesh->meshName = "Terrain_xyz_n_rgba.ply";
+//    pGroundMesh->meshName = "Terrain_xyz_n_rgba.ply";
+    pGroundMesh->meshName = "Terrain_xyz_n_rgba_uv.ply";
+    pGroundMesh->drawPosition.y = -50.0f;
 //    pGroundMesh->meshName = "HilbertRamp_stl (rotated).ply";
     pGroundMesh->friendlyName = "Ground";
     ::g_vec_pMeshesToDraw.push_back(pGroundMesh);
 
-    // Add matching physics object
-    sPhsyicsProperties* pGroundMeshShape = new sPhsyicsProperties();
-    pGroundMeshShape->shapeType = sPhsyicsProperties::MESH_OF_TRIANGLES_INDIRECT;
-
-//    pGroundMeshShape->setShape( new sPhsyicsProperties::sMeshOfTriangles_Indirect("HilbertRamp_stl (rotated).ply") );
-    pGroundMeshShape->setShape( new sPhsyicsProperties::sMeshOfTriangles_Indirect(pGroundMesh->meshName) );
-
-
-
-    // Tie this phsyics object to the associated mesh
-    pGroundMeshShape->pTheAssociatedMesh = pGroundMesh;
-    // If it's infinite, the physics intrator ignores it
-    pGroundMeshShape->inverse_mass = 0.0f;  // Infinite, so won't move
-
-//    pGroundMeshShape->acceleration.y = (-9.81f / 5.0f);
-
-//    pGroundMeshShape->position.x = -10.0f;
-    pGroundMeshShape->position.y = -50.0f;
-//    pGroundMeshShape->orientation.z = glm::radians(-45.0f);
-    pGroundMeshShape->friendlyName = "Ground";
-    ::g_pPhysics->AddShape(pGroundMeshShape);
+//    // Add matching physics object
+//    sPhsyicsProperties* pGroundMeshShape = new sPhsyicsProperties();
+//    pGroundMeshShape->shapeType = sPhsyicsProperties::MESH_OF_TRIANGLES_INDIRECT;
+//
+////    pGroundMeshShape->setShape( new sPhsyicsProperties::sMeshOfTriangles_Indirect("HilbertRamp_stl (rotated).ply") );
+//    pGroundMeshShape->setShape( new sPhsyicsProperties::sMeshOfTriangles_Indirect(pGroundMesh->meshName) );
+//
+//
+//
+//    // Tie this phsyics object to the associated mesh
+//    pGroundMeshShape->pTheAssociatedMesh = pGroundMesh;
+//    // If it's infinite, the physics intrator ignores it
+//    pGroundMeshShape->inverse_mass = 0.0f;  // Infinite, so won't move
+//
+////    pGroundMeshShape->acceleration.y = (-9.81f / 5.0f);
+//
+////    pGroundMeshShape->position.x = -10.0f;
+//    pGroundMeshShape->position.y = -50.0f;
+////    pGroundMeshShape->orientation.z = glm::radians(-45.0f);
+//    pGroundMeshShape->friendlyName = "Ground";
+//    ::g_pPhysics->AddShape(pGroundMeshShape);
    
     //pFlat_1x1_planeMesh->bIsWireframe = true;
     //pFlat_1x1_planeMesh->bDoNotLight = true;
@@ -121,19 +123,19 @@ bool LoadModels(void)
 //   pFlat_1x1_plane->pTheAssociatedMesh = pFlat_1x1_planeMesh;
 //   ::g_vec_pPhysicalProps.push_back(pFlat_1x1_plane);
 
-    cMesh* pFlat_1x1_planeMesh_DEBUG = new cMesh();
-    pFlat_1x1_planeMesh_DEBUG->meshName = pGroundMesh->meshName;
-    pFlat_1x1_planeMesh_DEBUG->bIsWireframe = true;
-    pFlat_1x1_planeMesh_DEBUG->bDoNotLight = true;
-    pFlat_1x1_planeMesh_DEBUG->bUseDebugColours = true;
-    pFlat_1x1_planeMesh_DEBUG->wholeObjectDebugColourRGBA = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-
-    pFlat_1x1_planeMesh_DEBUG->drawPosition = pGroundMeshShape->position;
-//    pFlat_1x1_planeMesh_DEBUG->drawOrientation = pGroundMeshShape->orientation;
-    pFlat_1x1_planeMesh_DEBUG->setDrawOrientation(pGroundMeshShape->get_qOrientation());
-    pFlat_1x1_planeMesh_DEBUG->setUniformDrawScale(1.001f);
-    pFlat_1x1_planeMesh_DEBUG->bIsVisible = false;
-    ::g_vec_pMeshesToDraw.push_back(pFlat_1x1_planeMesh_DEBUG);
+//    cMesh* pFlat_1x1_planeMesh_DEBUG = new cMesh();
+//    pFlat_1x1_planeMesh_DEBUG->meshName = pGroundMesh->meshName;
+//    pFlat_1x1_planeMesh_DEBUG->bIsWireframe = true;
+//    pFlat_1x1_planeMesh_DEBUG->bDoNotLight = true;
+//    pFlat_1x1_planeMesh_DEBUG->bUseDebugColours = true;
+//    pFlat_1x1_planeMesh_DEBUG->wholeObjectDebugColourRGBA = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+//
+//    pFlat_1x1_planeMesh_DEBUG->drawPosition = pGroundMeshShape->position;
+////    pFlat_1x1_planeMesh_DEBUG->drawOrientation = pGroundMeshShape->orientation;
+//    pFlat_1x1_planeMesh_DEBUG->setDrawOrientation(pGroundMeshShape->get_qOrientation());
+//    pFlat_1x1_planeMesh_DEBUG->setUniformDrawScale(1.001f);
+//    pFlat_1x1_planeMesh_DEBUG->bIsVisible = false;
+//    ::g_vec_pMeshesToDraw.push_back(pFlat_1x1_planeMesh_DEBUG);
 
 
     const float MAX_SPHERE_LOCATION = 30.0f;
@@ -144,7 +146,8 @@ bool LoadModels(void)
     for (unsigned int count = 0; count != NUMBER_OF_SPHERES; count++)
     {
         cMesh* pSphereMesh = new cMesh();
-        pSphereMesh->meshName = "Sphere_1_unit_Radius.ply";
+//        pSphereMesh->meshName = "Sphere_1_unit_Radius.ply";
+        pSphereMesh->meshName = "Sphere_1_unit_Radius_xyz_n_rgba_uv.ply";
 
         pSphereMesh->friendlyName = "Sphere";
 
@@ -188,82 +191,82 @@ bool LoadModels(void)
 
 
 
-    float spiderScale = 10.0f;
-
-    cMesh* pSpiderMan_body = new cMesh();
-    pSpiderMan_body->setUniformDrawScale(spiderScale);
-    pSpiderMan_body->friendlyName = "SpiderManBody";
-    pSpiderMan_body->meshName = "legospiderman_body_xyz_n_rgba.ply";
-//    pSpiderMan_body->drawOrientation.x = glm::radians(-90.0f);
-//    pSpiderMan_body->drawOrientation.z = glm::radians(-90.0f);
-
-    pSpiderMan_body->adjustRoationAngleFromEuler( glm::vec3(-90.0f, 0.0f, 0.0f) );
-//    pSpiderMan_body->adjustRoationAngleFromEuler( glm::vec3(0.0f, 0.0f, -90.0f) );
-
-
-
-    ::g_vec_pMeshesToDraw.push_back(pSpiderMan_body);
-
-    // Now add these as child meshes
-    cMesh* pSpiderMan_head = new cMesh();
-    pSpiderMan_head->setUniformDrawScale(spiderScale);
-    pSpiderMan_head->meshName = "legospiderman_head_xyz_n_rgba.ply";
-    pSpiderMan_body->vec_pChildMeshes.push_back(pSpiderMan_head);
-//    ::g_vec_pMeshesToDraw.push_back(pSpiderManHead);
-
-    cMesh* pSpiderMan_Hips = new cMesh();
-    pSpiderMan_Hips->setUniformDrawScale(spiderScale);
-    pSpiderMan_Hips->meshName = "legospiderman_Hips_xyz_n_rgba.ply";
-    pSpiderMan_body->vec_pChildMeshes.push_back(pSpiderMan_Hips);
-
-    cMesh* pSpiderMan_Left_arm = new cMesh();
-    pSpiderMan_Left_arm->meshName = "legospiderman_Left_arm_xyz_n_rgba.ply";
-    pSpiderMan_Left_arm->setUniformDrawScale(spiderScale);
-    pSpiderMan_body->vec_pChildMeshes.push_back(pSpiderMan_Left_arm);
-//    ::g_vec_pMeshesToDraw.push_back(pSpiderManLeft_arm);
-
-    cMesh* pSpiderMan_Left_hand = new cMesh();
-    pSpiderMan_Left_hand->meshName = "legospiderman_Left_hand_xyz_n_rgba.ply";
-    pSpiderMan_Left_hand->setUniformDrawScale(spiderScale);
-    pSpiderMan_body->vec_pChildMeshes.push_back(pSpiderMan_Left_hand);
-
-    cMesh* pSpiderMan_Right_arm = new cMesh();
-    pSpiderMan_Right_arm->meshName = "legospiderman_Right_arm_xyz_n_rgba.ply";
-    pSpiderMan_Right_arm->setUniformDrawScale(spiderScale);
-    pSpiderMan_body->vec_pChildMeshes.push_back(pSpiderMan_Right_arm);
-
-    cMesh* pSpiderMan_Right_hand = new cMesh();
-    pSpiderMan_Right_hand->meshName = "legospiderman_Right_hand_xyz_n_rgba.ply";
-    pSpiderMan_Right_hand->setUniformDrawScale(spiderScale);
-    pSpiderMan_body->vec_pChildMeshes.push_back(pSpiderMan_Right_hand);
-
-    cMesh* pSpiderMan_Left_leg = new cMesh();
-    pSpiderMan_Left_leg->setUniformDrawScale(spiderScale);
-    pSpiderMan_Left_leg->meshName = "legospiderman_Left_leg_xyz_n_rgba.ply";
-    pSpiderMan_body->vec_pChildMeshes.push_back(pSpiderMan_Left_leg);
-//    ::g_vec_pMeshesToDraw.push_back(pSpiderManLeft_leg);
-
-    cMesh* pSpiderMan_Right_leg = new cMesh();
-    pSpiderMan_Right_leg->setUniformDrawScale(spiderScale);
-    pSpiderMan_Right_leg->meshName = "legospiderman_Right_leg_xyz_n_rgba.ply";
-    pSpiderMan_body->vec_pChildMeshes.push_back(pSpiderMan_Right_leg);
-
-
-
-
-//    cMesh* pSpiderManHead = new cMesh();
-//    pSpiderManHead->setUniformDrawScale(spiderScale);
-//    pSpiderManHead->meshName = "legospiderman_head_xyz_n_rgba.ply";
-//    ::g_vec_pMeshesToDraw.push_back(pSpiderManHead);
+//    float spiderScale = 10.0f;
 //
-//    cMesh* pSpiderManLeft_arm = new cMesh();
-//    pSpiderManLeft_arm->meshName = "legospiderman_Left_arm_xyz_n_rgba.ply";
-//    ::g_vec_pMeshesToDraw.push_back(pSpiderManLeft_arm);
+//    cMesh* pSpiderMan_body = new cMesh();
+//    pSpiderMan_body->setUniformDrawScale(spiderScale);
+//    pSpiderMan_body->friendlyName = "SpiderManBody";
+//    pSpiderMan_body->meshName = "legospiderman_body_xyz_n_rgba.ply";
+////    pSpiderMan_body->drawOrientation.x = glm::radians(-90.0f);
+////    pSpiderMan_body->drawOrientation.z = glm::radians(-90.0f);
 //
-//    cMesh* pSpiderManLeft_leg = new cMesh();
-//    pSpiderManLeft_leg->setUniformDrawScale(spiderScale);
-//    pSpiderManLeft_leg->meshName = "legospiderman_Left_leg_xyz_n_rgba.ply";
-//    ::g_vec_pMeshesToDraw.push_back(pSpiderManLeft_leg);
+//    pSpiderMan_body->adjustRoationAngleFromEuler( glm::vec3(-90.0f, 0.0f, 0.0f) );
+////    pSpiderMan_body->adjustRoationAngleFromEuler( glm::vec3(0.0f, 0.0f, -90.0f) );
+//
+//
+//
+//    ::g_vec_pMeshesToDraw.push_back(pSpiderMan_body);
+//
+//    // Now add these as child meshes
+//    cMesh* pSpiderMan_head = new cMesh();
+//    pSpiderMan_head->setUniformDrawScale(spiderScale);
+//    pSpiderMan_head->meshName = "legospiderman_head_xyz_n_rgba.ply";
+//    pSpiderMan_body->vec_pChildMeshes.push_back(pSpiderMan_head);
+////    ::g_vec_pMeshesToDraw.push_back(pSpiderManHead);
+//
+//    cMesh* pSpiderMan_Hips = new cMesh();
+//    pSpiderMan_Hips->setUniformDrawScale(spiderScale);
+//    pSpiderMan_Hips->meshName = "legospiderman_Hips_xyz_n_rgba.ply";
+//    pSpiderMan_body->vec_pChildMeshes.push_back(pSpiderMan_Hips);
+//
+//    cMesh* pSpiderMan_Left_arm = new cMesh();
+//    pSpiderMan_Left_arm->meshName = "legospiderman_Left_arm_xyz_n_rgba.ply";
+//    pSpiderMan_Left_arm->setUniformDrawScale(spiderScale);
+//    pSpiderMan_body->vec_pChildMeshes.push_back(pSpiderMan_Left_arm);
+////    ::g_vec_pMeshesToDraw.push_back(pSpiderManLeft_arm);
+//
+//    cMesh* pSpiderMan_Left_hand = new cMesh();
+//    pSpiderMan_Left_hand->meshName = "legospiderman_Left_hand_xyz_n_rgba.ply";
+//    pSpiderMan_Left_hand->setUniformDrawScale(spiderScale);
+//    pSpiderMan_body->vec_pChildMeshes.push_back(pSpiderMan_Left_hand);
+//
+//    cMesh* pSpiderMan_Right_arm = new cMesh();
+//    pSpiderMan_Right_arm->meshName = "legospiderman_Right_arm_xyz_n_rgba.ply";
+//    pSpiderMan_Right_arm->setUniformDrawScale(spiderScale);
+//    pSpiderMan_body->vec_pChildMeshes.push_back(pSpiderMan_Right_arm);
+//
+//    cMesh* pSpiderMan_Right_hand = new cMesh();
+//    pSpiderMan_Right_hand->meshName = "legospiderman_Right_hand_xyz_n_rgba.ply";
+//    pSpiderMan_Right_hand->setUniformDrawScale(spiderScale);
+//    pSpiderMan_body->vec_pChildMeshes.push_back(pSpiderMan_Right_hand);
+//
+//    cMesh* pSpiderMan_Left_leg = new cMesh();
+//    pSpiderMan_Left_leg->setUniformDrawScale(spiderScale);
+//    pSpiderMan_Left_leg->meshName = "legospiderman_Left_leg_xyz_n_rgba.ply";
+//    pSpiderMan_body->vec_pChildMeshes.push_back(pSpiderMan_Left_leg);
+////    ::g_vec_pMeshesToDraw.push_back(pSpiderManLeft_leg);
+//
+//    cMesh* pSpiderMan_Right_leg = new cMesh();
+//    pSpiderMan_Right_leg->setUniformDrawScale(spiderScale);
+//    pSpiderMan_Right_leg->meshName = "legospiderman_Right_leg_xyz_n_rgba.ply";
+//    pSpiderMan_body->vec_pChildMeshes.push_back(pSpiderMan_Right_leg);
+//
+//
+//
+//
+////    cMesh* pSpiderManHead = new cMesh();
+////    pSpiderManHead->setUniformDrawScale(spiderScale);
+////    pSpiderManHead->meshName = "legospiderman_head_xyz_n_rgba.ply";
+////    ::g_vec_pMeshesToDraw.push_back(pSpiderManHead);
+////
+////    cMesh* pSpiderManLeft_arm = new cMesh();
+////    pSpiderManLeft_arm->meshName = "legospiderman_Left_arm_xyz_n_rgba.ply";
+////    ::g_vec_pMeshesToDraw.push_back(pSpiderManLeft_arm);
+////
+////    cMesh* pSpiderManLeft_leg = new cMesh();
+////    pSpiderManLeft_leg->setUniformDrawScale(spiderScale);
+////    pSpiderManLeft_leg->meshName = "legospiderman_Left_leg_xyz_n_rgba.ply";
+////    ::g_vec_pMeshesToDraw.push_back(pSpiderManLeft_leg);
 
 
 

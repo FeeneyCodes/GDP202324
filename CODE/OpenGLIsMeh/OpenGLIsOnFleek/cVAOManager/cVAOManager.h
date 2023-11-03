@@ -49,6 +49,8 @@ private:
 
 	bool m_LoadTheFile_Ply_XYZ_N_RGBA(std::string theFileName, sModelDrawInfo& drawInfo);
 
+	bool m_LoadTheFile_Ply_XYZ_N_RGBA_UV(std::string theFileName, sModelDrawInfo& drawInfo);
+
 	std::map< std::string /*model name*/,
 		      sModelDrawInfo /* info needed to draw*/ >
 		m_map_ModelName_to_VAOID;
