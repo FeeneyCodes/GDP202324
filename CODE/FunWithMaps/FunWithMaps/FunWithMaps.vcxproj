@@ -21,10 +21,9 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{faab37a9-c81f-4e91-b817-0f65ba453c41}</ProjectGuid>
-    <RootNamespace>Project1</RootNamespace>
+    <ProjectGuid>{471ce0d3-12d5-4371-ad5e-e5911e415b99}</ProjectGuid>
+    <RootNamespace>FunWithMaps</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
-    <ProjectName>OpenGLIsOnFleek</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -71,14 +70,6 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>$(ProjectDir)include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(ProjectDir)lib\Release_x64;$(LibraryPath)</LibraryPath>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(ProjectDir)include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(ProjectDir)lib\Debug_x64;$(LibraryPath)</LibraryPath>
-  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -117,7 +108,6 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -134,63 +124,10 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="AABB_Subdivide.cpp" />
-    <ClCompile Include="Basic Shader Manager\cShader.cpp" />
-    <ClCompile Include="Basic Shader Manager\cShaderManager.cpp" />
-    <ClCompile Include="cDebugRenderer.cpp" />
-    <ClCompile Include="cGlobal.cpp" />
-    <ClCompile Include="cLightHelper.cpp" />
-    <ClCompile Include="cLightManager.cpp" />
-    <ClCompile Include="cMesh.cpp" />
-    <ClCompile Include="cPhysics.cpp" />
-    <ClCompile Include="cPhysics_BasicTests.cpp" />
-    <ClCompile Include="cPhysics_IntersectionTests.cpp" />
-    <ClCompile Include="cPhysics_Update.cpp" />
-    <ClCompile Include="cVAOManager\cVAOManager.cpp" />
-    <ClCompile Include="cVAOManager\sModelDrawInfo.cpp" />
-    <ClCompile Include="glad.c" />
-    <ClCompile Include="InputHandling.cpp" />
-    <ClCompile Include="LoadModels.cpp" />
-    <ClCompile Include="PhysicsUpdateLoop.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="ScenePersistence.cpp" />
-    <ClCompile Include="sPhsyicsProperties.cpp" />
-    <ClCompile Include="TextureManager\C24BitBMPpixel.cpp" />
-    <ClCompile Include="TextureManager\cBasicTextureManager.cpp" />
-    <ClCompile Include="TextureManager\CTextureFromBMP.cpp" />
-    <ClCompile Include="theMain.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="Basic Shader Manager\cShaderManager.h" />
-    <ClInclude Include="cAABB.h" />
-    <ClInclude Include="cAABB_JUST_SOME_NOTE.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </ClInclude>
-    <ClInclude Include="cDebugRender.h" />
-    <ClInclude Include="cGlobal.h" />
-    <ClInclude Include="cLightHelper.h" />
-    <ClInclude Include="cLightManager.h" />
-    <ClInclude Include="cMesh.h" />
-    <ClInclude Include="cPhysics.h" />
-    <ClInclude Include="cVAOManager\cVAOManager.h" />
-    <ClInclude Include="cVAOManager\sModelDrawInfo.h" />
-    <ClInclude Include="GLWF_CallBacks.h" />
-    <ClInclude Include="iPhysicsMeshTransformAccess.h" />
-    <ClInclude Include="OpenGLCommon.h" />
-    <ClInclude Include="sPhsyicsProperties.h" />
-    <ClInclude Include="TextureManager\C24BitBMPpixel.h" />
-    <ClInclude Include="TextureManager\cBasicTextureManager.h" />
-    <ClInclude Include="TextureManager\CTextureFromBMP.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="assets\shaders\fragmentShader01.glsl" />
-    <None Include="assets\shaders\vertexShader01.glsl" />
+    <ClCompile Include="TheMain.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

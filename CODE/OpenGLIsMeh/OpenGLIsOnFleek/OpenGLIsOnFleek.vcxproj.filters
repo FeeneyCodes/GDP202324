@@ -111,6 +111,9 @@
     <ClCompile Include="TextureManager\CTextureFromBMP.cpp">
       <Filter>TextureManager</Filter>
     </ClCompile>
+    <ClCompile Include="AABB_Subdivide.cpp">
+      <Filter>Physics_Stuff</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Basic Shader Manager\cShaderManager.h">
@@ -160,6 +163,12 @@
     </ClInclude>
     <ClInclude Include="TextureManager\CTextureFromBMP.h">
       <Filter>TextureManager</Filter>
+    </ClInclude>
+    <ClInclude Include="cAABB_JUST_SOME_NOTE.h">
+      <Filter>Physics_Stuff</Filter>
+    </ClInclude>
+    <ClInclude Include="cAABB.h">
+      <Filter>Physics_Stuff</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -6,6 +6,8 @@
 #include "cVAOManager/cVAOManager.h"		// For the mesh indirect
 #include <vector>
 
+#include "cAABB.h"
+
 class cPhysics
 {
 public:
