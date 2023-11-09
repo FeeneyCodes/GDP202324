@@ -138,7 +138,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="AABB_Subdivide.cpp" />
+    <ClCompile Include="cPhysics_AABB_Subdivide.cpp" />
     <ClCompile Include="Basic Shader Manager\cShader.cpp" />
     <ClCompile Include="Basic Shader Manager\cShaderManager.cpp" />
     <ClCompile Include="cDebugRenderer.cpp" />
@@ -178,6 +178,7 @@
     <ClInclude Include="cLightManager.h" />
     <ClInclude Include="cMesh.h" />
     <ClInclude Include="cPhysics.h" />
+    <ClInclude Include="sTriangle.h" />
     <ClInclude Include="cVAOManager\cVAOManager.h" />
     <ClInclude Include="cVAOManager\sModelDrawInfo.h" />
     <ClInclude Include="GLWF_CallBacks.h" />
