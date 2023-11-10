@@ -5,6 +5,8 @@
 #include <map>
 #include "CTextureFromBMP.h"
 
+// LoadPNG
+
 class cBasicTextureManager
 {
 public:

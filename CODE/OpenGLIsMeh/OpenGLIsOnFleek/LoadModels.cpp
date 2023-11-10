@@ -29,113 +29,29 @@ bool LoadModels(void)
     // Note: we are NOT adding this to the vector of meshes
 
 
-        // bun_zipper_res2_xyz_n_rgba.ply
-    // bathtub_xyz_n_rgba.ply
-
-//    // Add some models to the "scene"
-//    cMesh bunny1;   
-//    bunny1.meshName = "bun_zipper_res2_xyz_n_rgba.ply";
-//    bunny1.position = glm::vec3(-1.0f, 0.0f, 0.0f);
-//    bunny1.scale = 10.0f;
-//    bunny1.orientation.x = glm::radians(45.0f);
-//
-//    cMesh bunny2;
-//    bunny2.meshName = "bun_zipper_res2_xyz_n_rgba.ply";
-//    bunny2.position = glm::vec3(1.0f, 0.0f, 0.0f);
-//    bunny2.scale = 7.5f;
-//    bunny2.orientation.y = glm::radians(135.0f);
-//
     cMesh* pBathtub = new cMesh();
-    pBathtub->meshName = "bathtub_xyz_n_rgba.ply";
+    pBathtub->meshName = "bathtub_xyz_n_rgba_uv.ply";
     pBathtub->friendlyName = "bathtub";
- //   pBathtub->bDoNotLight = true;
+    pBathtub->setUniformDrawScale(5.0f);
+    pBathtub->setRotationFromEuler(glm::vec3(45.0f, 0.0f, 0.0f));
     pBathtub->drawPosition = glm::vec3(0.0f, -30.0f, 0.0f);
-    //bunny2.position = glm::vec3(1.0f, 0.0f, 0.0f);
+    // 
+    pBathtub->textureName[0] = "Water_Texture_01.bmp";
+    pBathtub->textureRatios[0] = 1.0f;
     ::g_vec_pMeshesToDraw.push_back(pBathtub);
 
-//
-////    // Smart array of cMesh object
-////    std::vector<cMesh> vecMeshesToDraw;
-//    g_vecMeshesToDraw.push_back(bunny1);
-//    g_vecMeshesToDraw.push_back(bunny2);
-//    g_vecMeshesToDraw.push_back(bathtub);
-//    g_vecMeshesToDraw.push_back(terrain);
 
-//    cMesh* pTerrain = new cMesh();
-//    pTerrain->meshName = "Terrain_xyz_n_rgba.ply";
-//    //bunny2.position = glm::vec3(1.0f, 0.0f, 0.0f);
-//    pTerrain->scale = 1.0f;
-//    pTerrain->drawPosition.y = -25.0f;
-//    ::g_vec_pMeshesToDraw.push_back(pTerrain);
-
-
-//    cMesh* pGridGroundMesh = new cMesh();
-//    pGridGroundMesh->meshName = "Flat_Grid_100x100.ply";
-    //pGridGroundMesh->bIsWireframe = true;
-    //pGridGroundMesh->bDoNotLight = true;
-    // note this does NOT have a physProps, so is ignored by the physics update loop
-//    pGridGroundMesh->drawPosition.y = 0.0f;   //  0,-10,0
-//    pGridGroundMesh->friendlyName = "Ground";
-//    ::g_vec_pMeshesToDraw.push_back(pGridGroundMesh);
 
     cMesh* pGroundMesh = new cMesh();
-//    pFlat_1x1_planeMesh->meshName = "Flat_1x1_plane.ply";
-//    pGroundMesh->meshName = "Terrain_xyz_n_rgba.ply";
     pGroundMesh->meshName = "Terrain_xyz_n_rgba_uv.ply";
     pGroundMesh->drawPosition.y = -50.0f;
-//    pGroundMesh->meshName = "HilbertRamp_stl (rotated).ply";
     pGroundMesh->friendlyName = "Ground";
+    //
+    pGroundMesh->textureName[0] = "TaylorSwift_Eras_Poster.bmp";
+    pGroundMesh->textureRatios[0] = 1.0f;
     ::g_vec_pMeshesToDraw.push_back(pGroundMesh);
 
-//    // Add matching physics object
-//    sPhsyicsProperties* pGroundMeshShape = new sPhsyicsProperties();
-//    pGroundMeshShape->shapeType = sPhsyicsProperties::MESH_OF_TRIANGLES_INDIRECT;
-//
-////    pGroundMeshShape->setShape( new sPhsyicsProperties::sMeshOfTriangles_Indirect("HilbertRamp_stl (rotated).ply") );
-//    pGroundMeshShape->setShape( new sPhsyicsProperties::sMeshOfTriangles_Indirect(pGroundMesh->meshName) );
-//
-//
-//
-//    // Tie this phsyics object to the associated mesh
-//    pGroundMeshShape->pTheAssociatedMesh = pGroundMesh;
-//    // If it's infinite, the physics intrator ignores it
-//    pGroundMeshShape->inverse_mass = 0.0f;  // Infinite, so won't move
-//
-////    pGroundMeshShape->acceleration.y = (-9.81f / 5.0f);
-//
-////    pGroundMeshShape->position.x = -10.0f;
-//    pGroundMeshShape->position.y = -50.0f;
-////    pGroundMeshShape->orientation.z = glm::radians(-45.0f);
-//    pGroundMeshShape->friendlyName = "Ground";
-//    ::g_pPhysics->AddShape(pGroundMeshShape);
-   
-    //pFlat_1x1_planeMesh->bIsWireframe = true;
-    //pFlat_1x1_planeMesh->bDoNotLight = true;
-    // note this does NOT have a physProps, so is ignored by the physics update loop
-//    sTransformInfo transformPlane = pFlat_1x1_planeMesh->getTransformInfo();
-//    transformPlane.position.y = -40.0f;   //  0,-10,0
-//    transformPlane.position.x = -10.0f;   //  0,-10,0
-//    pFlat_1x1_planeMesh->setTransformInfo(transformPlane);
-//    pFlat_1x1_planeMesh->drawPosition.x = 10.0f;
-//    pFlat_1x1_planeMesh->orientation.z = glm::radians(+12.0f);
-    // Also add the physics items
-//   sPhsyicsProperties* pFlat_1x1_plane = new sPhsyicsProperties();
-//   pFlat_1x1_plane->pTheAssociatedMesh = pFlat_1x1_planeMesh;
-//   ::g_vec_pPhysicalProps.push_back(pFlat_1x1_plane);
 
-//    cMesh* pFlat_1x1_planeMesh_DEBUG = new cMesh();
-//    pFlat_1x1_planeMesh_DEBUG->meshName = pGroundMesh->meshName;
-//    pFlat_1x1_planeMesh_DEBUG->bIsWireframe = true;
-//    pFlat_1x1_planeMesh_DEBUG->bDoNotLight = true;
-//    pFlat_1x1_planeMesh_DEBUG->bUseDebugColours = true;
-//    pFlat_1x1_planeMesh_DEBUG->wholeObjectDebugColourRGBA = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-//
-//    pFlat_1x1_planeMesh_DEBUG->drawPosition = pGroundMeshShape->position;
-////    pFlat_1x1_planeMesh_DEBUG->drawOrientation = pGroundMeshShape->orientation;
-//    pFlat_1x1_planeMesh_DEBUG->setDrawOrientation(pGroundMeshShape->get_qOrientation());
-//    pFlat_1x1_planeMesh_DEBUG->setUniformDrawScale(1.001f);
-//    pFlat_1x1_planeMesh_DEBUG->bIsVisible = false;
-//    ::g_vec_pMeshesToDraw.push_back(pFlat_1x1_planeMesh_DEBUG);
 
 
     const float MAX_SPHERE_LOCATION = 30.0f;

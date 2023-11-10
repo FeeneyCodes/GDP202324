@@ -23,6 +23,17 @@ cMesh::cMesh()
 	this->bUseDebugColours = false;
 	this->wholeObjectDebugColourRGBA = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 
+	// These all add up to 1.0f
+	textureRatios[0] = 1.0f;
+	textureRatios[1] = 0.0f;
+	textureRatios[2] = 0.0f;
+	textureRatios[3] = 0.0f;
+	textureRatios[4] = 0.0f;
+	textureRatios[5] = 0.0f;
+	textureRatios[6] = 0.0f;
+	textureRatios[7] = 0.0f;
+
+
 	// Set uniqueID
 	this->m_UniqueID = cMesh::m_nextUniqueID;
 	cMesh::m_nextUniqueID++;

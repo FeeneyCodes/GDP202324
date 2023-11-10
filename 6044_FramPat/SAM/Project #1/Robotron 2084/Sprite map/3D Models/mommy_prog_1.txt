@@ -1,0 +1,14 @@
+x	x	x	W	W	x	x
+x	x	W	W	W	x	x
+x	x	W	W	W	x	x
+x	W	W	W	W	x	x
+x	x	W	W	x	x	x
+x	W	W	W	W	x	x
+x	W	W	W	x	x	x
+x	W	W	W	W	W	x
+W	W	W	W	W	W	x
+W	W	W	x	W	x	x
+x	x	W	x	x	W	x
+x	x	W	x	x	W	x
+x	x	W	W	x	W	W
+x	x	x	x	x	x	x

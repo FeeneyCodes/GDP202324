@@ -177,10 +177,10 @@ int main(void)
     //                               bunnyDrawingInfo, shaderProgramID);
     //std::cout << "Loaded: " << bunnyDrawingInfo.numberOfVertices << " vertices" << std::endl;
 
-//    sModelDrawInfo bathtubDrawingInfo;
-//    ::g_pMeshManager->LoadModelIntoVAO("bathtub_xyz_n_rgba.ply",
-//                                   bathtubDrawingInfo, shaderProgramID);
-//    std::cout << "Loaded: " << bathtubDrawingInfo.numberOfVertices << " vertices" << std::endl;
+    sModelDrawInfo bathtubDrawingInfo;
+    ::g_pMeshManager->LoadModelIntoVAO("bathtub_xyz_n_rgba_uv.ply",
+                                   bathtubDrawingInfo, shaderProgramID);
+    std::cout << "Loaded: " << bathtubDrawingInfo.numberOfVertices << " vertices" << std::endl;
 
     sModelDrawInfo terrainDrawingInfo;
 //    ::g_pMeshManager->LoadModelIntoVAO("Terrain_xyz_n_rgba.ply",
@@ -240,6 +240,10 @@ int main(void)
     {
         std::cout << "ERROR: no Taylor Swift!!" << std::endl;
     }
+    //
+    ::g_pTextureManager->Create2DTextureFromBMPFile("Blank_UV_Text_Texture.bmp", true);
+    ::g_pTextureManager->Create2DTextureFromBMPFile("Water_Texture_01.bmp", true);
+    ::g_pTextureManager->Create2DTextureFromBMPFile("Blank_UV_Text_Texture.bmp", true);
 
 
     // This handles the phsyics objects
@@ -692,12 +696,17 @@ void DrawObject(cMesh* pCurrentMesh, glm::mat4 matModelParent, GLuint shaderProg
 
 
 // ***************************************************************
-
-    GLuint TaylorSwiftTextureNumber = ::g_pTextureManager->getTextureIDFromName("TaylorSwift_Eras_Poster.bmp");
+//    GLuint TaylorSwiftTextureNumber = ::g_pTextureManager->getTextureIDFromName("TaylorSwift_Eras_Poster.bmp");
+    GLuint Texture00 = ::g_pTextureManager->getTextureIDFromName(pCurrentMesh->textureName[0]);
+    if ( Texture00 == 0 )
+    {
+        Texture00 = ::g_pTextureManager->getTextureIDFromName("Blank_UV_Text_Texture.bmp");
+    }
 
     // We are just going to pick texture unit 5 (for no reason, just as an example)
-    glActiveTexture(GL_TEXTURE5);       // #5
-    glBindTexture(GL_TEXTURE_2D, TaylorSwiftTextureNumber);
+//    glActiveTexture(GL_TEXTURE5);       // #5 TEXTURE UNIT
+    glActiveTexture(GL_TEXTURE0 + 5);       // #5 TEXTURE UNIT
+    glBindTexture(GL_TEXTURE_2D, Texture00);
 
     //uniform sampler2D texture_00;
     GLint texture_00_UL = glGetUniformLocation(shaderProgramID, "texture_00");

@@ -1,6 +1,6 @@
 ply
 format ascii 1.0
-comment TextureFile TaylorSwift_Eras_Poster.jpg
+comment TextureFile Blank_UV_Text_Texture.jpg
 element vertex 3840
 property float x
 property float y

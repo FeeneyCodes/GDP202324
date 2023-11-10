@@ -15,6 +15,12 @@ public:
 	cMesh();		// Called on creation   c'tor
 	~cMesh();		// Called on deletion   d'tor
 
+	// Texture info
+	static const int NUM_TEXTURES = 8;
+	std::string textureName[NUM_TEXTURES];
+	float textureRatios[NUM_TEXTURES];
+
+
 	std::string meshName;
 
 	std::string friendlyName;		// "Ground"
