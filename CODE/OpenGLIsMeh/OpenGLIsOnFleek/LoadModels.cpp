@@ -49,6 +49,10 @@ bool LoadModels(void)
     //
     pGroundMesh->textureName[0] = "TaylorSwift_Eras_Poster.bmp";
     pGroundMesh->textureRatios[0] = 1.0f;
+
+    pGroundMesh->textureName[1] = "taylor-swift-jimmy-fallon.bmp";
+    pGroundMesh->textureRatios[1] = 0.0f;
+
     ::g_vec_pMeshesToDraw.push_back(pGroundMesh);
 
 

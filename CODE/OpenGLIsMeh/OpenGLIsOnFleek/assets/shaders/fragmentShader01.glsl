@@ -26,8 +26,18 @@ uniform vec4 debugColourRGBA;
 uniform bool bUseVertexColours;		// If true, then DOESN'T use texture colours
 
 uniform sampler2D texture_00;			// 2D meaning x,y or s,t or u,v
-//uniform sampler2D texture_01;
-//uniform sampler2D texture_02;
+uniform sampler2D texture_01;
+uniform sampler2D texture_02;
+uniform sampler2D texture_03;
+uniform sampler2D texture_04;			
+uniform sampler2D texture_05;
+uniform sampler2D texture_06;
+uniform sampler2D texture_07;
+//... and so on
+//uniform float textureMixRatio[8];
+uniform vec4 textureMixRatio_0_3;
+uniform vec4 textureMixRatio_4_7;
+
 //uniform samplerCube skyBox;
 
 struct sLight
@@ -66,7 +76,11 @@ void main()
 {
 //	gl_FragColor = vec4(color, 1.0);
 
-	vec4 textureColour = texture( texture_00, textureCoords.st ).rgba;		// s,t is the x,y
+	vec4 textureColour = 
+			  texture( texture_00, textureCoords.st ).rgba * textureMixRatio_0_3.x 	
+			+ texture( texture_01, textureCoords.st ).rgba * textureMixRatio_0_3.y
+			+ texture( texture_02, textureCoords.st ).rgba * textureMixRatio_0_3.z
+			+ texture( texture_03, textureCoords.st ).rgba * textureMixRatio_0_3.w;
 
 	// Make the 'vertex colour' the texture colour we sampled...
 	vec4 vertexRGBA = textureColour;	

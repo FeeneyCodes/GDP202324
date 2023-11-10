@@ -242,8 +242,9 @@ int main(void)
     }
     //
     ::g_pTextureManager->Create2DTextureFromBMPFile("Blank_UV_Text_Texture.bmp", true);
+    ::g_pTextureManager->Create2DTextureFromBMPFile("SpidermanUV_square.bmp", true);
     ::g_pTextureManager->Create2DTextureFromBMPFile("Water_Texture_01.bmp", true);
-    ::g_pTextureManager->Create2DTextureFromBMPFile("Blank_UV_Text_Texture.bmp", true);
+    ::g_pTextureManager->Create2DTextureFromBMPFile("taylor-swift-jimmy-fallon.bmp", true);
 
 
     // This handles the phsyics objects
@@ -408,6 +409,12 @@ int main(void)
             pSpidey->adjustRoationAngleFromEuler(glm::vec3(0.0f, 0.0f, 0.001f));
         }
 
+        cMesh* pTayTayGround = g_pFindMeshByFriendlyName("Ground");
+        pTayTayGround->textureRatios[1] += 0.0001f;
+        pTayTayGround->textureRatios[0] = 1.0f - pTayTayGround->textureRatios[1];
+
+
+
 //        pSpidey->drawPosition.x += 0.01f;
 
 
@@ -566,24 +573,90 @@ void DrawLightDebugSpheres(glm::mat4 matProjection, glm::mat4 matView,
 
 void SetUpTextures(cMesh* pCurrentMesh, GLuint shaderProgramID)
 {
-    // ***************************************************************
-    //    GLuint TaylorSwiftTextureNumber = ::g_pTextureManager->getTextureIDFromName("TaylorSwift_Eras_Poster.bmp");
-    GLuint Texture00 = ::g_pTextureManager->getTextureIDFromName(pCurrentMesh->textureName[0]);
-    if (Texture00 == 0)
+//    GLuint Texture00 = ::g_pTextureManager->getTextureIDFromName(pCurrentMesh->textureName[0]);
+//    if (Texture00 == 0)
+//    {
+//        Texture00 = ::g_pTextureManager->getTextureIDFromName("Blank_UV_Text_Texture.bmp");
+//    }
+//
+//    // We are just going to pick texture unit 5 (for no reason, just as an example)
+//    //    glActiveTexture(GL_TEXTURE5);       // #5 TEXTURE UNIT
+//    glActiveTexture(GL_TEXTURE0 + 5);       // #5 TEXTURE UNIT
+//    glBindTexture(GL_TEXTURE_2D, Texture00);
+//
+//    //uniform sampler2D texture_00;
+//    GLint texture_00_UL = glGetUniformLocation(shaderProgramID, "texture_00");
+//    glUniform1i(texture_00_UL, 5);     // <- 5, an integer, because it's "Texture Unit #5"
+//    // ***************************************************************
+
+//    uniform sampler2D texture_00;			// 2D meaning x,y or s,t or u,v
+//    uniform sampler2D texture_01;
+//    uniform sampler2D texture_02;
+//    uniform sampler2D texture_03;
+//    uniform sampler2D texture_04;			// 2D meaning x,y or s,t or u,v
+//    uniform sampler2D texture_05;
+//    uniform sampler2D texture_06;
+//    uniform sampler2D texture_07;
+//    //... and so on
+//    //uniform float textureMixRatio[8];
+//    uniform vec4 textureMixRatio_0_3;
+//    uniform vec4 textureMixRatio_4_7;
+
+
     {
-        Texture00 = ::g_pTextureManager->getTextureIDFromName("Blank_UV_Text_Texture.bmp");
+        GLint textureUnitNumber = 0;
+        GLuint Texture00 = ::g_pTextureManager->getTextureIDFromName(pCurrentMesh->textureName[textureUnitNumber]);
+        glActiveTexture(GL_TEXTURE0 + textureUnitNumber);
+        glBindTexture(GL_TEXTURE_2D, Texture00);
+        GLint texture_00_UL = glGetUniformLocation(shaderProgramID, "texture_00");
+        glUniform1i(texture_00_UL, textureUnitNumber);
     }
 
-    // We are just going to pick texture unit 5 (for no reason, just as an example)
-    //    glActiveTexture(GL_TEXTURE5);       // #5 TEXTURE UNIT
-    glActiveTexture(GL_TEXTURE0 + 5);       // #5 TEXTURE UNIT
-    glBindTexture(GL_TEXTURE_2D, Texture00);
+    {
+        GLint textureUnitNumber = 1;
+        GLuint Texture01 = ::g_pTextureManager->getTextureIDFromName(pCurrentMesh->textureName[textureUnitNumber]);
+        glActiveTexture(GL_TEXTURE0 + textureUnitNumber);
+        glBindTexture(GL_TEXTURE_2D, Texture01);
+        GLint texture_01_UL = glGetUniformLocation(shaderProgramID, "texture_01");
+        glUniform1i(texture_01_UL, textureUnitNumber);
+    }
 
-    //uniform sampler2D texture_00;
-    GLint texture_00_UL = glGetUniformLocation(shaderProgramID, "texture_00");
-    glUniform1i(texture_00_UL, 5);     // <- 5, an integer, because it's "Texture Unit #5"
-    // ***************************************************************
+    {
+        GLint textureUnitNumber = 2;
+        GLuint Texture02 = ::g_pTextureManager->getTextureIDFromName(pCurrentMesh->textureName[textureUnitNumber]);
+        glActiveTexture(GL_TEXTURE0 + textureUnitNumber);
+        glBindTexture(GL_TEXTURE_2D, Texture02);
+        GLint texture_02_UL = glGetUniformLocation(shaderProgramID, "texture_02");
+        glUniform1i(texture_02_UL, textureUnitNumber);
+    }
 
+    {
+        GLint textureUnitNumber = 3;
+        GLuint Texture03 = ::g_pTextureManager->getTextureIDFromName(pCurrentMesh->textureName[textureUnitNumber]);
+        glActiveTexture(GL_TEXTURE0 + textureUnitNumber);
+        glBindTexture(GL_TEXTURE_2D, Texture03);
+        GLint texture_03_UL = glGetUniformLocation(shaderProgramID, "texture_03");
+        glUniform1i(texture_03_UL, textureUnitNumber);
+    }    
+    // and so on to however many texture you are using
+
+//    uniform vec4 textureMixRatio_0_3;
+//    uniform vec4 textureMixRatio_4_7;
+
+    GLint textureMixRatio_0_3_UL = glGetUniformLocation(shaderProgramID, "textureMixRatio_0_3");
+//    GLint textureMixRatio_4_7_UL = glGetUniformLocation(shaderProgramID, "textureMixRatio_4_7");
+
+    glUniform4f(textureMixRatio_0_3_UL,
+                pCurrentMesh->textureRatios[0],
+                pCurrentMesh->textureRatios[1],
+                pCurrentMesh->textureRatios[2],
+                pCurrentMesh->textureRatios[3]);
+//    glUniform4f(textureMixRatio_4_7_UL,
+//                pCurrentMesh->textureRatios[4],
+//                pCurrentMesh->textureRatios[5],
+//                pCurrentMesh->textureRatios[6],
+//                pCurrentMesh->textureRatios[7]);
+    
     return;
 }
 
