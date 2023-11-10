@@ -564,6 +564,32 @@ void DrawLightDebugSpheres(glm::mat4 matProjection, glm::mat4 matView,
     return;
 }
 
+void SetUpTextures(cMesh* pCurrentMesh, GLuint shaderProgramID)
+{
+    // ***************************************************************
+    //    GLuint TaylorSwiftTextureNumber = ::g_pTextureManager->getTextureIDFromName("TaylorSwift_Eras_Poster.bmp");
+    GLuint Texture00 = ::g_pTextureManager->getTextureIDFromName(pCurrentMesh->textureName[0]);
+    if (Texture00 == 0)
+    {
+        Texture00 = ::g_pTextureManager->getTextureIDFromName("Blank_UV_Text_Texture.bmp");
+    }
+
+    // We are just going to pick texture unit 5 (for no reason, just as an example)
+    //    glActiveTexture(GL_TEXTURE5);       // #5 TEXTURE UNIT
+    glActiveTexture(GL_TEXTURE0 + 5);       // #5 TEXTURE UNIT
+    glBindTexture(GL_TEXTURE_2D, Texture00);
+
+    //uniform sampler2D texture_00;
+    GLint texture_00_UL = glGetUniformLocation(shaderProgramID, "texture_00");
+    glUniform1i(texture_00_UL, 5);     // <- 5, an integer, because it's "Texture Unit #5"
+    // ***************************************************************
+
+    return;
+}
+
+
+
+
 void DrawObject(cMesh* pCurrentMesh, glm::mat4 matModelParent, GLuint shaderProgramID)
 {
 
@@ -695,23 +721,7 @@ void DrawObject(cMesh* pCurrentMesh, glm::mat4 matModelParent, GLuint shaderProg
     glUniform1f(bUseVertexColours_UL, (GLfloat)GL_FALSE);
 
 
-// ***************************************************************
-//    GLuint TaylorSwiftTextureNumber = ::g_pTextureManager->getTextureIDFromName("TaylorSwift_Eras_Poster.bmp");
-    GLuint Texture00 = ::g_pTextureManager->getTextureIDFromName(pCurrentMesh->textureName[0]);
-    if ( Texture00 == 0 )
-    {
-        Texture00 = ::g_pTextureManager->getTextureIDFromName("Blank_UV_Text_Texture.bmp");
-    }
-
-    // We are just going to pick texture unit 5 (for no reason, just as an example)
-//    glActiveTexture(GL_TEXTURE5);       // #5 TEXTURE UNIT
-    glActiveTexture(GL_TEXTURE0 + 5);       // #5 TEXTURE UNIT
-    glBindTexture(GL_TEXTURE_2D, Texture00);
-
-    //uniform sampler2D texture_00;
-    GLint texture_00_UL = glGetUniformLocation(shaderProgramID, "texture_00");
-    glUniform1i(texture_00_UL, 5 );     // <- 5, an integer, because it's "Texture Unit #5"
-// ***************************************************************
+    SetUpTextures(pCurrentMesh, shaderProgramID);
 
 
     sModelDrawInfo modelInfo;
