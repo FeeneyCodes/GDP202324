@@ -20,13 +20,37 @@ out vec4 vertexWorldPos;
 out vec4 vertexWorldNormal;
 out vec2 textureCoords;		// ADDED
 
+uniform bool bUseHeightMap;
+uniform sampler2D heightMapSampler;		// Texture unit 20
+uniform float heightScale;
+uniform vec2 UVOffset;
+
 void main()
 {
+	vec4 vertexModelPosition = vPos;	
+
+	vec2 UVFinal = vTextureCoords.st;
+	
+	if ( bUseHeightMap )
+	{
+		// Greyscale (black and white) heightmap image
+		// NvF5e_height_map.bmp
+//		vec3 heightRGB = texture( heightMapSampler, vTextureCoords.st ).rgb;
+//		float height = (heightRGB.r + heightRGB.g + heightRGB.b) / 3.0f;
+		UVFinal += UVOffset.yx;
+		float height = texture( heightMapSampler, UVFinal.st ).r;
+		
+		// Adjust the height of the y axis from this "colour"
+//		const float SCALEADJUST = 25.0f;
+//		vertexModelPosition.y += ( height * SCALEADJUST );
+		vertexModelPosition.y += ( height * heightScale );
+	}
+	
 	
 //	gl_Position = MVP * vec4(finalPos, 1.0);
 //	gl_Position = MVP * vertModelPosition;
 	mat4 matMVP = matProjection * matView * matModel;
-	gl_Position = matMVP * vec4(vPos.xyz, 1.0);
+	gl_Position = matMVP * vec4(vertexModelPosition.xyz, 1.0);
 	
 		
 	// Rotate the normal by the inverse transpose of the model matrix
@@ -35,10 +59,11 @@ void main()
 	vertexWorldNormal.xyz = normalize(vertexWorldNormal.xyz);
 	vertexWorldNormal.w = 1.0f;
 	
-	vertexWorldPos = matModel * vec4( vPos.xyz, 1.0f);
+	vertexWorldPos = matModel * vec4( vertexModelPosition.xyz, 1.0f);
 	
 	colour = vCol;
 	
 	// Copy the UV coordinates unchanged (to the fragment shader)
-	textureCoords = vTextureCoords;
+//	textureCoords = vTextureCoords;
+	textureCoords = UVFinal;
 }

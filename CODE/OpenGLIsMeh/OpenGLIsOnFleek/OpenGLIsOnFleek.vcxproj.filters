@@ -40,6 +40,9 @@
     <Filter Include="TextureManager">
       <UniqueIdentifier>{4d886445-085f-41aa-965a-12e1a05c5362}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Timing">
+      <UniqueIdentifier>{c9a83340-4545-48b5-830a-ecc656d95e78}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="theMain.cpp">
@@ -114,6 +117,9 @@
     <ClCompile Include="cPhysics_AABB_Subdivide.cpp">
       <Filter>Physics_Stuff</Filter>
     </ClCompile>
+    <ClCompile Include="cHiResTimer.cpp">
+      <Filter>Timing</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Basic Shader Manager\cShaderManager.h">
@@ -172,6 +178,9 @@
     </ClInclude>
     <ClInclude Include="sTriangle.h">
       <Filter>Physics_Stuff</Filter>
+    </ClInclude>
+    <ClInclude Include="cHiResTimer.h">
+      <Filter>Timing</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -17,6 +17,10 @@ extern int g_selectedLight;// = 0;
 
 bool SaveVectorSceneToFile(std::string saveFileName);
 
+// HACK:
+extern float g_HeightAdjust; //= 10.0f;
+extern glm::vec2 g_UVOffset;// = glm::vec2(0.0f, 0.0f);
+
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
@@ -45,6 +49,34 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
     // & will "mask" off the mod leaving the shift
     if ((mods & GLFW_MOD_CONTROL) == GLFW_MOD_CONTROL)
     {
+        // Adjust height of terrain
+        if ( key == GLFW_KEY_U )
+        {
+            ::g_HeightAdjust += 0.1;
+        }
+        if ( key == GLFW_KEY_J )
+        {
+            ::g_HeightAdjust -= 0.1;
+        }
+
+        if ( key == GLFW_KEY_LEFT )
+        {
+            ::g_UVOffset.x -= 0.01f;
+        }
+        if ( key == GLFW_KEY_RIGHT )
+        {
+            ::g_UVOffset.x += 0.01f;
+        }
+        if ( key == GLFW_KEY_UP )
+        {
+            ::g_UVOffset.y -= 0.01f;
+        }
+        if ( key == GLFW_KEY_DOWN )
+        {
+            ::g_UVOffset.y += 0.01f;
+        }
+
+
         // Shift key down (ignores other keys)
 
         if (key == GLFW_KEY_A )

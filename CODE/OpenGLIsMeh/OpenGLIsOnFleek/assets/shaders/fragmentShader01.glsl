@@ -33,9 +33,15 @@ uniform sampler2D texture_04;
 uniform sampler2D texture_05;
 uniform sampler2D texture_06;
 uniform sampler2D texture_07;
+
+//
+uniform bool bUseHeightMap;
+uniform sampler2D heightMapSampler;		// Texture unit 20
+uniform sampler2D discardSampler;		// Texture unit 21
+
 //... and so on
 //uniform float textureMixRatio[8];
-uniform vec4 textureMixRatio_0_3;
+uniform vec4 textureMixRatio_0_3;		// 1, 0, 0, 0 
 uniform vec4 textureMixRatio_4_7;
 
 //uniform samplerCube skyBox;
@@ -75,6 +81,24 @@ vec4 calculateLightContrib( vec3 vertexMaterialColour, vec3 vertexNormal,
 void main()
 {
 //	gl_FragColor = vec4(color, 1.0);
+
+//	if ( bUseHeightMap )
+//	{
+//		outputColour.rgba = vec4(1.0f, 0.0f, 0.0f, 1.0f);
+//		return;
+//	}
+
+	// Discard the water
+	if ( bUseHeightMap )
+	{
+		// Range of 0 to 1
+		float height = texture( heightMapSampler, textureCoords.st ).r;
+		
+		if ( height <= 0.005f )
+		{
+			discard;
+		}
+	}
 
 	vec4 textureColour = 
 			  texture( texture_00, textureCoords.st ).rgba * textureMixRatio_0_3.x 	

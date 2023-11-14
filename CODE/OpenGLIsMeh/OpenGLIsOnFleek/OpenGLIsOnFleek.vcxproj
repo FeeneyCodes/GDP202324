@@ -138,6 +138,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="cHiResTimer.cpp" />
     <ClCompile Include="cPhysics_AABB_Subdivide.cpp" />
     <ClCompile Include="Basic Shader Manager\cShader.cpp" />
     <ClCompile Include="Basic Shader Manager\cShaderManager.cpp" />
@@ -174,6 +175,7 @@
     </ClInclude>
     <ClInclude Include="cDebugRender.h" />
     <ClInclude Include="cGlobal.h" />
+    <ClInclude Include="cHiResTimer.h" />
     <ClInclude Include="cLightHelper.h" />
     <ClInclude Include="cLightManager.h" />
     <ClInclude Include="cMesh.h" />

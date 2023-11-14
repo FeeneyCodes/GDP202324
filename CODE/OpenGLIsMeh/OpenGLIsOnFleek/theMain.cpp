@@ -40,6 +40,8 @@
 
 #include "TextureManager/cBasicTextureManager.h"
 
+#include "cHiResTimer.h"
+
 glm::vec3 g_cameraEye = glm::vec3(0.0, 70.0, 181.0f);
 glm::vec3 g_cameraTarget = glm::vec3(0.0f, 5.0f, 0.0f);
 glm::vec3 g_upVector = glm::vec3(0.0f, 1.0f, 0.0f);
@@ -102,7 +104,9 @@ float getRandomFloat(float a, float b);
 
 void LoadTheRobotronModels(GLuint shaderProgram);
 
-
+// HACK:
+float g_HeightAdjust = 10.0f;
+glm::vec2 g_UVOffset = glm::vec2(0.0f, 0.0f);
 
 
 
@@ -143,6 +147,13 @@ int main(void)
     glfwMakeContextCurrent(window);
     gladLoadGLLoader( (GLADloadproc)glfwGetProcAddress);
     glfwSwapInterval(1);
+
+
+
+//    cHiResTimer* p_HRTimer = new cHiResTimer();
+    // Get average of last 30 frames
+//    cHiResTimer* p_HRTimer = new cHiResTimer(32);
+    cHiResTimer* p_HRTimer = new cHiResTimer(60);
 
 
     cShaderManager* pShaderThing = new cShaderManager();
@@ -187,6 +198,19 @@ int main(void)
     ::g_pMeshManager->LoadModelIntoVAO("Terrain_xyz_n_rgba_uv.ply",
                                    terrainDrawingInfo, shaderProgramID);
     std::cout << "Loaded: " << terrainDrawingInfo.numberOfVertices << " vertices" << std::endl;
+
+    ::g_pMeshManager->LoadModelIntoVAO("Big_Flat_Mesh_256x256_00_132K_xyz_n_rgba_uv.ply",
+                                   terrainDrawingInfo, shaderProgramID);
+    std::cout << "Loaded: " << terrainDrawingInfo.numberOfVertices << " vertices" << std::endl;
+
+    ::g_pMeshManager->LoadModelIntoVAO("Big_Flat_Mesh_256x256_12_5_xyz_n_rgba_uv.ply",
+                                   terrainDrawingInfo, shaderProgramID);
+    std::cout << "Loaded: " << terrainDrawingInfo.numberOfVertices << " vertices" << std::endl;
+
+    ::g_pMeshManager->LoadModelIntoVAO("Big_Flat_Mesh_256x256_07_1K_xyz_n_rgba_uv.ply",
+                                   terrainDrawingInfo, shaderProgramID);
+    std::cout << "Loaded: " << terrainDrawingInfo.numberOfVertices << " vertices" << std::endl;
+
 
 //    sModelDrawInfo HilbertRampDrawingInfo;
 //    ::g_pMeshManager->LoadModelIntoVAO("HilbertRamp_stl (rotated).ply",
@@ -245,6 +269,8 @@ int main(void)
     ::g_pTextureManager->Create2DTextureFromBMPFile("SpidermanUV_square.bmp", true);
     ::g_pTextureManager->Create2DTextureFromBMPFile("Water_Texture_01.bmp", true);
     ::g_pTextureManager->Create2DTextureFromBMPFile("taylor-swift-jimmy-fallon.bmp", true);
+    // Load the HUGE height map
+    ::g_pTextureManager->Create2DTextureFromBMPFile("NvF5e_height_map.bmp", true);
 
 
     // This handles the phsyics objects
@@ -374,17 +400,20 @@ int main(void)
 
 
  
-        // Time per frame (more or less)
-        double currentTime = glfwGetTime();
-        double deltaTime = currentTime - lastTime;
-        // We should add this to a list of times, and get the average frame time
-        const double LARGEST_DELTA_TIME = 1.0f / 30.0f; // 30FPS  (16 ms)
-        if ( deltaTime > LARGEST_DELTA_TIME )
-        {
-            deltaTime = LARGEST_DELTA_TIME;
-        }
+//        // Time per frame (more or less)
+//        double currentTime = glfwGetTime();
+//        double deltaTime = currentTime - lastTime;
+//        // We should add this to a list of times, and get the average frame time
+//        const double LARGEST_DELTA_TIME = 1.0f / 30.0f; // 30FPS  (16 ms)  24 FPS
+//        if ( deltaTime > LARGEST_DELTA_TIME )
+//        {
+//            deltaTime = LARGEST_DELTA_TIME;
+//        }
 //        std::cout << deltaTime << std::endl;
-        lastTime = currentTime;
+//        lastTime = currentTime;
+
+        double deltaTime = p_HRTimer->getFrameTime();
+//        std::cout << deltaTime << std::endl;
 
 
         DrawLightDebugSpheres(matProjection, matView, shaderProgramID);
@@ -409,9 +438,9 @@ int main(void)
             pSpidey->adjustRoationAngleFromEuler(glm::vec3(0.0f, 0.0f, 0.001f));
         }
 
-        cMesh* pTayTayGround = g_pFindMeshByFriendlyName("Ground");
-        pTayTayGround->textureRatios[1] += 0.0001f;
-        pTayTayGround->textureRatios[0] = 1.0f - pTayTayGround->textureRatios[1];
+//        cMesh* pTayTayGround = g_pFindMeshByFriendlyName("Ground");
+//        pTayTayGround->textureRatios[1] += 0.0001f;
+//        pTayTayGround->textureRatios[0] = 1.0f - pTayTayGround->textureRatios[1];
 
 
 
@@ -656,6 +685,20 @@ void SetUpTextures(cMesh* pCurrentMesh, GLuint shaderProgramID)
 //                pCurrentMesh->textureRatios[5],
 //                pCurrentMesh->textureRatios[6],
 //                pCurrentMesh->textureRatios[7]);
+
+
+    // Also set up the height map and discard texture
+
+    {
+        // uniform sampler2D heightMapSampler;		// Texture unit 20
+        GLint textureUnitNumber = 20;
+        GLuint Texture20 = ::g_pTextureManager->getTextureIDFromName("NvF5e_height_map.bmp");
+        glActiveTexture(GL_TEXTURE0 + textureUnitNumber);
+        glBindTexture(GL_TEXTURE_2D, Texture20);
+        GLint texture_20_UL = glGetUniformLocation(shaderProgramID, "heightMapSampler");
+        glUniform1i(texture_20_UL, textureUnitNumber);
+    }    
+
     
     return;
 }
@@ -794,8 +837,35 @@ void DrawObject(cMesh* pCurrentMesh, glm::mat4 matModelParent, GLuint shaderProg
     glUniform1f(bUseVertexColours_UL, (GLfloat)GL_FALSE);
 
 
+
     SetUpTextures(pCurrentMesh, shaderProgramID);
 
+// *********************************************************************
+    // Is this using the heigth map?
+    // HACK:
+    GLint bUseHeightMap_UL = glGetUniformLocation(shaderProgramID, "bUseHeightMap");
+    // uniform bool bUseHeightMap;
+    if ( pCurrentMesh->friendlyName == "Ground" )
+    {
+        glUniform1f(bUseHeightMap_UL, (GLfloat)GL_TRUE);
+
+        //uniform float heightScale;
+        GLint heightScale_UL = glGetUniformLocation(shaderProgramID, "heightScale");
+        glUniform1f(heightScale_UL, ::g_HeightAdjust);
+        
+        //uniform vec2 UVOffset;
+        GLint UVOffset_UL = glGetUniformLocation(shaderProgramID, "UVOffset");
+        glUniform2f(UVOffset_UL, ::g_UVOffset.x, ::g_UVOffset.y);
+
+
+    }
+    else
+    {
+        glUniform1f(bUseHeightMap_UL, (GLfloat)GL_FALSE);
+    }
+
+
+// *********************************************************************
 
     sModelDrawInfo modelInfo;
     if (::g_pMeshManager->FindDrawInfoByModelName(pCurrentMesh->meshName, modelInfo))
