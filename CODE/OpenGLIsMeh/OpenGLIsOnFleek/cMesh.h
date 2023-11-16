@@ -9,11 +9,19 @@
 
 #include "iPhysicsMeshTransformAccess.h"
 
+//void UpdateObject(std::string friendyName)
+//{
+//	cMesh* pThing = ::findObjectByFriendlyName(frientlyName);
+//	pThing->Update();
+//}
+
 class cMesh : public iPhysicsMeshTransformAccess
 {
 public:
 	cMesh();		// Called on creation   c'tor
 	~cMesh();		// Called on deletion   d'tor
+
+//	void Update();
 
 	// Texture info
 	static const int NUM_TEXTURES = 8;
@@ -80,6 +88,8 @@ public:
 	//void Update(double deltaTime);
 
 	unsigned int getUniqueID(void);
+
+
 
 private:
 	unsigned int m_UniqueID;

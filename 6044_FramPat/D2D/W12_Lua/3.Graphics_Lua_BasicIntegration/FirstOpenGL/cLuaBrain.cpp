@@ -63,9 +63,11 @@ cLuaBrain::cLuaBrain()
 	lua_pushcfunction( this->m_pLuaState, cLuaBrain::l_GetObjectState );
 	lua_setglobal( this->m_pLuaState, "getObjectState" );
 
-
 	lua_pushcfunction( this->m_pLuaState, cLuaBrain::l_StopPlayingPoker );
 	lua_setglobal( this->m_pLuaState, "shakeHandsWithALeglessLizard" );
+
+	lua_pushcfunction( this->m_pLuaState, cLuaBrain::l_GetTaylorSwiftTickets );
+	lua_setglobal( this->m_pLuaState, "getMeMyTayTayTickets" );
 
 
 	lua_pushcfunction( this->m_pLuaState, MakeTheCowsBigger);
@@ -256,6 +258,9 @@ void cLuaBrain::Update(float deltaTime)
 /*static*/ int cLuaBrain::l_GetObjectState( lua_State *L )
 {
 	int objectID = (int)lua_tonumber(L, 1);	/* get argument */
+//	std::string bathtub = lua_tostring(L, 2);
+//	std::string fishName = lua_tostring(L, 3);
+//	float the_PI = lua_tonumber(L, 4);
 	
 	// Exist? 
 	cGameObject* pGO = cLuaBrain::m_findObjectByID(objectID);
@@ -278,6 +283,16 @@ void cLuaBrain::Update(float deltaTime)
 	
 	return 7;		// There were 7 things on the stack
 }
+
+/*static*/ 
+int cLuaBrain::l_GetTaylorSwiftTickets(lua_State* L)
+{
+	std::cout << "How about no." << std::endl;
+	return 0;
+}
+
+
+
 
 /*static*/ 
 std::vector< cGameObject* >* cLuaBrain::m_p_vecGOs;

@@ -12,6 +12,8 @@ extern "C" {
 #include "cGameObject.h"
 #include <map>
 
+
+
 class cLuaBrain
 {
 public:
@@ -26,6 +28,8 @@ public:
 	void SetObjectVector( std::vector< cGameObject* >* p_vecGOs );
 	// Call all the active scripts that are loaded
 	void Update(float deltaTime);
+
+	static int l_GetTaylorSwiftTickets(  lua_State *L );	
 
 	static int l_KillAllHumans( lua_State *L );	
 	// Called by Lua

@@ -383,15 +383,8 @@ int main(void)
 	ssMoveTo << "r, x, y, z, vx, vy, vz = getObjectState(";
 	ssMoveTo << ::g_pObjectToRotate->getID();
 	ssMoveTo << ") \n";
-	// New function
-//	ssMoveTo << "JustinTrudeauIsOurPM(\"Justin\", 47, 3.14159) \n";
-	//
-//	ssMoveTo << "if ( r == true ) then \n";
-//	ssMoveTo << "    print( \"xyz=\", x, \",\", y, \", \", z )  \n";
-//	ssMoveTo << "end \n";
-
-	ssMoveTo << " x = x - 0.01  \n";
-	ssMoveTo << " y = y + 0.01  \n";
+	ssMoveTo << " x = x + 0.01  \n";
+	ssMoveTo << " y = y - 0.005  \n";
 	ssMoveTo << "setObjectState(";
 	ssMoveTo << ::g_pObjectToRotate->getID();
 	ssMoveTo << ", x, y, z, Vx, Vy, Vz ) \n";
@@ -406,6 +399,9 @@ int main(void)
 		"print(a)\n" \
 		"print(b)"	
 	);
+
+	::p_LuaScripts->RunThis("getMeMyTayTayTickets()");
+
 
 	double lastTime = glfwGetTime();
 
