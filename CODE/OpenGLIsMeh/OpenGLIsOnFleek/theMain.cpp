@@ -339,8 +339,14 @@ int main(void)
                                 pBathTub->getDrawPosition(),
                                 glm::vec3(50.0f, 0.0f, 0.0f),
                                 10.0f);
-
     vecAnimationCommands.push_back(moveBathTub);
+
+
+    cCommand_MoveTo moveBathTub2(pBathTub,
+                                pBathTub->getDrawPosition(),
+                                glm::vec3(-30.0f, 10.0f, 16.0f),
+                                5.0f);
+    vecAnimationCommands.push_back(moveBathTub2);
 
 // *************************************************************************************
 
