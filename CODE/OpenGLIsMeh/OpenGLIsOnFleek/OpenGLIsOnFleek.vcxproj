@@ -138,6 +138,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="cCommand_MoveTo.cpp" />
     <ClCompile Include="cHiResTimer.cpp" />
     <ClCompile Include="cPhysics_AABB_Subdivide.cpp" />
     <ClCompile Include="Basic Shader Manager\cShader.cpp" />
@@ -173,6 +174,7 @@
     <ClInclude Include="cAABB_JUST_SOME_NOTE.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClInclude>
+    <ClInclude Include="cCommand_MoveTo.h" />
     <ClInclude Include="cDebugRender.h" />
     <ClInclude Include="cGlobal.h" />
     <ClInclude Include="cHiResTimer.h" />

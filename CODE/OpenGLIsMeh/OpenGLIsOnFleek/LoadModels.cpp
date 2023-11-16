@@ -32,8 +32,8 @@ bool LoadModels(void)
     cMesh* pBathtub = new cMesh();
     pBathtub->meshName = "bathtub_xyz_n_rgba_uv.ply";
     pBathtub->friendlyName = "bathtub";
-    pBathtub->setUniformDrawScale(5.0f);
-    pBathtub->setRotationFromEuler(glm::vec3(45.0f, 0.0f, 0.0f));
+    pBathtub->setUniformDrawScale(1.0f);
+//    pBathtub->setRotationFromEuler(glm::vec3(45.0f, 0.0f, 0.0f));
     pBathtub->drawPosition = glm::vec3(0.0f, -30.0f, 0.0f);
     // 
     pBathtub->textureName[0] = "Water_Texture_01.bmp";

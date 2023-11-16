@@ -43,6 +43,9 @@
     <Filter Include="Timing">
       <UniqueIdentifier>{c9a83340-4545-48b5-830a-ecc656d95e78}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Commands">
+      <UniqueIdentifier>{36cc4752-e3bb-4c8c-8c59-8d29b89a9efb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="theMain.cpp">
@@ -120,6 +123,9 @@
     <ClCompile Include="cHiResTimer.cpp">
       <Filter>Timing</Filter>
     </ClCompile>
+    <ClCompile Include="cCommand_MoveTo.cpp">
+      <Filter>Commands</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Basic Shader Manager\cShaderManager.h">
@@ -181,6 +187,9 @@
     </ClInclude>
     <ClInclude Include="cHiResTimer.h">
       <Filter>Timing</Filter>
+    </ClInclude>
+    <ClInclude Include="cCommand_MoveTo.h">
+      <Filter>Commands</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -42,6 +42,8 @@
 
 #include "cHiResTimer.h"
 
+#include "cCommand_MoveTo.h"
+
 glm::vec3 g_cameraEye = glm::vec3(0.0, 70.0, 181.0f);
 glm::vec3 g_cameraTarget = glm::vec3(0.0f, 5.0f, 0.0f);
 glm::vec3 g_upVector = glm::vec3(0.0f, 1.0f, 0.0f);
@@ -327,6 +329,21 @@ int main(void)
 
     double lastTime = glfwGetTime();
 
+// *************************************************************************************
+    // These are the commands we are going to process
+    std::vector<cCommand_MoveTo> vecAnimationCommands;
+
+    cMesh* pBathTub = g_pFindMeshByFriendlyName("bathtub");
+
+    cCommand_MoveTo moveBathTub(pBathTub,
+                                pBathTub->getDrawPosition(),
+                                glm::vec3(50.0f, 0.0f, 0.0f),
+                                10.0f);
+
+    vecAnimationCommands.push_back(moveBathTub);
+
+// *************************************************************************************
+
     while (!glfwWindowShouldClose(window))
     {
 
@@ -414,6 +431,22 @@ int main(void)
 
         double deltaTime = p_HRTimer->getFrameTime();
 //        std::cout << deltaTime << std::endl;
+
+
+// ***********************************************************************
+        if ( ! vecAnimationCommands.empty() )
+        {
+            vecAnimationCommands[0].Update(deltaTime);
+
+            // Done? 
+            if (vecAnimationCommands[0].isDone() )
+            {
+                // Erase the item from vector
+                // Is "slow" in that it has to copy the vector again
+                vecAnimationCommands.erase(vecAnimationCommands.begin());
+            }
+        }//if (!vecAnimationCommands.empty())
+// ***********************************************************************
 
 
         DrawLightDebugSpheres(matProjection, matView, shaderProgramID);
