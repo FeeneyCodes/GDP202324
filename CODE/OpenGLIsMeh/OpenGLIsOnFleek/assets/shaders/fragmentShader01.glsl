@@ -25,6 +25,10 @@ uniform vec4 debugColourRGBA;
 // (NOT the one from the model file)
 uniform bool bUseVertexColours;		// If true, then DOESN'T use texture colours
 
+// Usually, you would pass the alpha transparency as the 4th colour value, 
+// 	but for clarity, we'll pass it separately...
+uniform float transparencyAlpha;
+
 uniform sampler2D texture_00;			// 2D meaning x,y or s,t or u,v
 uniform sampler2D texture_01;
 uniform sampler2D texture_02;
@@ -38,6 +42,13 @@ uniform sampler2D texture_07;
 uniform bool bUseHeightMap;
 uniform sampler2D heightMapSampler;		// Texture unit 20
 uniform sampler2D discardSampler;		// Texture unit 21
+
+// Skybox, cubemap, etc.
+uniform samplerCube skyBoxTexture;
+
+// For the discard example
+uniform bool bUseDiscardMaskTexture;
+uniform sampler2D maskSamplerTexture01;
 
 //... and so on
 //uniform float textureMixRatio[8];
@@ -89,16 +100,33 @@ void main()
 //	}
 
 	// Discard the water
-	if ( bUseHeightMap )
+//	if ( bUseHeightMap )
+//	{
+//		// Range of 0 to 1
+//		float height = texture( heightMapSampler, textureCoords.st ).r;
+//		
+//		if ( height <= 0.005f )
+//		{
+//			discard;
+//		}
+//	}
+
+	if ( bUseDiscardMaskTexture )
 	{
-		// Range of 0 to 1
-		float height = texture( heightMapSampler, textureCoords.st ).r;
-		
-		if ( height <= 0.005f )
+		float maskValue = texture( maskSamplerTexture01, textureCoords.st ).r;
+		// If "black" then discard
+		if ( maskValue < 0.1f )
 		{
 			discard;
-		}
-	}
+//			outputColour.rgba = vec4( 1.0f, 0.0f, 0.0f, 1.0f );
+//			return;
+		}	
+	}//if ( bUseDiscardMaskTexture )
+	
+//	{
+//		//uniform samplerCube skyBoxTexture;
+//		vec4 skyBoxSampleColour = texture( skyBoxTexture, vertexNormal.xyz ).rgba
+//	}
 
 	vec4 textureColour = 
 			  texture( texture_00, textureCoords.st ).rgba * textureMixRatio_0_3.x 	
@@ -143,7 +171,9 @@ void main()
 	// Real gamma correction is a curve, but we'll Rock-n-Roll it here
 	outputColour.rgb *= 1.35f;
 	
-	outputColour.a = 1.0f;
+	// This is where the alpha transparency happens
+//	outputColour.a = 1.0f;
+	outputColour.a = transparencyAlpha;
 	
 	
 	// DEBUG HACK

@@ -198,8 +198,7 @@ bool CTextureFromBMP::CreateNewCubeTextureFromBMPFiles( std::string cubeMapName,
 	}
 
 	//
-	//glEnable(GL_TEXTURE_2D);
-	//glActiveTexture( textureUnit );	// GL_TEXTURE0, GL_TEXTURE1, etc.
+	//glBindTexture(GL_TEXTURE_2D, this->m_textureNumber );
 	glBindTexture( GL_TEXTURE_CUBE_MAP, this->m_textureNumber ); 
 
 	//glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_GENERATE_MIPMAP, GL_TRUE);

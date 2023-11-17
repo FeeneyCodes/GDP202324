@@ -44,21 +44,21 @@ bool LoadModels(void)
 
     cMesh* pGroundMesh = new cMesh();
 //    pGroundMesh->meshName = "Terrain_xyz_n_rgba_uv.ply";
-    pGroundMesh->meshName = "Big_Flat_Mesh_256x256_00_132K_xyz_n_rgba_uv.ply";    
+//    pGroundMesh->meshName = "Big_Flat_Mesh_256x256_00_132K_xyz_n_rgba_uv.ply";    
 //    pGroundMesh->meshName = "Big_Flat_Mesh_256x256_07_1K_xyz_n_rgba_uv.ply";    
-//    pGroundMesh->meshName = "Big_Flat_Mesh_256x256_12_5_xyz_n_rgba_uv.ply";    
+    pGroundMesh->meshName = "Big_Flat_Mesh_256x256_12_5_xyz_n_rgba_uv.ply";    
     pGroundMesh->drawPosition.y = -50.0f;
-    pGroundMesh->drawPosition.z = 25.0f;
+    pGroundMesh->drawPosition.z = -50.0f;
     pGroundMesh->friendlyName = "Ground";
 
-    pGroundMesh->bIsWireframe = true;
-    pGroundMesh->bDoNotLight = true;
-    pGroundMesh->wholeObjectDebugColourRGBA = glm::vec4(0.5f, 0.5f, 0.5f, 1.0f);
-    pGroundMesh->bUseDebugColours = true;
+    //pGroundMesh->bIsWireframe = true;
+    //pGroundMesh->bDoNotLight = true;
+    //pGroundMesh->wholeObjectDebugColourRGBA = glm::vec4(0.5f, 0.5f, 0.5f, 1.0f);
+    //pGroundMesh->bUseDebugColours = true;
     //
 //    pGroundMesh->textureName[0] = "NvF5e_height_map.bmp";
 //    pGroundMesh->textureName[0] = "Blank_UV_Text_Texture.bmp";
-//    pGroundMesh->textureName[0] = "TaylorSwift_Eras_Poster.bmp";
+    pGroundMesh->textureName[0] = "TaylorSwift_Eras_Poster.bmp";
     pGroundMesh->textureRatios[0] = 1.0f;
 
 //    pGroundMesh->textureName[1] = "taylor-swift-jimmy-fallon.bmp";

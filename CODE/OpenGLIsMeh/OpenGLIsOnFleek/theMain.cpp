@@ -273,6 +273,23 @@ int main(void)
     ::g_pTextureManager->Create2DTextureFromBMPFile("taylor-swift-jimmy-fallon.bmp", true);
     // Load the HUGE height map
     ::g_pTextureManager->Create2DTextureFromBMPFile("NvF5e_height_map.bmp", true);
+    
+    // Using this for discard transparency mask
+    ::g_pTextureManager->Create2DTextureFromBMPFile("FAKE_Stencil_Texture_612x612.bmp", true);
+
+    // Load a cube map
+    ::g_pTextureManager->SetBasePath("assets/textures/CubeMaps");
+    std::string errors;
+    ::g_pTextureManager->CreateCubeTextureFromBMPFiles("space",
+                                                       "SpaceBox_right1_posX.bmp",
+                                                       "SpaceBox_left2_negX.bmp",
+                                                       "SpaceBox_top3_posY.bmp",
+                                                       "SpaceBox_bottom4_negY.bmp",
+                                                       "SpaceBox_front5_posZ.bmp",
+                                                       "SpaceBox_back6_negZ.bmp",
+                                                       true,
+                                                       errors);
+
 
 
     // This handles the phsyics objects
@@ -880,30 +897,58 @@ void DrawObject(cMesh* pCurrentMesh, glm::mat4 matModelParent, GLuint shaderProg
     SetUpTextures(pCurrentMesh, shaderProgramID);
 
 // *********************************************************************
-    // Is this using the heigth map?
-    // HACK:
-    GLint bUseHeightMap_UL = glGetUniformLocation(shaderProgramID, "bUseHeightMap");
-    // uniform bool bUseHeightMap;
-    if ( pCurrentMesh->friendlyName == "Ground" )
+//    // Is this using the heigth map?
+//    // HACK:
+//    GLint bUseHeightMap_UL = glGetUniformLocation(shaderProgramID, "bUseHeightMap");
+//    // uniform bool bUseHeightMap;
+//    if ( pCurrentMesh->friendlyName == "Ground" )
+//    {
+//        glUniform1f(bUseHeightMap_UL, (GLfloat)GL_TRUE);
+//
+//        //uniform float heightScale;
+//        GLint heightScale_UL = glGetUniformLocation(shaderProgramID, "heightScale");
+//        glUniform1f(heightScale_UL, ::g_HeightAdjust);
+//        
+//        //uniform vec2 UVOffset;
+//        GLint UVOffset_UL = glGetUniformLocation(shaderProgramID, "UVOffset");
+//        glUniform2f(UVOffset_UL, ::g_UVOffset.x, ::g_UVOffset.y);
+//
+//
+//    }
+//    else
+//    {
+//        glUniform1f(bUseHeightMap_UL, (GLfloat)GL_FALSE);
+//    }
+// *********************************************************************
+
+
+// *********************************************************************
+    //  Discard texture example
+    //    uniform bool bUseDiscardMaskTexture;
+    //    uniform sampler2D maskSamplerTexture01;
     {
-        glUniform1f(bUseHeightMap_UL, (GLfloat)GL_TRUE);
+        GLint bUseDiscardMaskTexture_UL = glGetUniformLocation(shaderProgramID, "bUseDiscardMaskTexture");
 
-        //uniform float heightScale;
-        GLint heightScale_UL = glGetUniformLocation(shaderProgramID, "heightScale");
-        glUniform1f(heightScale_UL, ::g_HeightAdjust);
-        
-        //uniform vec2 UVOffset;
-        GLint UVOffset_UL = glGetUniformLocation(shaderProgramID, "UVOffset");
-        glUniform2f(UVOffset_UL, ::g_UVOffset.x, ::g_UVOffset.y);
+        // uniform bool bUseHeightMap;
+        if ( pCurrentMesh->friendlyName == "Ground" )
+        {
+            glUniform1f(bUseDiscardMaskTexture_UL, (GLfloat)GL_TRUE);
 
+            //uniform sampler2D maskSamplerTexture01; 	// Texture unit 25
+            GLint textureUnitNumber = 25;
+            GLuint stencilMaskID = ::g_pTextureManager->getTextureIDFromName("FAKE_Stencil_Texture_612x612.bmp");
+            glActiveTexture(GL_TEXTURE0 + textureUnitNumber);
+            glBindTexture(GL_TEXTURE_2D, stencilMaskID);
 
+            GLint bUseDiscardMaskTexture_UL = glGetUniformLocation(shaderProgramID, "maskSamplerTexture01");
+            glUniform1i(bUseDiscardMaskTexture_UL, textureUnitNumber);
+
+        }
+        else
+        {
+            glUniform1f(bUseDiscardMaskTexture_UL, (GLfloat)GL_FALSE);
+        }
     }
-    else
-    {
-        glUniform1f(bUseHeightMap_UL, (GLfloat)GL_FALSE);
-    }
-
-
 // *********************************************************************
 
     sModelDrawInfo modelInfo;
