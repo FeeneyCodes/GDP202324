@@ -592,6 +592,11 @@ int main(void)
             theSkyBox.setUniformDrawScale(5'000.0f);
             theSkyBox.setDrawPosition(::g_cameraEye);
 //            theSkyBox.bIsWireframe = true;
+
+            // Depth test
+//            glDisable(GL_DEPTH_TEST);       // Writes no matter what
+            // Write to depth buffer (depth mask)
+//            glDepthMask(GL_FALSE);          // Won't write to the depth buffer
             
             // uniform bool bIsSkyBox;
             GLint bIsSkyBox_UL = glGetUniformLocation(shaderProgramID, "bIsSkyBox");

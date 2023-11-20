@@ -132,6 +132,20 @@ void main()
 		outputColour.a = 1.0f;
 		return;
 	}
+	
+	// Reflect
+	// Reflects based on the eye position
+	// genType reflect( genType IncidentAngle, 	genType Nnormal);
+//	vec3 eyeVector = normalize(eyeLocation.xyz - vertexWorldPos.xyz);
+//	vec3 reflectAngle = reflect( eyeVector, vertexWorldNormal.xyz);
+//	vec3 reflectAngle = refract( eyeVector, vertexWorldNormal.xyz, 	1.333);
+//	
+//	vec4 skyBoxSampleColour = texture( skyBoxTexture, reflectAngle.xyz ).rgba;
+	
+//	outputColour.rgb = skyBoxSampleColour.rgb;
+//	outputColour.a = 1.0f;
+//	return;
+	
 
 	vec4 textureColour = 
 			  texture( texture_00, textureCoords.st ).rgba * textureMixRatio_0_3.x 	
