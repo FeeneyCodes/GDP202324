@@ -117,7 +117,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glfw3.lib;lua5.4.6-static.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -134,11 +134,12 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glfw3.lib;lua5.4.6-static.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="cCommand_MoveTo.cpp" />
+    <ClCompile Include="cEvilLuaRobot.cpp" />
     <ClCompile Include="cHiResTimer.cpp" />
     <ClCompile Include="cPhysics_AABB_Subdivide.cpp" />
     <ClCompile Include="Basic Shader Manager\cShader.cpp" />
@@ -156,7 +157,8 @@
     <ClCompile Include="cVAOManager\sModelDrawInfo.cpp" />
     <ClCompile Include="glad.c" />
     <ClCompile Include="InputHandling.cpp" />
-    <ClCompile Include="LoadModels.cpp" />
+    <ClCompile Include="LoadModels_and_LuaScripts.cpp" />
+    <ClCompile Include="LuaBrain\cLuaBrain.cpp" />
     <ClCompile Include="PhysicsUpdateLoop.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
@@ -176,12 +178,14 @@
     </ClInclude>
     <ClInclude Include="cCommand_MoveTo.h" />
     <ClInclude Include="cDebugRender.h" />
+    <ClInclude Include="cEvilLuaRobot.h" />
     <ClInclude Include="cGlobal.h" />
     <ClInclude Include="cHiResTimer.h" />
     <ClInclude Include="cLightHelper.h" />
     <ClInclude Include="cLightManager.h" />
     <ClInclude Include="cMesh.h" />
     <ClInclude Include="cPhysics.h" />
+    <ClInclude Include="LuaBrain\cLuaBrain.h" />
     <ClInclude Include="sTriangle.h" />
     <ClInclude Include="cVAOManager\cVAOManager.h" />
     <ClInclude Include="cVAOManager\sModelDrawInfo.h" />

@@ -7,6 +7,8 @@
 #include "cLightManager.h"
 #include "cGlobal.h"
 
+#include "LuaBrain/cLuaBrain.h"
+
 extern int g_selectedMesh;// = 0;
 extern std::vector< cMesh* > g_vec_pMeshesToDraw;
 
@@ -21,6 +23,11 @@ bool SaveVectorSceneToFile(std::string saveFileName);
 extern float g_HeightAdjust; //= 10.0f;
 extern glm::vec2 g_UVOffset;// = glm::vec2(0.0f, 0.0f);
 
+// From main.cpp
+extern cLuaBrain g_LuaBrain;
+// Silly function binding example
+//void ChangeTaylorSwiftTexture(std::string newTexture);
+
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
@@ -33,6 +40,56 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
     {
         // Save the scene to a file
         SaveVectorSceneToFile("myscene.txt");
+    }
+
+    if ( key == GLFW_KEY_H )
+    {
+        // Now I can't directly call this function, but we CAN call it through Lua
+//        ChangeTaylorSwiftTexture("SpidermanUV_square.bmp");
+
+//        g_LuaBrain.RunScriptImmediately("ChangeTaylorSwiftTexture()");
+        g_LuaBrain.RunScriptImmediately("ChangeTaylorSwiftTexture('taylor-swift-jimmy-fallon.bmp')");
+
+    }
+
+    if (key == GLFW_KEY_J)
+    {
+        g_LuaBrain.RunScriptImmediately("AddMoveCommand('bathtub', -50, 15, -5, 13.5)");
+    }
+
+    if (key == GLFW_KEY_K)
+    {
+        g_LuaBrain.RunScriptImmediately("SetMeshPositionByFriendlyName('bathtub', 0.0, 0.0, 25)");
+    }
+
+    // This will move the object to the right, using Lua
+    if (key == GLFW_KEY_M)
+    {
+        // bIsValid, x, y, z = GetMeshPositionByFriendlyName('bathtub')
+        // SetMeshPositionByFriendlyName('bathtub', x, y, z );
+
+        // We can move the object with this script:
+        // (Lua if statement: https://www.lua.org/pil/4.3.1.html)
+        // 
+        // bIsValid, x, y, z = GetMeshPositionByFriendlyName('bathtub')
+        // if bIsValid then
+        //      x = x + 0.1
+        //      SetMeshPositionByFriendlyName('bathtub', x, y, z )
+        // end
+        // 
+
+        // this is annoying, but if it's more than one line, add a newline character "\n"
+        // The downward slash at the end here tell C that the string continues.
+        std::string luaScriptOneLine
+            = "bIsValid, x, y, z = GetMeshPositionByFriendlyName('bathtub')\n"  \
+              "if bIsValid then\n"                                                \
+              "   x = x - 0.1\n"                                                  \
+              "   y = y + 0.15\n"                                                  \
+              "   SetMeshPositionByFriendlyName('bathtub', x, y, z )"             \
+             "end";
+
+
+        g_LuaBrain.RunScriptImmediately(luaScriptOneLine.c_str());
     }
 
     const float CAMERA_MOVEMENT_SPEED = 1.0f;

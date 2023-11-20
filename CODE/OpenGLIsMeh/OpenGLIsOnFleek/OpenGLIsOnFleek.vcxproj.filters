@@ -46,6 +46,9 @@
     <Filter Include="Commands">
       <UniqueIdentifier>{36cc4752-e3bb-4c8c-8c59-8d29b89a9efb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Lua">
+      <UniqueIdentifier>{3c736abb-8eec-4e04-b30e-dab29bc5dbde}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="theMain.cpp">
@@ -69,7 +72,7 @@
     <ClCompile Include="ScenePersistence.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="LoadModels.cpp">
+    <ClCompile Include="LoadModels_and_LuaScripts.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="cDebugRenderer.cpp">
@@ -125,6 +128,12 @@
     </ClCompile>
     <ClCompile Include="cCommand_MoveTo.cpp">
       <Filter>Commands</Filter>
+    </ClCompile>
+    <ClCompile Include="LuaBrain\cLuaBrain.cpp">
+      <Filter>Lua</Filter>
+    </ClCompile>
+    <ClCompile Include="cEvilLuaRobot.cpp">
+      <Filter>Lua</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -190,6 +199,12 @@
     </ClInclude>
     <ClInclude Include="cCommand_MoveTo.h">
       <Filter>Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="LuaBrain\cLuaBrain.h">
+      <Filter>Lua</Filter>
+    </ClInclude>
+    <ClInclude Include="cEvilLuaRobot.h">
+      <Filter>Lua</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -9,6 +9,8 @@
 
 #include "iPhysicsMeshTransformAccess.h"
 
+
+
 //void UpdateObject(std::string friendyName)
 //{
 //	cMesh* pThing = ::findObjectByFriendlyName(frientlyName);
@@ -88,6 +90,7 @@ public:
 	//void Update(double deltaTime);
 
 	unsigned int getUniqueID(void);
+
 
 
 

@@ -44,6 +44,7 @@ uniform sampler2D heightMapSampler;		// Texture unit 20
 uniform sampler2D discardSampler;		// Texture unit 21
 
 // Skybox, cubemap, etc.
+uniform bool bIsSkyBox;
 uniform samplerCube skyBoxTexture;
 
 // For the discard example
@@ -121,12 +122,16 @@ void main()
 //			outputColour.rgba = vec4( 1.0f, 0.0f, 0.0f, 1.0f );
 //			return;
 		}	
-	}//if ( bUseDiscardMaskTexture )
+	}
 	
-//	{
-//		//uniform samplerCube skyBoxTexture;
-//		vec4 skyBoxSampleColour = texture( skyBoxTexture, vertexNormal.xyz ).rgba
-//	}
+	if ( bIsSkyBox )
+	{
+		//uniform samplerCube skyBoxTexture;
+		vec4 skyBoxSampleColour = texture( skyBoxTexture, vertexWorldNormal.xyz ).rgba;
+		outputColour.rgb = skyBoxSampleColour.rgb;
+		outputColour.a = 1.0f;
+		return;
+	}
 
 	vec4 textureColour = 
 			  texture( texture_00, textureCoords.st ).rgba * textureMixRatio_0_3.x 	

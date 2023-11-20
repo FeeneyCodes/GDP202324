@@ -44,6 +44,8 @@
 
 #include "cCommand_MoveTo.h"
 
+#include "LuaBrain/cLuaBrain.h"
+
 glm::vec3 g_cameraEye = glm::vec3(0.0, 70.0, 181.0f);
 glm::vec3 g_cameraTarget = glm::vec3(0.0f, 5.0f, 0.0f);
 glm::vec3 g_upVector = glm::vec3(0.0f, 1.0f, 0.0f);
@@ -83,6 +85,8 @@ cMesh* g_pFindMeshByFriendlyName(std::string friendlyNameToFind);
 
 cLightManager* g_pTheLights = NULL;
 
+std::vector<cCommand_MoveTo> g_vecAnimationCommands;
+
 //std::vector<sPhsyicsProperties*> g_vecThingsThePhysicsThingPaysAtte;
 // 
 int g_selectedMesh = 0;
@@ -109,6 +113,136 @@ void LoadTheRobotronModels(GLuint shaderProgram);
 // HACK:
 float g_HeightAdjust = 10.0f;
 glm::vec2 g_UVOffset = glm::vec2(0.0f, 0.0f);
+
+// This is in the global space as an example, 
+// mainly so that we can run scripts when we press keys
+cLuaBrain g_LuaBrain;
+
+// Silly Lua script binding example
+void ChangeTaylorSwiftTexture(std::string newTexture)
+{
+//    pGroundMesh->friendlyName = "Ground";
+//    pGroundMesh->textureName[0] = "TaylorSwift_Eras_Poster.bmp";
+
+    cMesh* pGround = g_pFindMeshByFriendlyName("Ground");
+    if ( pGround )
+    {
+//        pGround->textureName[0] = "TaylorSwift_Eras_Poster.bmp";
+        pGround->textureName[0] = newTexture;   // "SpidermanUV_square.bmp";
+    }
+    return;
+}
+
+// Here the same sort of thing, but that Lua can call
+int lua_ChangeTaylorSwiftTexture(lua_State* L)
+{
+//    ChangeTaylorSwiftTexture("SpidermanUV_square.bmp");
+
+    // Look up whatever was passed on the stack
+    // https://www.lua.org/pil/24.2.2.html:
+    // "The first element in the stack (that is, the element that was pushed first) 
+    //    has index 1, the next one has index 2, and so on."
+
+    const char* bitMapName = lua_tostring(L, 1);
+    std::string sBitMapName(bitMapName);
+
+    ChangeTaylorSwiftTexture(sBitMapName);
+
+    return 0;
+}
+
+// Here the same sort of thing, but that Lua can call
+int lua_AddSerialMoveObjectCommand(lua_State* L)
+{
+    // We have to decide what we are typing into Lua.
+    // It's 100% up to us
+    // 
+    // How about:
+    // AddMoveCommand('bathtub', Dx, Dy, Dz, timeInSeconds)
+    //
+    // The first string is the friendly name
+    // The Dx, etc. is "Destination" X,Y,Z
+
+
+
+    std::string MeshFriendlyName(lua_tostring(L, 1));       // 'bathtub'
+    cMesh* pBathTub = g_pFindMeshByFriendlyName(MeshFriendlyName);
+
+    // https://pgl.yoyo.org/luai/i/lua_Number
+    // All Lua numbers are stored as doubles
+    // typedef double lua_Number;
+
+    glm::vec3 destinationXYZ;
+    destinationXYZ.x = (float)lua_tonumber(L, 2);     // Dx (destination X)
+    destinationXYZ.y = (float)lua_tonumber(L, 3);     // Dy (destination Y)
+    destinationXYZ.z = (float)lua_tonumber(L, 4);     // Dz (destination Z)
+    float timeInSeconds = (float)lua_tonumber(L, 5);   // timeInSeconds
+
+//    cCommand_MoveTo moveBathTub(pBathTub,
+//                                pBathTub->getDrawPosition(),
+//                                glm::vec3(50.0f, 0.0f, 0.0f),
+//                                10.0f);
+
+    cCommand_MoveTo moveBathTub(pBathTub,
+                                pBathTub->getDrawPosition(),
+                                destinationXYZ,
+                                timeInSeconds);
+ 
+    ::g_vecAnimationCommands.push_back(moveBathTub);
+
+
+    return 0;
+}
+
+// 
+int lua_GetMeshPositionByFriendlyName(lua_State* L)
+{
+    // Example Lua script might be:
+    // 
+    // bIsValid, x, y, z = GetMeshPositionByFriendlyName('bathtub');
+    // 
+    // 1st parameter indicates if we found this object or not
+    // 
+    // Returns the x, y, z location
+
+    std::string MeshFriendlyName(lua_tostring(L, 1));       // 'bathtub'
+    cMesh* pBathTub = g_pFindMeshByFriendlyName(MeshFriendlyName);
+
+    if (pBathTub)
+    {
+        // 1st parameter: indicate if this object was found
+        lua_pushboolean(L, true);
+        lua_pushnumber( L, pBathTub->getDrawPosition().x);
+        lua_pushnumber( L, pBathTub->getDrawPosition().y );
+        lua_pushnumber( L, pBathTub->getDrawPosition().z );
+        // Tell Lua how many things got pushed onto the stack
+        return 4;
+    }
+    
+    // Didn't find it
+    lua_pushboolean(L, false);
+
+    // We returned 1 value, a "false"
+    return 1;
+}
+
+int lua_SetMeshPositionByFriendlyName(lua_State* L)
+{
+    // Example Lua script might be
+    // SetMeshPositionByFriendlyName('bathtub', x, y, z )
+
+    std::string MeshFriendlyName(lua_tostring(L, 1));       // 'bathtub'
+    cMesh* pBathTub = g_pFindMeshByFriendlyName(MeshFriendlyName);
+
+    glm::vec3 newLocationXYZ;
+    newLocationXYZ.x = (float)lua_tonumber(L, 2);     // Dx (destination X)
+    newLocationXYZ.y = (float)lua_tonumber(L, 3);     // Dy (destination Y)
+    newLocationXYZ.z = (float)lua_tonumber(L, 4);     // Dz (destination Z)
+
+    pBathTub->drawPosition = newLocationXYZ;
+
+    return 0;
+}
 
 
 
@@ -290,6 +424,15 @@ int main(void)
                                                        true,
                                                        errors);
 
+    ::g_pTextureManager->CreateCubeTextureFromBMPFiles("SunnyDay",
+                                                       "TropicalSunnyDayLeft2048.bmp",
+                                                       "TropicalSunnyDayRight2048.bmp",
+                                                       "TropicalSunnyDayUp2048.bmp",
+                                                       "TropicalSunnyDayDown2048.bmp",
+                                                       "TropicalSunnyDayFront2048.bmp",
+                                                       "TropicalSunnyDayBack2048.bmp",
+                                                       true,
+                                                       errors);
 
 
     // This handles the phsyics objects
@@ -348,23 +491,23 @@ int main(void)
 
 // *************************************************************************************
     // These are the commands we are going to process
-    std::vector<cCommand_MoveTo> vecAnimationCommands;
-
-    cMesh* pBathTub = g_pFindMeshByFriendlyName("bathtub");
-
-    cCommand_MoveTo moveBathTub(pBathTub,
-                                pBathTub->getDrawPosition(),
-                                glm::vec3(50.0f, 0.0f, 0.0f),
-                                10.0f);
-    vecAnimationCommands.push_back(moveBathTub);
-
-
-    cCommand_MoveTo moveBathTub2(pBathTub,
-                                pBathTub->getDrawPosition(),
-                                glm::vec3(-30.0f, 10.0f, 16.0f),
-                                5.0f);
-    vecAnimationCommands.push_back(moveBathTub2);
-
+//    std::vector<cCommand_MoveTo> vecAnimationCommands;
+//
+//    cMesh* pBathTub = g_pFindMeshByFriendlyName("bathtub");
+//
+//    cCommand_MoveTo moveBathTub(pBathTub,
+//                                pBathTub->getDrawPosition(),
+//                                glm::vec3(50.0f, 0.0f, 0.0f),
+//                                10.0f);
+//    ::g_vecAnimationCommands.push_back(moveBathTub);
+//
+//
+//    cCommand_MoveTo moveBathTub2(pBathTub,
+//                                pBathTub->getDrawPosition(),
+//                                glm::vec3(-30.0f, 10.0f, 16.0f),
+//                                5.0f);
+//    ::g_vecAnimationCommands.push_back(moveBathTub2);
+//
 // *************************************************************************************
 
     while (!glfwWindowShouldClose(window))
@@ -439,6 +582,29 @@ int main(void)
         // *********************************************************************
 
 
+        // Draw the skybox
+        {
+            // HACK: I'm making this here, but hey...
+            cMesh theSkyBox;
+            theSkyBox.meshName = "Sphere_1_unit_Radius_xyz_n_rgba_uv.ply";
+            theSkyBox.setUniformDrawScale(10.0f);
+
+            theSkyBox.setUniformDrawScale(5'000.0f);
+            theSkyBox.setDrawPosition(::g_cameraEye);
+//            theSkyBox.bIsWireframe = true;
+            
+            // uniform bool bIsSkyBox;
+            GLint bIsSkyBox_UL = glGetUniformLocation(shaderProgramID, "bIsSkyBox");
+            glUniform1f(bIsSkyBox_UL, (GLfloat) GL_TRUE);
+
+            DrawObject(&theSkyBox, glm::mat4(1.0f), shaderProgramID);
+
+            glUniform1f(bIsSkyBox_UL, (GLfloat)GL_FALSE);
+        }
+
+
+
+
  
 //        // Time per frame (more or less)
 //        double currentTime = glfwGetTime();
@@ -457,16 +623,16 @@ int main(void)
 
 
 // ***********************************************************************
-        if ( ! vecAnimationCommands.empty() )
+        if ( ! ::g_vecAnimationCommands.empty() )
         {
-            vecAnimationCommands[0].Update(deltaTime);
+            ::g_vecAnimationCommands[0].Update(deltaTime);
 
             // Done? 
-            if (vecAnimationCommands[0].isDone() )
+            if (::g_vecAnimationCommands[0].isDone() )
             {
                 // Erase the item from vector
                 // Is "slow" in that it has to copy the vector again
-                vecAnimationCommands.erase(vecAnimationCommands.begin());
+                ::g_vecAnimationCommands.erase(::g_vecAnimationCommands.begin());
             }
         }//if (!vecAnimationCommands.empty())
 // ***********************************************************************
@@ -754,6 +920,20 @@ void SetUpTextures(cMesh* pCurrentMesh, GLuint shaderProgramID)
         GLint texture_20_UL = glGetUniformLocation(shaderProgramID, "heightMapSampler");
         glUniform1i(texture_20_UL, textureUnitNumber);
     }    
+
+
+
+    // Set up a skybox
+    {
+        // uniform samplerCube skyBoxTexture;		// Texture unit 30
+        GLint textureUnit30 = 30;
+        GLuint skyBoxID = ::g_pTextureManager->getTextureIDFromName("SunnyDay");
+        glActiveTexture(GL_TEXTURE0 + textureUnit30);
+        // NOTE: Binding is NOT to GL_TEXTURE_2D
+        glBindTexture(GL_TEXTURE_CUBE_MAP, skyBoxID);
+        GLint skyBoxSampler_UL = glGetUniformLocation(shaderProgramID, "skyBoxTexture");
+        glUniform1i(skyBoxSampler_UL, textureUnit30);
+    }
 
     
     return;
