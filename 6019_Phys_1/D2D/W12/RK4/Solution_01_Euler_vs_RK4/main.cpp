@@ -286,15 +286,15 @@ void StepPhysicsRK6( sBall& ball, double frameTime )
 //        1	|  9/44   -9/11  63/44   18/11     0    -16/11     0
 //      ------------------------------------------------------------------
 //          | 11/120    0    27/40   27/40   -4/15   -4/15   11/120
-//
+//                           81/120
 
 
 	// update position and velocity.
-	ball.Position += (           xk1 
-		               + (3.0f * xk2) 
-					   + (6.0f * xk3) 
-					   + (6.0f * xk4)
-					   + (3.0f * xk5)
+	ball.Position += (   (11.0f/120.0f) * xk1
+		               +           0.0f * xk2 
+					   +  (81.0f*120.0f) * xk3 
+					   +  (81.0f*120.0f) * xk4
+					   +  (-40.0f/120.0f) * xk5
 					   +         xk6 ) / 20.0f;
 
 	ball.Velocity += (           vk1
