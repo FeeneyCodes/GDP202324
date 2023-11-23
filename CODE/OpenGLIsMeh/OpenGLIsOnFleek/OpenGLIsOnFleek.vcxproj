@@ -138,6 +138,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="cCommandGroup.cpp" />
     <ClCompile Include="cCommand_MoveTo.cpp" />
     <ClCompile Include="cEvilLuaRobot.cpp" />
     <ClCompile Include="cHiResTimer.cpp" />
@@ -176,6 +177,9 @@
     <ClInclude Include="cAABB_JUST_SOME_NOTE.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClInclude>
+    <ClInclude Include="cCommandFactory.h" />
+    <ClInclude Include="cCommandGroup.h" />
+    <ClInclude Include="cCommandManager.h" />
     <ClInclude Include="cCommand_MoveTo.h" />
     <ClInclude Include="cDebugRender.h" />
     <ClInclude Include="cEvilLuaRobot.h" />
@@ -185,6 +189,7 @@
     <ClInclude Include="cLightManager.h" />
     <ClInclude Include="cMesh.h" />
     <ClInclude Include="cPhysics.h" />
+    <ClInclude Include="iCommand.h" />
     <ClInclude Include="LuaBrain\cLuaBrain.h" />
     <ClInclude Include="sTriangle.h" />
     <ClInclude Include="cVAOManager\cVAOManager.h" />

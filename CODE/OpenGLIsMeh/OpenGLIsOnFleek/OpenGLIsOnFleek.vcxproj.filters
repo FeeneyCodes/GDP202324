@@ -49,6 +49,9 @@
     <Filter Include="Lua">
       <UniqueIdentifier>{3c736abb-8eec-4e04-b30e-dab29bc5dbde}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Commands\Command_V2">
+      <UniqueIdentifier>{130ea9de-83a9-4c20-8921-ad291ab914af}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="theMain.cpp">
@@ -135,6 +138,9 @@
     <ClCompile Include="cEvilLuaRobot.cpp">
       <Filter>Lua</Filter>
     </ClCompile>
+    <ClCompile Include="cCommandGroup.cpp">
+      <Filter>Commands\Command_V2</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Basic Shader Manager\cShaderManager.h">
@@ -205,6 +211,18 @@
     </ClInclude>
     <ClInclude Include="cEvilLuaRobot.h">
       <Filter>Lua</Filter>
+    </ClInclude>
+    <ClInclude Include="iCommand.h">
+      <Filter>Commands\Command_V2</Filter>
+    </ClInclude>
+    <ClInclude Include="cCommandGroup.h">
+      <Filter>Commands\Command_V2</Filter>
+    </ClInclude>
+    <ClInclude Include="cCommandManager.h">
+      <Filter>Commands\Command_V2</Filter>
+    </ClInclude>
+    <ClInclude Include="cCommandFactory.h">
+      <Filter>Commands\Command_V2</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
