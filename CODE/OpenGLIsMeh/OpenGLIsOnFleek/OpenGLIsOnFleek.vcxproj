@@ -153,6 +153,7 @@
     <ClCompile Include="cPhysics.cpp" />
     <ClCompile Include="cPhysics_BasicTests.cpp" />
     <ClCompile Include="cPhysics_IntersectionTests.cpp" />
+    <ClCompile Include="cPhysics_SweepPrune.cpp" />
     <ClCompile Include="cPhysics_Update.cpp" />
     <ClCompile Include="cVAOManager\cVAOManager.cpp" />
     <ClCompile Include="cVAOManager\sModelDrawInfo.cpp" />
@@ -165,6 +166,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="ScenePersistence.cpp" />
+    <ClCompile Include="Source.cpp" />
     <ClCompile Include="sPhsyicsProperties.cpp" />
     <ClCompile Include="TextureManager\C24BitBMPpixel.cpp" />
     <ClCompile Include="TextureManager\cBasicTextureManager.cpp" />

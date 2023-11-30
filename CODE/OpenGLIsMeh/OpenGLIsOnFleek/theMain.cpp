@@ -251,9 +251,11 @@ static void error_callback(int error, const char* description)
     fprintf(stderr, "Error: %s\n", description);
 }
 
+void TestSort(void);
 
 int main(void)
 {
+    TestSort();
 
     cMesh bob;
 
@@ -298,10 +300,16 @@ int main(void)
     cShaderManager::cShader vertexShader;
     vertexShader.fileName = "vertexShader01.glsl";
 
+    // Add a geometry shader
+    cShaderManager::cShader geometryShader;
+    geometryShader.fileName = "geometryPassThrough.glsl";
+
+
     cShaderManager::cShader fragmentShader;
     fragmentShader.fileName = "fragmentShader01.glsl";
 
-    if ( ! pShaderThing->createProgramFromFile("shader01", vertexShader, fragmentShader ) )
+//    if ( ! pShaderThing->createProgramFromFile("shader01", vertexShader, fragmentShader ) )
+    if ( ! pShaderThing->createProgramFromFile("shader01", vertexShader, geometryShader, fragmentShader ) )
     {
         std::cout << "Error: Couldn't compile or link:" << std::endl;
         std::cout << pShaderThing->getLastError();
@@ -531,6 +539,7 @@ int main(void)
         // While drawing a pixel, see if the pixel that's already there is closer or not?
         glEnable(GL_DEPTH_TEST);
         // (Usually) the default - does NOT draw "back facing" triangles
+        glEnable(GL_CULL_FACE);
         glCullFace(GL_BACK);
 
 
@@ -581,6 +590,18 @@ int main(void)
         }//for ( unsigned int index
         // *********************************************************************
 
+// This is very old OpenGL "Immediate Mode"
+// Don't use this for your usual stuff, but it's very handy 
+//   for debug stuff (where you're not worried about speed)
+// So I guess you CAN mix old and new stuff
+//        glBegin(GL_QUADS);
+//            glColor3f(1.0f, 1.0f, 1.0f);
+//            glVertex3i(-10, 10.0, 0.0);
+//            glVertex3i(+10, 10.0, 0.0);
+//            glVertex3i(+10, 10.0, -10.0);
+//            glVertex3i(-10, 10.0, -10.0);
+//        glEnd();
+
 
         // Draw the skybox
         {
@@ -602,9 +623,15 @@ int main(void)
             GLint bIsSkyBox_UL = glGetUniformLocation(shaderProgramID, "bIsSkyBox");
             glUniform1f(bIsSkyBox_UL, (GLfloat) GL_TRUE);
 
+            // The normals for this sphere are facing "out" but we are inside the sphere
+            glCullFace(GL_FRONT);
+
             DrawObject(&theSkyBox, glm::mat4(1.0f), shaderProgramID);
 
             glUniform1f(bIsSkyBox_UL, (GLfloat)GL_FALSE);
+
+            // Put the culling back to "normal" (back facing are not drawn)
+            glCullFace(GL_BACK);
         }
 
 
@@ -1082,28 +1109,28 @@ void DrawObject(cMesh* pCurrentMesh, glm::mat4 matModelParent, GLuint shaderProg
     SetUpTextures(pCurrentMesh, shaderProgramID);
 
 // *********************************************************************
-//    // Is this using the heigth map?
-//    // HACK:
-//    GLint bUseHeightMap_UL = glGetUniformLocation(shaderProgramID, "bUseHeightMap");
-//    // uniform bool bUseHeightMap;
-//    if ( pCurrentMesh->friendlyName == "Ground" )
-//    {
-//        glUniform1f(bUseHeightMap_UL, (GLfloat)GL_TRUE);
-//
-//        //uniform float heightScale;
-//        GLint heightScale_UL = glGetUniformLocation(shaderProgramID, "heightScale");
-//        glUniform1f(heightScale_UL, ::g_HeightAdjust);
-//        
-//        //uniform vec2 UVOffset;
-//        GLint UVOffset_UL = glGetUniformLocation(shaderProgramID, "UVOffset");
-//        glUniform2f(UVOffset_UL, ::g_UVOffset.x, ::g_UVOffset.y);
-//
-//
-//    }
-//    else
-//    {
-//        glUniform1f(bUseHeightMap_UL, (GLfloat)GL_FALSE);
-//    }
+    // Is this using the heigth map?
+    // HACK:
+    GLint bUseHeightMap_UL = glGetUniformLocation(shaderProgramID, "bUseHeightMap");
+    // uniform bool bUseHeightMap;
+    if ( pCurrentMesh->friendlyName == "Ground" )
+    {
+        glUniform1f(bUseHeightMap_UL, (GLfloat)GL_TRUE);
+
+        //uniform float heightScale;
+        GLint heightScale_UL = glGetUniformLocation(shaderProgramID, "heightScale");
+        glUniform1f(heightScale_UL, ::g_HeightAdjust);
+        
+        //uniform vec2 UVOffset;
+        GLint UVOffset_UL = glGetUniformLocation(shaderProgramID, "UVOffset");
+        glUniform2f(UVOffset_UL, ::g_UVOffset.x, ::g_UVOffset.y);
+
+
+    }
+    else
+    {
+        glUniform1f(bUseHeightMap_UL, (GLfloat)GL_FALSE);
+    }
 // *********************************************************************
 
 

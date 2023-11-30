@@ -1,6 +1,6 @@
 ply
 format ascii 1.0
-comment TextureFile TaylorSwift_Eras_Poster.jpg
+comment TextureFile TaylorSwift_Eras_Poster_.jpg
 element vertex 5
 property float x
 property float y
@@ -18,7 +18,7 @@ element face 4
 property list uchar int vertex_indices
 end_header
 128      0 128       0 1 0   255   0   0 255 	1 1
-33.68766 0 -42.19459 0 1 0     0 255   0 255 	0.3351774 0.6315924
+11.22922 0	71.26847 0 1 0     0 255   0 255	0.778392467	0.333333333 
 -128     0 128       0 1 0     0   0 255 255 	1 0
 128      0 -128      0 1 0   255 255 255 255 	0 1
 -128     0 -128      0 1 0   255 255 255 255 	0 0

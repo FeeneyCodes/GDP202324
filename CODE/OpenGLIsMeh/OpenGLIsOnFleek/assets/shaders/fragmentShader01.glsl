@@ -1,10 +1,10 @@
 // Fragment shader
 #version 420
 
-in vec4 colour;
-in vec4 vertexWorldPos;			// vertex in "world space"
-in vec4 vertexWorldNormal;	
-in vec2 textureCoords;			// u is x or red, v is y or green
+in vec4 fColour;
+in vec4 fVertexWorldPos;			// vertex in "world space"
+in vec4 fVertexWorldNormal;	
+in vec2 fTextureCoords;			// u is x or red, v is y or green
 
 out vec4 outputColour;		// To the frame buffer (aka screen)
 
@@ -114,7 +114,7 @@ void main()
 
 	if ( bUseDiscardMaskTexture )
 	{
-		float maskValue = texture( maskSamplerTexture01, textureCoords.st ).r;
+		float maskValue = texture( maskSamplerTexture01, fTextureCoords.st ).r;
 		// If "black" then discard
 		if ( maskValue < 0.1f )
 		{
@@ -127,7 +127,7 @@ void main()
 	if ( bIsSkyBox )
 	{
 		//uniform samplerCube skyBoxTexture;
-		vec4 skyBoxSampleColour = texture( skyBoxTexture, vertexWorldNormal.xyz ).rgba;
+		vec4 skyBoxSampleColour = texture( skyBoxTexture, fVertexWorldNormal.xyz ).rgba;
 		outputColour.rgb = skyBoxSampleColour.rgb;
 		outputColour.a = 1.0f;
 		return;
@@ -148,10 +148,10 @@ void main()
 	
 
 	vec4 textureColour = 
-			  texture( texture_00, textureCoords.st ).rgba * textureMixRatio_0_3.x 	
-			+ texture( texture_01, textureCoords.st ).rgba * textureMixRatio_0_3.y
-			+ texture( texture_02, textureCoords.st ).rgba * textureMixRatio_0_3.z
-			+ texture( texture_03, textureCoords.st ).rgba * textureMixRatio_0_3.w;
+			  texture( texture_00, fTextureCoords.st ).rgba * textureMixRatio_0_3.x 	
+			+ texture( texture_01, fTextureCoords.st ).rgba * textureMixRatio_0_3.y
+			+ texture( texture_02, fTextureCoords.st ).rgba * textureMixRatio_0_3.z
+			+ texture( texture_03, fTextureCoords.st ).rgba * textureMixRatio_0_3.w;
 
 	// Make the 'vertex colour' the texture colour we sampled...
 	vec4 vertexRGBA = textureColour;	
@@ -160,7 +160,7 @@ void main()
 	if (bUseVertexColours)
 	{
 		// Use model vertex colour and NOT the texture colour
-		vertexRGBA = colour;
+		vertexRGBA = fColour;
 	}
 	
 	if ( bUseDebugColour )
@@ -181,8 +181,8 @@ void main()
 	// RGB is the specular highglight colour (usually white or the colour of the light)
 	// 4th value is the specular POWER (STARTS at 1, and goes to 1000000s)
 	
-	vec4 vertexColourLit = calculateLightContrib( vertexRGBA.rgb, vertexWorldNormal.xyz, 
-	                                              vertexWorldPos.xyz, vertexSpecular );
+	vec4 vertexColourLit = calculateLightContrib( vertexRGBA.rgb, fVertexWorldNormal.xyz, 
+	                                              fVertexWorldPos.xyz, vertexSpecular );
 	// *************************************
 			
 	outputColour.rgb = vertexColourLit.rgb;

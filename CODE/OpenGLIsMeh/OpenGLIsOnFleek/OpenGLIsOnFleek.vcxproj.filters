@@ -141,6 +141,12 @@
     <ClCompile Include="cCommandGroup.cpp">
       <Filter>Commands\Command_V2</Filter>
     </ClCompile>
+    <ClCompile Include="Source.cpp">
+      <Filter>Physics_Stuff</Filter>
+    </ClCompile>
+    <ClCompile Include="cPhysics_SweepPrune.cpp">
+      <Filter>Physics_Stuff</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Basic Shader Manager\cShaderManager.h">

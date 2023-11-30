@@ -15,10 +15,15 @@ in vec4 vCol;
 in vec4 vNormal;	
 in vec2 vTextureCoords;		// NOTE this is a vec2 not vec4
 
-out vec4 colour;
-out vec4 vertexWorldPos;	
-out vec4 vertexWorldNormal;
-out vec2 textureCoords;		// ADDED
+//out vec4 fColour;
+//out vec4 fVertexWorldPos;	
+//out vec4 fVertexWorldNormal;
+//out vec2 fTextureCoords;		// ADDED
+
+out vec4 gColour;
+out vec4 gVertexWorldPos;	
+out vec4 gVertexWorldNormal;
+out vec2 gTextureCoords;		// ADDED
 
 uniform bool bUseHeightMap;
 uniform sampler2D heightMapSampler;		// Texture unit 20
@@ -55,15 +60,15 @@ void main()
 		
 	// Rotate the normal by the inverse transpose of the model matrix
 	// (so that it only is impacted by the rotation, not translation or scale)
-	vertexWorldNormal = matModel_IT * vec4(vNormal.xyz, 1.0f);
-	vertexWorldNormal.xyz = normalize(vertexWorldNormal.xyz);
-	vertexWorldNormal.w = 1.0f;
+	gVertexWorldNormal = matModel_IT * vec4(vNormal.xyz, 1.0f);
+	gVertexWorldNormal.xyz = normalize(gVertexWorldNormal.xyz);
+	gVertexWorldNormal.w = 1.0f;
 	
-	vertexWorldPos = matModel * vec4( vertexModelPosition.xyz, 1.0f);
+	gVertexWorldPos = matModel * vec4( vertexModelPosition.xyz, 1.0f);
 	
-	colour = vCol;
+	gColour = vCol;
 	
 	// Copy the UV coordinates unchanged (to the fragment shader)
 //	textureCoords = vTextureCoords;
-	textureCoords = UVFinal;
+	gTextureCoords = UVFinal;
 }

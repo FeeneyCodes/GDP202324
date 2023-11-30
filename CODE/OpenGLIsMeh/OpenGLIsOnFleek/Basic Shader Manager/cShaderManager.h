@@ -15,6 +15,7 @@ public:
 		enum eShaderType
 		{
 			VERTEX_SHADER,
+			GEOMETRY_SHADER,
 			FRAGMENT_SHADER,
 			UNKNOWN
 		};
@@ -54,6 +55,12 @@ public:
 	bool createProgramFromFile( std::string friendlyName, 
 		                        cShader &vertexShad, 
 					            cShader &fragShader );
+
+	bool createProgramFromFile( std::string friendlyName, 
+		                        cShader &vertexShad, 
+		                        cShader &geometryShad, 
+					            cShader &fragShader );	
+	
 	void setBasePath( std::string basepath );
 	unsigned int getIDFromFriendlyName( std::string friendlyName );
 

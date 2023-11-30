@@ -4,6 +4,7 @@
 #include <glm/vec3.hpp>
 #include <math.h>
 #include <map>
+#include <string>
 
 // These would also store triangle info, 
 //	either the actual vertices of the triangle, or the index to the triangle...
@@ -11,6 +12,7 @@
 class cAABB
 {
 public:
+	unsigned int uniqueID;
 	glm::vec3 minXYZ;
 	glm::vec3 maxXYZ;	// AKA the "lengths" or whatever
 	glm::vec3 getCentreXYZ(void);
@@ -100,5 +102,24 @@ public:
 		return theIndex;
 	}//static unsigned int getLocationIndex(
 
+//	std::string& operator<<(const cAABB& other)
+//	{
+//		retrn l
+//	}
 };
+
+
+
+
+//class Circle;		// Centre, radius
+//class Square;
+//
+//Circle A, B;
+//Circle C = A + B;
+//
+//Circle oprerator + (const Circle & A, const Circle & B);
+//
+//vec3 a;
+//float b;
+//vec3 c = a * b;
 

@@ -53,10 +53,12 @@ cLuaBrain::cLuaBrain()
 //	lua_setglobal( this->m_pLuaState, "WhatBenderTheRobotSays" );
 
 	lua_pushcfunction( this->m_pLuaState, KillAllHumans);
-	lua_setglobal( this->m_pLuaState, "JustinTrudeauIsOurPM" );
+	// WhatDoesBenderSayAllTheTime(...)
+	lua_setglobal( this->m_pLuaState, "WhatDoesBenderSayAllTheTime" );
 
 	// 	static int l_UpdateObject( lua_State *L );		// c function
 	lua_pushcfunction( this->m_pLuaState, cLuaBrain::l_UpdateObject );
+	// setObjectState(...)
 	lua_setglobal( this->m_pLuaState, "setObjectState" );
 
 	// This ties the "getObjectState" lua custom function
