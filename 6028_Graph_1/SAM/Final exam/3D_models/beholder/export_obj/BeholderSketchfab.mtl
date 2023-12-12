@@ -1,0 +1,15 @@
+# Blender MTL File: 'None'
+# Material Count: 1
+
+newmtl Beholder
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.074228 0.145961
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Bump C:\\z_FS\\6044 Patterns\\2022\\SAM\\Final_Exam\\source\\Textures\\Beholder_Normal_OpenGL.png
+map_Ns C:\\z_FS\\6044 Patterns\\2022\\SAM\\Final_Exam\\source\\Textures\\Beholder_Roughness.png
+refl C:\\z_FS\\6044 Patterns\\2022\\SAM\\Final_Exam\\source\\Textures\\Beholder_Metallic.png
