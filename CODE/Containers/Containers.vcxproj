@@ -139,6 +139,7 @@
     <ClInclude Include="cPerson.h" />
     <ClInclude Include="cPersonMaker.h" />
     <ClInclude Include="cSmartArray.h" />
+    <ClInclude Include="tSmartArray.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

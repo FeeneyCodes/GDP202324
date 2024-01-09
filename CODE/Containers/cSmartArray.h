@@ -5,7 +5,11 @@
 class cSmartArray
 {
 public:
+	cSmartArray();
+	~cSmartArray();
+
 	unsigned int getSize(void);
+	unsigned int getMaxCapacity(void);
 
 	void insertAtEnd(cPerson thePerson);
 
@@ -22,11 +26,19 @@ public:
 private:
 
 
-	static const unsigned int MAX_SIZE = 10;
-	// Array that holds the people
-	cPerson m_theData[MAX_SIZE];
+//	static const unsigned int MAX_SIZE = 10;
+//	// Array that holds the people
+//	cPerson m_theData[MAX_SIZE];
+
+	static const unsigned int INITIAL_ARRAY_SIZE = 10;
+	cPerson* m_theData = NULL;// = new cPerson[INITIAL_ARRAY_SIZE];
 
 	unsigned int m_NextInsertIndexLocation = 0;
+	// How big is the array now
+	unsigned int m_CurrentSizeOfArray;	// Starts at INITIAL_ARRAY_SIZE
+
+
+	void m_GrowArray(void);
 
 };
 

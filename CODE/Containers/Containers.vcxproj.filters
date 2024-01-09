@@ -41,5 +41,8 @@
     <ClInclude Include="cSmartArray.h">
       <Filter>SmartArray</Filter>
     </ClInclude>
+    <ClInclude Include="tSmartArray.h">
+      <Filter>SmartArray</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
