@@ -16,12 +16,15 @@
     <Filter Include="SmartArray">
       <UniqueIdentifier>{27b62868-555d-470c-afd2-8aec1127ed45}</UniqueIdentifier>
     </Filter>
+    <Filter Include="LinkedList">
+      <UniqueIdentifier>{c834ad94-7ef1-42e0-ba30-19fd96813af7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="theMain_STL_vector.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="theMain.cpp">
+    <ClCompile Include="theMain_Smart_Array.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="cPersonMaker.cpp">
@@ -29,6 +32,15 @@
     </ClCompile>
     <ClCompile Include="cSmartArray.cpp">
       <Filter>SmartArray</Filter>
+    </ClCompile>
+    <ClCompile Include="theMain_STL_list.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="cLinkedList.cpp">
+      <Filter>LinkedList</Filter>
+    </ClCompile>
+    <ClCompile Include="theMain_Linked_List.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -43,6 +55,9 @@
     </ClInclude>
     <ClInclude Include="tSmartArray.h">
       <Filter>SmartArray</Filter>
+    </ClInclude>
+    <ClInclude Include="cLinkedList.h">
+      <Filter>LinkedList</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
