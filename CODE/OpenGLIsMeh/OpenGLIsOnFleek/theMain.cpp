@@ -46,6 +46,8 @@
 
 #include "LuaBrain/cLuaBrain.h"
 
+#include "cParticleSystem.h"
+
 glm::vec3 g_cameraEye = glm::vec3(0.0, 70.0, 181.0f);
 glm::vec3 g_cameraTarget = glm::vec3(0.0f, 5.0f, 0.0f);
 glm::vec3 g_upVector = glm::vec3(0.0f, 1.0f, 0.0f);
@@ -60,7 +62,12 @@ cMesh* g_pDebugSphereMesh = NULL;
 // Used by g_DrawDebugSphere()
 GLuint g_DebugSphereMesh_shaderProgramID = 0;
 
+// HACK: I'm using this model as the "particle" model
+cMesh* g_pParticleMeshModel = NULL;
+
 std::vector<double> g_vecLastFrameTimes;
+
+cParticleSystem g_anEmitter;
 
 
 
@@ -380,8 +387,10 @@ int main(void)
     // Spiderman
     sModelDrawInfo spiderMan;
 
-    ::g_pMeshManager->LoadModelIntoVAO("legospiderman_body_xyz_n_rgba_uv.ply", spiderMan, shaderProgramID);
+    ::g_pMeshManager->setBasePath("assets/models/LEGO_Spiderman");
     ::g_pMeshManager->LoadModelIntoVAO("legospiderman_head_xyz_n_rgba_uv.ply", spiderMan, shaderProgramID);
+
+    ::g_pMeshManager->LoadModelIntoVAO("legospiderman_body_xyz_n_rgba_uv.ply", spiderMan, shaderProgramID);
     ::g_pMeshManager->LoadModelIntoVAO("legospiderman_Hips_xyz_n_rgba_uv.ply", spiderMan, shaderProgramID);
 
     ::g_pMeshManager->LoadModelIntoVAO("legospiderman_Left_arm_xyz_n_rgba_uv.ply", spiderMan, shaderProgramID);
@@ -394,7 +403,8 @@ int main(void)
     ::g_pMeshManager->LoadModelIntoVAO("legospiderman_Right_leg_xyz_n_rgba_uv.ply", spiderMan, shaderProgramID);
 
         
-        
+    ::g_pMeshManager->setBasePath("assets/models");
+
     // ... and so on
 
     ::g_pTextureManager = new cBasicTextureManager();
@@ -724,11 +734,39 @@ int main(void)
 //
 //            pDebugSphere->bIsVisible = false;
 //        }
-
+//
         // 
 //        DoPhysicUpdate(deltaTime);
-
+//
 //        ::g_pPhysics->Update(deltaTime);
+
+
+        
+        // Update the particles
+        ::g_anEmitter.Update(deltaTime);
+
+        std::vector< cParticleSystem::cParticleRender > vecParticles_to_draw;
+
+        ::g_DrawDebugSphere(::g_anEmitter.getPosition(), 1.0f, glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
+
+
+        ::g_anEmitter.getParticleList(vecParticles_to_draw);
+        for (cParticleSystem::cParticleRender &curParticle : vecParticles_to_draw )
+        {
+//            ::g_DrawDebugSphere(curParticle.position, 0.1f, glm::vec4(0.0f, 0.0f, 0.0f, 1.0f));
+
+            glm::mat4 matModel = glm::mat4(1.0f);   // Identity matrix
+
+            ::g_pParticleMeshModel->setUniformDrawScale(1.0f);
+
+            ::g_pParticleMeshModel->drawPosition = curParticle.position;
+            ::g_pParticleMeshModel->setDrawOrientation(curParticle.orientation);
+
+//            ::g_pParticleMeshModel->setDrawOrientation(glm::vec3(0.0f, 3.141f/2.0f, 0.0f));
+
+            DrawObject(::g_pParticleMeshModel, matModel, shaderProgramID);
+        }
+
 
 
         glfwSwapBuffers(window);

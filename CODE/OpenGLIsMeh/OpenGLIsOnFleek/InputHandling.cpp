@@ -9,6 +9,8 @@
 
 #include "LuaBrain/cLuaBrain.h"
 
+#include "cParticleSystem.h"
+
 extern int g_selectedMesh;// = 0;
 extern std::vector< cMesh* > g_vec_pMeshesToDraw;
 
@@ -28,6 +30,8 @@ extern cLuaBrain g_LuaBrain;
 // Silly function binding example
 //void ChangeTaylorSwiftTexture(std::string newTexture);
 
+extern cParticleSystem g_anEmitter;
+
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
@@ -35,6 +39,13 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
     {
         glfwSetWindowShouldClose(window, GLFW_TRUE);
     }
+
+    if (key == GLFW_KEY_F7 && action == GLFW_PRESS)
+    {
+        ::g_anEmitter.Explode(1000, 35.0f, 50.0f);
+    }
+    
+
 
     if (key == GLFW_KEY_F10 && action)
     {

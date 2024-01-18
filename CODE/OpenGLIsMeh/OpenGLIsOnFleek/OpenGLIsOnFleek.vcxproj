@@ -142,6 +142,7 @@
     <ClCompile Include="cCommand_MoveTo.cpp" />
     <ClCompile Include="cEvilLuaRobot.cpp" />
     <ClCompile Include="cHiResTimer.cpp" />
+    <ClCompile Include="cParticleSystem.cpp" />
     <ClCompile Include="cPhysics_AABB_Subdivide.cpp" />
     <ClCompile Include="Basic Shader Manager\cShader.cpp" />
     <ClCompile Include="Basic Shader Manager\cShaderManager.cpp" />
@@ -190,6 +191,7 @@
     <ClInclude Include="cLightHelper.h" />
     <ClInclude Include="cLightManager.h" />
     <ClInclude Include="cMesh.h" />
+    <ClInclude Include="cParticleSystem.h" />
     <ClInclude Include="cPhysics.h" />
     <ClInclude Include="iCommand.h" />
     <ClInclude Include="LuaBrain\cLuaBrain.h" />

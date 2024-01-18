@@ -52,6 +52,9 @@
     <Filter Include="Commands\Command_V2">
       <UniqueIdentifier>{130ea9de-83a9-4c20-8921-ad291ab914af}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Particles">
+      <UniqueIdentifier>{bc3f71f4-9997-4e1e-a595-493ca0c091f3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="theMain.cpp">
@@ -147,6 +150,9 @@
     <ClCompile Include="cPhysics_SweepPrune.cpp">
       <Filter>Physics_Stuff</Filter>
     </ClCompile>
+    <ClCompile Include="cParticleSystem.cpp">
+      <Filter>Particles</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Basic Shader Manager\cShaderManager.h">
@@ -229,6 +235,9 @@
     </ClInclude>
     <ClInclude Include="cCommandFactory.h">
       <Filter>Commands\Command_V2</Filter>
+    </ClInclude>
+    <ClInclude Include="cParticleSystem.h">
+      <Filter>Particles</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

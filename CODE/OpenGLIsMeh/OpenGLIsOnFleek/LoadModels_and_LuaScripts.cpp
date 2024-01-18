@@ -4,6 +4,7 @@
 #include "cPhysics.h"
 #include <vector>
 #include "LuaBrain/cLuaBrain.h"
+#include "cParticleSystem.h"
 
 extern std::vector< cMesh* > g_vec_pMeshesToDraw;
 //extern std::vector< sPhsyicsProperties* > g_vec_pPhysicalProps;
@@ -17,6 +18,11 @@ extern cVAOManager* g_pMeshManager;
 extern cLuaBrain g_LuaBrain;
 // Silly function binding example
 void ChangeTaylorSwiftTexture(void);
+
+// Our one and only emitter (for now, maybe)
+extern cParticleSystem g_anEmitter;
+
+extern cMesh* g_pParticleMeshModel;
 
 
 float getRandomFloat(float a, float b);
@@ -35,7 +41,8 @@ bool LoadModels(void)
     LoadLuaScripts();
 
     ::g_pDebugSphereMesh = new cMesh();
-    ::g_pDebugSphereMesh->meshName = "Sphere_1_unit_Radius.ply";
+//    ::g_pDebugSphereMesh->meshName = "Sphere_1_unit_Radius.ply";
+    ::g_pDebugSphereMesh->meshName = "Sphere_1_unit_Radius_xyz_n_rgba_uv.ply";
     ::g_pDebugSphereMesh->bIsWireframe = true;
     ::g_pDebugSphereMesh->bDoNotLight = true;
     ::g_pDebugSphereMesh->setUniformDrawScale(1.0f);
@@ -215,11 +222,38 @@ bool LoadModels(void)
 ////    ::g_vec_pMeshesToDraw.push_back(pSpiderManLeft_leg);
 
 
+    ::g_pParticleMeshModel = new cMesh();
+    ::g_pParticleMeshModel->setUniformDrawScale(1.0f);
+    ::g_pParticleMeshModel->meshName = "legospiderman_head_xyz_n_rgba_uv.ply";
+    ::g_pParticleMeshModel->textureName[0] = "SpidermanUV_square.bmp";
+    ::g_pParticleMeshModel->textureRatios[0] = 1.0f;
 
 
 
+    cParticleSystem::sEmitterInfo ballEmitter;
+    ballEmitter.emitterPosition = glm::vec3(0.0f, 5.0f, 0.0f);
+    // A little bit to the sides (x & z)
+    // 5.0 to 10.0 veclocity 'up' (in y)
+    ballEmitter.initVelocityMin = glm::vec3(-3.0f, 10.0f, -3.0f);
+    ballEmitter.initVelocityMax = glm::vec3( 3.0f, 15.0f, 3.0f);
 
+    // Have them tumble (change orientation) a little bit
+    ballEmitter.orientationChangeMinRadians = glm::vec3(-0.1f, -0.1f, -0.1f);
+    ballEmitter.orientationChangeMaxRadians = glm::vec3( 0.1f,  0.1f,  0.1f);
 
+    // A little bit of 'gravity'
+    ballEmitter.constantForce = glm::vec3(0.0f, -4.0f, 0.0f);
+    // 
+    ballEmitter.minLifetime = 10.0f;
+    ballEmitter.maxLifetime = 15.0f;
+    ballEmitter.minNumParticlesPerUpdate = 1;
+    ballEmitter.maxNumParticlesPerUpdate = 3;
+    //
+    ballEmitter.maxNumParticles = 20'000;
+
+    ::g_anEmitter.InitializeParticles(ballEmitter);
+    ::g_anEmitter.Enable();
+    ::g_anEmitter.Show_MakeVisible();
 
 
 
