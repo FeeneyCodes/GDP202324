@@ -25,6 +25,7 @@ extern cParticleSystem g_anEmitter;
 extern cMesh* g_pParticleMeshModel;
 
 
+
 float getRandomFloat(float a, float b);
 
 void LoadLuaScripts(void)
@@ -52,14 +53,18 @@ bool LoadModels(void)
 
 
     cMesh* pBathtub = new cMesh();
-    pBathtub->meshName = "bathtub_xyz_n_rgba_uv.ply";
+//    pBathtub->meshName = "bathtub_xyz_n_rgba_uv.ply";
+    pBathtub->meshName = "bathtub_xyz_n_rgba_uv_x3_size.ply";
     pBathtub->friendlyName = "bathtub";
-    pBathtub->setUniformDrawScale(3.0f);
+//    pBathtub->setUniformDrawScale(3.0f);
 //    pBathtub->setRotationFromEuler(glm::vec3(45.0f, 0.0f, 0.0f));
-    pBathtub->drawPosition = glm::vec3(0.0f, -30.0f, 0.0f);
+//    pBathtub->drawPosition = glm::vec3(0.0f, -30.0f, 0.0f);
     // 
     pBathtub->textureName[0] = "Water_Texture_01.bmp";
     pBathtub->textureRatios[0] = 1.0f;
+
+    pBathtub->bIsVisible = false;
+
     ::g_vec_pMeshesToDraw.push_back(pBathtub);
 
 
@@ -253,8 +258,7 @@ bool LoadModels(void)
 
     ::g_anEmitter.InitializeParticles(ballEmitter);
     ::g_anEmitter.Enable();
-    ::g_anEmitter.Show_MakeVisible();
-
+//    ::g_anEmitter.Show_MakeVisible();
 
 
 

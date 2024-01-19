@@ -48,6 +48,8 @@
 
 #include "cParticleSystem.h"
 
+#include "cSoftBodyVerlet.h"
+
 glm::vec3 g_cameraEye = glm::vec3(0.0, 70.0, 181.0f);
 glm::vec3 g_cameraTarget = glm::vec3(0.0f, 5.0f, 0.0f);
 glm::vec3 g_upVector = glm::vec3(0.0f, 1.0f, 0.0f);
@@ -68,6 +70,8 @@ cMesh* g_pParticleMeshModel = NULL;
 std::vector<double> g_vecLastFrameTimes;
 
 cParticleSystem g_anEmitter;
+
+cSoftBodyVerlet g_SoftBody;
 
 
 
@@ -340,7 +344,8 @@ int main(void)
     //std::cout << "Loaded: " << bunnyDrawingInfo.numberOfVertices << " vertices" << std::endl;
 
     sModelDrawInfo bathtubDrawingInfo;
-    ::g_pMeshManager->LoadModelIntoVAO("bathtub_xyz_n_rgba_uv.ply",
+//    ::g_pMeshManager->LoadModelIntoVAO("bathtub_xyz_n_rgba_uv.ply",
+    ::g_pMeshManager->LoadModelIntoVAO("bathtub_xyz_n_rgba_uv_x3_size.ply",
                                    bathtubDrawingInfo, shaderProgramID);
     std::cout << "Loaded: " << bathtubDrawingInfo.numberOfVertices << " vertices" << std::endl;
 
@@ -460,6 +465,18 @@ int main(void)
 
     // 
     LoadModels();
+
+    ::g_SoftBody.acceleration = glm::vec3(0.0f, -5.0f, 0.0f);
+
+    {
+        sModelDrawInfo bathtubDrawingInfo;
+        if ( ::g_pMeshManager->FindDrawInfoByModelName("bathtub_xyz_n_rgba_uv_x3_size.ply", bathtubDrawingInfo) )
+        {
+            ::g_SoftBody.CreateSoftBody(bathtubDrawingInfo);
+        }
+    }
+
+
 
 //    LoadTheRobotronModels(shaderProgramID);
 
@@ -765,6 +782,18 @@ int main(void)
 //            ::g_pParticleMeshModel->setDrawOrientation(glm::vec3(0.0f, 3.141f/2.0f, 0.0f));
 
             DrawObject(::g_pParticleMeshModel, matModel, shaderProgramID);
+        }
+
+
+        // The soft body bathtub
+
+        ::g_SoftBody.VerletUpdate(deltaTime / 1000.0f);
+        // 
+        ::g_SoftBody.SatisfyConstraints();
+
+        for ( cSoftBodyVerlet::sParticle* pCurParticle : ::g_SoftBody.vec_pParticles )
+        {
+            ::g_DrawDebugSphere(pCurParticle->position, 0.1f, glm::vec4(0.0f, 0.0f, 0.0f, 1.0f) );
         }
 
 

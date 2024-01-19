@@ -33,6 +33,24 @@ sModelDrawInfo::sModelDrawInfo()
 	return;
 }
 
+sModelDrawInfo::~sModelDrawInfo()
+{
+
+}
+
+void sModelDrawInfo::FreeMemory(void)
+{
+	if (this->pVertices)
+	{
+		delete[] this->pVertices;
+	}
+	if (this->pIndices)
+	{
+		delete[] this->pIndices;
+	}
+	return;
+}
+
 //static 
 unsigned int sModelDrawInfo::m_nextUniqueID = sModelDrawInfo::FIRST_UNIQUE_ID;
 

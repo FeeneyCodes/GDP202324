@@ -40,6 +40,9 @@ public:
 	//	COPY of the structure in the map, but the pointers to the 
 	//	vertex and element buffers are the ONE AND ONLY COPIES that
 	//	exist on the CPU side. So if you overwrite them, they're gone.
+//	bool FindDrawInfoPointerByModelName(std::string fileName,
+//										sModelDrawInfo*& pDrawInfo,
+//										unsigned int shaderProgramID);
 	bool UpdateVAOBuffers(std::string fileName,
 						  sModelDrawInfo& updatedDrawInfo,
 						  unsigned int shaderProgramID);

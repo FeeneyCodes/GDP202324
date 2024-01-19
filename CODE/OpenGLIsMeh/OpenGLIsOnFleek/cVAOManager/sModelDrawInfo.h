@@ -18,6 +18,7 @@ struct sVertex
 struct sModelDrawInfo
 {
 	sModelDrawInfo();
+	~sModelDrawInfo();
 
 	std::string meshName;
 
@@ -43,6 +44,8 @@ struct sModelDrawInfo
 	float maxExtent;
 
 	void calcExtents(void);
+
+	void FreeMemory(void);
 
 	// 
 	unsigned int getUniqueID(void);

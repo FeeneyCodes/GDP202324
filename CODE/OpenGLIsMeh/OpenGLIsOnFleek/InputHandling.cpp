@@ -120,11 +120,11 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
         // Adjust height of terrain
         if ( key == GLFW_KEY_U )
         {
-            ::g_HeightAdjust += 0.1;
+            ::g_HeightAdjust += 0.1f;
         }
         if ( key == GLFW_KEY_J )
         {
-            ::g_HeightAdjust -= 0.1;
+            ::g_HeightAdjust -= 0.1f;
         }
 
         if ( key == GLFW_KEY_LEFT )
