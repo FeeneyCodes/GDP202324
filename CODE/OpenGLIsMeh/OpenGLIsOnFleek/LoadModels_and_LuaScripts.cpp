@@ -94,6 +94,16 @@ bool LoadModels(void)
     ::g_vec_pMeshesToDraw.push_back(pGroundMesh);
 
 
+    cMesh* pZeroYMesh = new cMesh();
+    pZeroYMesh->meshName = "Big_Flat_Mesh_256x256_00_132K_xyz_n_rgba_uv.ply";
+    pZeroYMesh->friendlyName = "pZeroYMesh";
+    pZeroYMesh->bIsWireframe = true;
+    pZeroYMesh->bDoNotLight = true;
+    pZeroYMesh->wholeObjectDebugColourRGBA = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
+    pZeroYMesh->bUseDebugColours = true;
+    ::g_vec_pMeshesToDraw.push_back(pZeroYMesh);
+
+
 
 
     const float MAX_SPHERE_LOCATION = 30.0f;

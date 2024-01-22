@@ -43,11 +43,11 @@ int main(int argc, char* argv[])
 
 
 	cMazeMaker theMM;
-	theMM.GenerateMaze(20, 20);
-	theMM.PrintMaze();
-	theMM.PrintMazeToFile("sexyMaze_20x20.txt");
+	theMM.GenerateMaze(100, 100);
+//	theMM.PrintMaze();
+	theMM.PrintMazeToFile("sexyMaze_100x100.txt");
 
-	theMM.CopyToCharArray();
+//	theMM.CopyToCharArray();
 
 	theMM.CreateOtherGraph();
 

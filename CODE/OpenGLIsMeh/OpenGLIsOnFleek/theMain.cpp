@@ -787,7 +787,7 @@ int main(void)
 
         // The soft body bathtub
 
-        ::g_SoftBody.VerletUpdate(deltaTime / 1000.0f);
+        ::g_SoftBody.VerletUpdate(deltaTime / 500.0f);
         // 
         ::g_SoftBody.SatisfyConstraints();
 

@@ -17,7 +17,7 @@ class cMazeRoom		// aka "node"
 {
 public:
 	unsigned int id;  // x & y location, if needed
-	cMazeRoom* pAdjoiningRooms[4];
+	std::vector< cMazeRoom* > vec_pAdjoiningRooms;
 };
 
 
@@ -40,6 +40,13 @@ public:
 	// COMPLETELY DIFFERENT GRAPH OF THIS MAZE
 	std::vector< cMazeRoom* > vecRooms;
 	void CreateOtherGraph(void);
+	// Returns NULL if not found
+	cMazeRoom* pFindRoomByID(unsigned int id);
+	unsigned int calcID(unsigned int row, unsigned int col);
+	// Change this is the maze is wider or taller than this
+	// (i.e. max size now is 10,000 x 10,000
+	const unsigned int MAZE_ROW_MULTIPLE = 10'000;
+
 
 private:
 	int m_maze_size[2];

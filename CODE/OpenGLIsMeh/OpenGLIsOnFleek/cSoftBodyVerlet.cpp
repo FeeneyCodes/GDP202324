@@ -149,11 +149,13 @@ void cSoftBodyVerlet::VerletUpdate(double deltaTime)
 		pCurrentParticle->position = new_pos;
 
 		// Check if there is a LARGE different between old and new positions
+#if _DEBUG 
 		float distDiff = glm::distance(pCurrentParticle->position, pCurrentParticle->old_position);
 		if (distDiff > 0.1f )
 		{
 			std::cout << "LARGE DISTANCE DETECTED!" << std::endl;
 		}
+#endif
 
 		this->cleanZeros(pCurrentParticle->position);
 		this->cleanZeros(pCurrentParticle->old_position);
@@ -196,12 +198,12 @@ void cSoftBodyVerlet::SatisfyConstraints(void)
 		// Calculate difference between current length and rest length
 		float lengthDiff = pCurConstraint->restLength - vecABlength;
 
-
+#if _DEBUG 
 		if (lengthDiff > 0.1f)
 		{
 			std::cout << "LARGE DISTANCE DETECTED!" << std::endl;
 		}
-
+#endif
 
 		// 
 		float lengthDiffRatio = lengthDiff / vecABlength;
