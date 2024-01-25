@@ -55,6 +55,9 @@
     <Filter Include="Particles">
       <UniqueIdentifier>{bc3f71f4-9997-4e1e-a595-493ca0c091f3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="FBO">
+      <UniqueIdentifier>{862162fc-f62f-4d53-adff-9323571c3ce0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="theMain.cpp">
@@ -156,6 +159,12 @@
     <ClCompile Include="cSoftBodyVerlet.cpp">
       <Filter>Particles</Filter>
     </ClCompile>
+    <ClCompile Include="FBO\cFBO.cpp">
+      <Filter>FBO</Filter>
+    </ClCompile>
+    <ClCompile Include="GLFW_Callbacks.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Basic Shader Manager\cShaderManager.h">
@@ -244,6 +253,9 @@
     </ClInclude>
     <ClInclude Include="cSoftBodyVerlet.h">
       <Filter>Particles</Filter>
+    </ClInclude>
+    <ClInclude Include="FBO\cFBO.h">
+      <Filter>FBO</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -24,6 +24,8 @@ extern cParticleSystem g_anEmitter;
 
 extern cMesh* g_pParticleMeshModel;
 
+extern cMesh* g_pOffscreenTextureQuad;
+
 
 
 float getRandomFloat(float a, float b);
@@ -64,7 +66,7 @@ bool LoadModels(void)
     pBathtub->textureName[0] = "Water_Texture_01.bmp";
     pBathtub->textureRatios[0] = 1.0f;
 
-    pBathtub->bIsVisible = false;
+//    pBathtub->bIsVisible = false;
 
     ::g_vec_pMeshesToDraw.push_back(pBathtub);
 
@@ -274,8 +276,8 @@ bool LoadModels(void)
     // 
     ballEmitter.minLifetime = 10.0f;
     ballEmitter.maxLifetime = 15.0f;
-    ballEmitter.minNumParticlesPerUpdate = 10;
-    ballEmitter.maxNumParticlesPerUpdate = 30;
+    ballEmitter.minNumParticlesPerUpdate = 1;
+    ballEmitter.maxNumParticlesPerUpdate = 3;
     //
     ballEmitter.maxNumParticles = 20'000;
 
@@ -284,7 +286,16 @@ bool LoadModels(void)
     ::g_anEmitter.Show_MakeVisible();
 
 
+    // What's on the FBO??
+    ::g_pOffscreenTextureQuad = new cMesh();
+    ::g_pOffscreenTextureQuad->meshName = "Quad_2_sided_aligned_on_XY_plane.ply";
+    ::g_pOffscreenTextureQuad->setUniformDrawScale(100.0f);
+    ::g_pOffscreenTextureQuad->bDoNotLight = true;
+    ::g_pOffscreenTextureQuad->bIsVisible = true;
+    ::g_pOffscreenTextureQuad->drawPosition.x = +10.0f;
 
+    ::g_pOffscreenTextureQuad->textureName[0] = "stickers-explosion-texture.bmp";
+    ::g_pOffscreenTextureQuad->textureRatios[0] = 1.0f;
 
 
     return true;

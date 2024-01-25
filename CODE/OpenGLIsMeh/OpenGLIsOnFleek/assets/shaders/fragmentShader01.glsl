@@ -6,7 +6,8 @@ in vec4 fVertexWorldPos;			// vertex in "world space"
 in vec4 fVertexWorldNormal;	
 in vec2 fTextureCoords;			// u is x or red, v is y or green
 
-out vec4 outputColour;		// To the frame buffer (aka screen)
+// These are listed in order, starting from zero
+out vec4 outputColour;			// GL_COLOR_ATTACHMENT0      // To the frame buffer (aka screen)
 
 //uniform vec3 directionalLightColour;
 // rgb are the rgb of the light colour
@@ -50,6 +51,10 @@ uniform samplerCube skyBoxTexture;
 // For the discard example
 uniform bool bUseDiscardMaskTexture;
 uniform sampler2D maskSamplerTexture01;
+
+// From the FBO
+uniform bool bIsOffScreenTextureQuad;
+uniform sampler2D textureOffScreen;
 
 //... and so on
 //uniform float textureMixRatio[8];
@@ -111,6 +116,46 @@ void main()
 //			discard;
 //		}
 //	}
+
+	// Offscreen quad
+	if ( bIsOffScreenTextureQuad )
+	{
+//		outputColour.rgb = vec3(1.0f, 0.0f, 0.0f);
+		vec3 theColour = texture( textureOffScreen, fTextureCoords.st ).rgb;
+//		outputColour.rgb = theColour;
+		
+//		vec2 textCoordsScreen = vec2( gl_FragCoord.x / 1920, gl_FragCoord.y  / 1080 );
+//		vec3 theColour = texture( textureOffScreen, textCoordsScreen.st ).rgb;
+
+// 'night vision' 
+//		float brightness = ( theColour.r + theColour.g + theColour.b ) / 3.0f;
+//		outputColour.rgb = vec3( 0.0f, brightness, 0.0f );
+
+//		.....
+//		..x..
+//		.....
+
+		theColour.r = texture( textureOffScreen, 
+		                       vec2( fTextureCoords.s + 0.01f, 
+							         fTextureCoords.t + 0.01f ) ).r;
+		
+		theColour.b = texture( textureOffScreen, 
+		                       vec2( fTextureCoords.s - 0.01f, 
+							         fTextureCoords.t + 0.05f ) ).b;		
+							   
+		theColour.g = texture( textureOffScreen, 
+		                       vec2( fTextureCoords.s - 0.015f, 
+							         fTextureCoords.t - 0.06f  ) ).g;	
+									 
+		
+		
+
+		outputColour.rgb = theColour;
+						   
+		outputColour.a = 1.0f;
+		return;
+	}
+
 
 	if ( bUseDiscardMaskTexture )
 	{

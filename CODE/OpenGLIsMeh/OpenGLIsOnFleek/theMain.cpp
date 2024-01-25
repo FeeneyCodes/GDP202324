@@ -50,6 +50,14 @@
 
 #include "cSoftBodyVerlet.h"
 
+// Frame Buffer Object (i.e. we render to this instead of the main screen)
+#include "FBO/cFBO.h"
+// We are going to show what's on the FBO on this quad
+cMesh* g_pOffscreenTextureQuad = NULL;
+
+
+void windowSizeChangedCallback(GLFWwindow* window, int width, int height);
+
 glm::vec3 g_cameraEye = glm::vec3(0.0, 20.0, 181.0f);
 glm::vec3 g_cameraTarget = glm::vec3(0.0f, 10.0f, 0.0f);
 glm::vec3 g_upVector = glm::vec3(0.0f, 1.0f, 0.0f);
@@ -72,6 +80,9 @@ std::vector<double> g_vecLastFrameTimes;
 cParticleSystem g_anEmitter;
 
 cSoftBodyVerlet g_SoftBody;
+
+// Offscreen frame buffer object
+cFBO* g_pFBO_1 = NULL;
 
 
 
@@ -293,10 +304,24 @@ int main(void)
 
     glfwSetKeyCallback(window, key_callback);
 
+    glfwSetWindowSizeCallback(window, windowSizeChangedCallback);
+
     glfwMakeContextCurrent(window);
     gladLoadGLLoader( (GLADloadproc)glfwGetProcAddress);
     glfwSwapInterval(1);
 
+
+    // Create an offscreen frame buffer object
+    ::g_pFBO_1 = new cFBO();
+    std::string FBOError;
+    if ( ! ::g_pFBO_1->init(1920, 1080, FBOError) )
+    {
+        std::cout << "Error creating FBO: " << FBOError << std::endl;
+    }
+    else
+    {
+        std::cout << "FBO created OK." << std::endl;
+    }
 
 
 //    cHiResTimer* p_HRTimer = new cHiResTimer();
@@ -610,6 +635,14 @@ int main(void)
         glUniformMatrix4fv(matView_UL, 1, GL_FALSE, glm::value_ptr(matView));
 
 
+
+        // Redirect the output to the FBO (NOT the screen)
+        glBindFramebuffer(GL_FRAMEBUFFER, ::g_pFBO_1->ID );
+        // Remember to clear the FBO
+        ::g_pFBO_1->clearBuffers(true, true);
+        //::g_pFBO_1->clearColourBuffer(0);
+        //::g_pFBO_1->clearDepthBuffer();
+       
         // *********************************************************************
         // Draw all the objects
         for ( unsigned int index = 0; index != ::g_vec_pMeshesToDraw.size(); index++ )
@@ -626,6 +659,8 @@ int main(void)
 
         }//for ( unsigned int index
         // *********************************************************************
+
+
 
 // This is very old OpenGL "Immediate Mode"
 // Don't use this for your usual stuff, but it's very handy 
@@ -809,6 +844,42 @@ int main(void)
 //           ::g_DrawDebugSphere(pCurParticle->position, 0.1f, glm::vec4(0.0f, 0.0f, 0.0f, 1.0f) );
 //       }
 
+
+        // Redirect the output back to the screen
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+        glfwGetFramebufferSize(window, &width, &height);
+        ratio = width / (float)height;
+
+        glViewport(0, 0, width, height);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        // While drawing a pixel, see if the pixel that's already there is closer or not?
+        glEnable(GL_DEPTH_TEST);
+        // (Usually) the default - does NOT draw "back facing" triangles
+        glEnable(GL_CULL_FACE);
+        glCullFace(GL_BACK);
+
+
+
+        //uniform bool bIsOffScreenTextureQuad;
+        GLuint bIsOffScreenTextureQuad_ID = glGetUniformLocation(shaderProgramID, "bIsOffScreenTextureQuad");
+        glUniform1f(bIsOffScreenTextureQuad_ID, (GLfloat)GL_TRUE);
+
+        // Connect the FBO colour texture to this texture
+        {
+            GLint textureUnitNumber = 50;
+            glActiveTexture(GL_TEXTURE0 + textureUnitNumber);
+//            GLuint Texture01 = ::g_pTextureManager->getTextureIDFromName(pCurrentMesh->textureName[textureUnitNumber]);
+            // Get texture number from the FBO colour texture
+            glBindTexture(GL_TEXTURE_2D, ::g_pFBO_1->colourTexture_0_ID);
+            GLint texture_01_UL = glGetUniformLocation(shaderProgramID, "textureOffScreen");
+            glUniform1i(texture_01_UL, textureUnitNumber);
+        }
+
+        DrawObject(::g_pOffscreenTextureQuad, glm::mat4(1.0f), shaderProgramID);
+
+        glUniform1f(bIsOffScreenTextureQuad_ID, (GLfloat)GL_FALSE);
 
 
         glfwSwapBuffers(window);

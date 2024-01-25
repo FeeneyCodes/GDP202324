@@ -159,7 +159,9 @@
     <ClCompile Include="cSoftBodyVerlet.cpp" />
     <ClCompile Include="cVAOManager\cVAOManager.cpp" />
     <ClCompile Include="cVAOManager\sModelDrawInfo.cpp" />
+    <ClCompile Include="FBO\cFBO.cpp" />
     <ClCompile Include="glad.c" />
+    <ClCompile Include="GLFW_Callbacks.cpp" />
     <ClCompile Include="InputHandling.cpp" />
     <ClCompile Include="LoadModels_and_LuaScripts.cpp" />
     <ClCompile Include="LuaBrain\cLuaBrain.cpp" />
@@ -195,6 +197,7 @@
     <ClInclude Include="cParticleSystem.h" />
     <ClInclude Include="cPhysics.h" />
     <ClInclude Include="cSoftBodyVerlet.h" />
+    <ClInclude Include="FBO\cFBO.h" />
     <ClInclude Include="iCommand.h" />
     <ClInclude Include="LuaBrain\cLuaBrain.h" />
     <ClInclude Include="sTriangle.h" />
