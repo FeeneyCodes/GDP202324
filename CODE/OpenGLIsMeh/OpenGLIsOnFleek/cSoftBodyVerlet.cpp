@@ -167,36 +167,43 @@ void cSoftBodyVerlet::ApplyCollision(double deltaTime)
 		}
 	}
 
+//	this->vec_pParticles[0]->position = glm::vec3(0.0f, 30.0f, 0.0f);
+
+
 	return;
 }
 
 
 void cSoftBodyVerlet::SatisfyConstraints(void)
 {
-
-	// This is ONE pass of the constraint resolution
-	for (sConstraint* pCurConstraint : this->vec_pConstraints )
+	const unsigned int NUM_ITERATIONS = 5;
+	
+	for ( unsigned int iteration = 0; iteration != NUM_ITERATIONS; iteration++ )
 	{
-		cSoftBodyVerlet::sParticle* pX1 = pCurConstraint->pParticleA;
-		cSoftBodyVerlet::sParticle* pX2 = pCurConstraint->pParticleB;
+		// This is ONE pass of the constraint resolution
+		for (sConstraint* pCurConstraint : this->vec_pConstraints )
+		{
+			cSoftBodyVerlet::sParticle* pX1 = pCurConstraint->pParticleA;
+			cSoftBodyVerlet::sParticle* pX2 = pCurConstraint->pParticleB;
 		
-		glm::vec3 delta = pX2->position - pX1->position;
+			glm::vec3 delta = pX2->position - pX1->position;
 
-		float deltaLength = glm::length(delta);
+			float deltaLength = glm::length(delta);
 
-		float diff = (deltaLength - pCurConstraint->restLength) / deltaLength;
+			float diff = (deltaLength - pCurConstraint->restLength) / deltaLength;
 
-		// Making this non-one, will change how quickly the objects move together
-		// For example, making this < 1.0 will make it "bouncier"
-		float tightnessFactor = 1.0f;
+			// Making this non-one, will change how quickly the objects move together
+			// For example, making this < 1.0 will make it "bouncier"
+			float tightnessFactor = 1.0f;
 
-		pX1->position += delta * 0.5f * diff * tightnessFactor;
-		pX2->position -= delta * 0.5f * diff * tightnessFactor;
+			pX1->position += delta * 0.5f * diff * tightnessFactor;
+			pX2->position -= delta * 0.5f * diff * tightnessFactor;
 
-		this->cleanZeros(pX1->position);
-		this->cleanZeros(pX2->position);
+			this->cleanZeros(pX1->position);
+			this->cleanZeros(pX2->position);
 
-	}//for (sConstraint* pCurConstraint...
+		}//for (sConstraint* pCurConstraint...
+	}//for ( unsigned int iteration
 
 	return;
 }

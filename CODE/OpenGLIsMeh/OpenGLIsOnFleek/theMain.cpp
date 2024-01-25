@@ -364,9 +364,16 @@ int main(void)
     ::g_pMeshManager->setBasePath("assets/models");
 
     sModelDrawInfo bunnyDrawingInfo;
-    ::g_pMeshManager->LoadModelIntoVAO("bun_zipper_res2_xyz_n_rgba_trivialUV_offset_Y.ply",
+//    ::g_pMeshManager->LoadModelIntoVAO("bun_zipper_res2_xyz_n_rgba_trivialUV_offset_Y.ply",
+    ::g_pMeshManager->LoadModelIntoVAO("bun_zipper_res3_xyz_n_rgba_trivialUV_offset_Y.ply",
                                    bunnyDrawingInfo, shaderProgramID);
     std::cout << "Loaded: " << bunnyDrawingInfo.numberOfVertices << " vertices" << std::endl;
+
+    sModelDrawInfo verletCubeDrawingInfo;
+    ::g_pMeshManager->LoadModelIntoVAO("Cube_1x1x1_xyz_n_rgba_for_Verlet.ply",
+                                       verletCubeDrawingInfo, shaderProgramID);
+    std::cout << "Loaded: " << verletCubeDrawingInfo.numberOfVertices << " vertices" << std::endl;
+
 
     sModelDrawInfo bathtubDrawingInfo;
 //    ::g_pMeshManager->LoadModelIntoVAO("bathtub_xyz_n_rgba_uv.ply",
@@ -503,8 +510,9 @@ int main(void)
 
     {
         sModelDrawInfo bathtubDrawingInfo;
-//        if ( ::g_pMeshManager->FindDrawInfoByModelName("bathtub_xyz_n_rgba_uv_x3_size_Offset_in_Y.ply", bathtubDrawingInfo) )
-        if ( ::g_pMeshManager->FindDrawInfoByModelName("bun_zipper_res2_xyz_n_rgba_trivialUV_offset_Y.ply", bathtubDrawingInfo) )
+//        if ( ::g_pMeshManager->FindDrawInfoByModelName("bun_zipper_res2_xyz_n_rgba_trivialUV_offset_Y.ply", bathtubDrawingInfo) )
+//       if ( ::g_pMeshManager->FindDrawInfoByModelName("Cube_1x1x1_xyz_n_rgba_for_Verlet.ply", bathtubDrawingInfo) )
+        if ( ::g_pMeshManager->FindDrawInfoByModelName("bathtub_xyz_n_rgba_uv_x3_size_Offset_in_Y.ply", bathtubDrawingInfo) )
         {
             ::g_SoftBody.CreateSoftBody(bathtubDrawingInfo);
             std::cout << "Created softbody OK." << std::endl;
@@ -636,12 +644,12 @@ int main(void)
 
 
 
-        // Redirect the output to the FBO (NOT the screen)
-        glBindFramebuffer(GL_FRAMEBUFFER, ::g_pFBO_1->ID );
-        // Remember to clear the FBO
-        ::g_pFBO_1->clearBuffers(true, true);
-        //::g_pFBO_1->clearColourBuffer(0);
-        //::g_pFBO_1->clearDepthBuffer();
+//        // Redirect the output to the FBO (NOT the screen)
+//        glBindFramebuffer(GL_FRAMEBUFFER, ::g_pFBO_1->ID );
+//        // Remember to clear the FBO
+//        ::g_pFBO_1->clearBuffers(true, true);
+//        //::g_pFBO_1->clearColourBuffer(0);
+//        //::g_pFBO_1->clearDepthBuffer();
        
         // *********************************************************************
         // Draw all the objects
@@ -831,55 +839,55 @@ int main(void)
         }
 
 
-//       // The soft body bathtub
+       // The soft body bathtub
+
+       ::g_SoftBody.VerletUpdate(deltaTime);
+       // 
+       ::g_SoftBody.ApplyCollision(deltaTime);
+       // 
+       ::g_SoftBody.SatisfyConstraints();
+
+       for ( cSoftBodyVerlet::sParticle* pCurParticle : ::g_SoftBody.vec_pParticles )
+       {
+           ::g_DrawDebugSphere(pCurParticle->position, 0.5f, glm::vec4(0.0f, 0.0f, 0.0f, 1.0f) );
+       }
+
+
+//        // Redirect the output back to the screen
+//        glBindFramebuffer(GL_FRAMEBUFFER, 0);
 //
-//       ::g_SoftBody.VerletUpdate(deltaTime);
-//       // 
-//       ::g_SoftBody.ApplyCollision(deltaTime);
-//       // 
-//       ::g_SoftBody.SatisfyConstraints();
+//        glfwGetFramebufferSize(window, &width, &height);
+//        ratio = width / (float)height;
 //
-//       for ( cSoftBodyVerlet::sParticle* pCurParticle : ::g_SoftBody.vec_pParticles )
-//       {
-//           ::g_DrawDebugSphere(pCurParticle->position, 0.1f, glm::vec4(0.0f, 0.0f, 0.0f, 1.0f) );
-//       }
-
-
-        // Redirect the output back to the screen
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-        glfwGetFramebufferSize(window, &width, &height);
-        ratio = width / (float)height;
-
-        glViewport(0, 0, width, height);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-        // While drawing a pixel, see if the pixel that's already there is closer or not?
-        glEnable(GL_DEPTH_TEST);
-        // (Usually) the default - does NOT draw "back facing" triangles
-        glEnable(GL_CULL_FACE);
-        glCullFace(GL_BACK);
+//        glViewport(0, 0, width, height);
+//        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+//
+//        // While drawing a pixel, see if the pixel that's already there is closer or not?
+//        glEnable(GL_DEPTH_TEST);
+//        // (Usually) the default - does NOT draw "back facing" triangles
+//        glEnable(GL_CULL_FACE);
+//        glCullFace(GL_BACK);
 
 
 
-        //uniform bool bIsOffScreenTextureQuad;
-        GLuint bIsOffScreenTextureQuad_ID = glGetUniformLocation(shaderProgramID, "bIsOffScreenTextureQuad");
-        glUniform1f(bIsOffScreenTextureQuad_ID, (GLfloat)GL_TRUE);
-
-        // Connect the FBO colour texture to this texture
-        {
-            GLint textureUnitNumber = 50;
-            glActiveTexture(GL_TEXTURE0 + textureUnitNumber);
+//        //uniform bool bIsOffScreenTextureQuad;
+//        GLuint bIsOffScreenTextureQuad_ID = glGetUniformLocation(shaderProgramID, "bIsOffScreenTextureQuad");
+//        glUniform1f(bIsOffScreenTextureQuad_ID, (GLfloat)GL_TRUE);
+//
+//        // Connect the FBO colour texture to this texture
+//        {
+//            GLint textureUnitNumber = 50;
+//            glActiveTexture(GL_TEXTURE0 + textureUnitNumber);
 //            GLuint Texture01 = ::g_pTextureManager->getTextureIDFromName(pCurrentMesh->textureName[textureUnitNumber]);
-            // Get texture number from the FBO colour texture
-            glBindTexture(GL_TEXTURE_2D, ::g_pFBO_1->colourTexture_0_ID);
-            GLint texture_01_UL = glGetUniformLocation(shaderProgramID, "textureOffScreen");
-            glUniform1i(texture_01_UL, textureUnitNumber);
-        }
-
-        DrawObject(::g_pOffscreenTextureQuad, glm::mat4(1.0f), shaderProgramID);
-
-        glUniform1f(bIsOffScreenTextureQuad_ID, (GLfloat)GL_FALSE);
+//           // Get texture number from the FBO colour texture
+//           glBindTexture(GL_TEXTURE_2D, ::g_pFBO_1->colourTexture_0_ID);
+//           GLint texture_01_UL = glGetUniformLocation(shaderProgramID, "textureOffScreen");
+//           glUniform1i(texture_01_UL, textureUnitNumber);
+//       }
+//
+//       DrawObject(::g_pOffscreenTextureQuad, glm::mat4(1.0f), shaderProgramID);
+//
+//       glUniform1f(bIsOffScreenTextureQuad_ID, (GLfloat)GL_FALSE);
 
 
         glfwSwapBuffers(window);
