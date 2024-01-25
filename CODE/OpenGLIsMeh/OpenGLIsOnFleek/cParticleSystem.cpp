@@ -107,8 +107,7 @@ void cParticleSystem::Update(double deltaTime)
 			curParticle.position += curParticle.velocity * (float)deltaTime;
 
 			// Orientation, too
-//			curParticle.orientation *= curParticle.rotSpeed;
-			curParticle.orientation *= glm::quat(glm::vec3( 0.0f, 1.0f, 0.0f));
+			curParticle.orientation *= curParticle.rotSpeed;
 
 			curParticle.lifetime -= (float)deltaTime;
 
@@ -181,6 +180,8 @@ void cParticleSystem::getParticleList(std::vector< cParticleRender >& vecParticl
 		{
 			cParticleRender drawnParticle;
 			drawnParticle.position = curParticle.position;
+			// 
+			drawnParticle.orientation = curParticle.orientation;
 
 			vecParticles.push_back(drawnParticle);
 		}

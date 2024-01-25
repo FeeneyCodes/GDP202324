@@ -241,7 +241,8 @@ bool LoadModels(void)
 
     ::g_pParticleMeshModel = new cMesh();
     ::g_pParticleMeshModel->setUniformDrawScale(1.0f);
-    ::g_pParticleMeshModel->meshName = "legospiderman_head_xyz_n_rgba_uv.ply";
+//    ::g_pParticleMeshModel->meshName = "legospiderman_head_xyz_n_rgba_uv.ply";
+    ::g_pParticleMeshModel->meshName = "legospiderman_head_xyz_n_rgba_uv_at_Origin.ply";
     ::g_pParticleMeshModel->textureName[0] = "SpidermanUV_square.bmp";
     ::g_pParticleMeshModel->textureRatios[0] = 1.0f;
 
@@ -255,8 +256,10 @@ bool LoadModels(void)
     ballEmitter.initVelocityMax = glm::vec3( 3.0f, 15.0f, 3.0f);
 
     // Have them tumble (change orientation) a little bit
-    ballEmitter.orientationChangeMinRadians = glm::vec3(-0.1f, -0.1f, -0.1f);
-    ballEmitter.orientationChangeMaxRadians = glm::vec3( 0.1f,  0.1f,  0.1f);
+//    ballEmitter.orientationChangeMinRadians = glm::vec3(-0.1f, -0.1f, -0.1f);
+//    ballEmitter.orientationChangeMaxRadians = glm::vec3( 0.1f,  0.1f,  0.1f);
+    ballEmitter.orientationChangeMinRadians = glm::vec3( 0.0f, 0.0f, -0.1f);
+    ballEmitter.orientationChangeMaxRadians = glm::vec3( 0.0f, 0.0f,  0.1f);
 
     // A little bit of 'gravity'
     ballEmitter.constantForce = glm::vec3(0.0f, -4.0f, 0.0f);
@@ -270,7 +273,7 @@ bool LoadModels(void)
 
     ::g_anEmitter.InitializeParticles(ballEmitter);
     ::g_anEmitter.Enable();
-//    ::g_anEmitter.Show_MakeVisible();
+    ::g_anEmitter.Show_MakeVisible();
 
 
 

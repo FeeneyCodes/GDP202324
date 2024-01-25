@@ -51,7 +51,7 @@
 #include "cSoftBodyVerlet.h"
 
 glm::vec3 g_cameraEye = glm::vec3(0.0, 20.0, 181.0f);
-glm::vec3 g_cameraTarget = glm::vec3(0.0f, 30.0f, 0.0f);
+glm::vec3 g_cameraTarget = glm::vec3(0.0f, 10.0f, 0.0f);
 glm::vec3 g_upVector = glm::vec3(0.0f, 1.0f, 0.0f);
 
 
@@ -396,6 +396,8 @@ int main(void)
     ::g_pMeshManager->setBasePath("assets/models/LEGO_Spiderman");
     ::g_pMeshManager->LoadModelIntoVAO("legospiderman_head_xyz_n_rgba_uv.ply", spiderMan, shaderProgramID);
 
+    ::g_pMeshManager->LoadModelIntoVAO("legospiderman_head_xyz_n_rgba_uv_at_Origin.ply", spiderMan, shaderProgramID);
+
     ::g_pMeshManager->LoadModelIntoVAO("legospiderman_body_xyz_n_rgba_uv.ply", spiderMan, shaderProgramID);
     ::g_pMeshManager->LoadModelIntoVAO("legospiderman_Hips_xyz_n_rgba_uv.ply", spiderMan, shaderProgramID);
 
@@ -719,7 +721,7 @@ int main(void)
 //        pSpidey->drawOrientation.y += 0.001f;
         if ( pSpidey )
         {
-            pSpidey->adjustRoationAngleFromEuler(glm::vec3(0.0f, 0.0f, 0.001f));
+            pSpidey->adjustRoationAngleFromEuler(glm::vec3(0.0f, 0.0f, 0.0f));
         }
 
 //        cMesh* pTayTayGround = g_pFindMeshByFriendlyName("Ground");
@@ -788,18 +790,18 @@ int main(void)
         }
 
 
-        // The soft body bathtub
-
-        ::g_SoftBody.VerletUpdate(deltaTime);
-        // 
-        ::g_SoftBody.ApplyCollision(deltaTime);
-        // 
-        ::g_SoftBody.SatisfyConstraints();
-
-        for ( cSoftBodyVerlet::sParticle* pCurParticle : ::g_SoftBody.vec_pParticles )
-        {
-            ::g_DrawDebugSphere(pCurParticle->position, 0.1f, glm::vec4(0.0f, 0.0f, 0.0f, 1.0f) );
-        }
+//       // The soft body bathtub
+//
+//       ::g_SoftBody.VerletUpdate(deltaTime);
+//       // 
+//       ::g_SoftBody.ApplyCollision(deltaTime);
+//       // 
+//       ::g_SoftBody.SatisfyConstraints();
+//
+//       for ( cSoftBodyVerlet::sParticle* pCurParticle : ::g_SoftBody.vec_pParticles )
+//       {
+//           ::g_DrawDebugSphere(pCurParticle->position, 0.1f, glm::vec4(0.0f, 0.0f, 0.0f, 1.0f) );
+//       }
 
 
 
