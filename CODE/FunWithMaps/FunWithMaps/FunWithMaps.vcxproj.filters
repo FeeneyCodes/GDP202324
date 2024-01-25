@@ -13,10 +13,27 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="cMap">
+      <UniqueIdentifier>{f08c7632-ba2f-4e01-a8ee-b67692fec16c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TheMain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="cMapV1.cpp">
+      <Filter>cMap</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="cCustomer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="cMapV1.h">
+      <Filter>cMap</Filter>
+    </ClInclude>
+    <ClInclude Include="cMapV2.h">
+      <Filter>cMap</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

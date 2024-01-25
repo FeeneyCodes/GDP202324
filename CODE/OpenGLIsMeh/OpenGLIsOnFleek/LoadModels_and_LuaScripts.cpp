@@ -54,7 +54,8 @@ bool LoadModels(void)
 
     cMesh* pBathtub = new cMesh();
 //    pBathtub->meshName = "bathtub_xyz_n_rgba_uv.ply";
-    pBathtub->meshName = "bathtub_xyz_n_rgba_uv_x3_size.ply";
+//    pBathtub->meshName = "bathtub_xyz_n_rgba_uv_x3_size.ply";
+    pBathtub->meshName = "bathtub_xyz_n_rgba_uv_x3_size_Offset_in_Y.ply";
     pBathtub->friendlyName = "bathtub";
 //    pBathtub->setUniformDrawScale(3.0f);
 //    pBathtub->setRotationFromEuler(glm::vec3(45.0f, 0.0f, 0.0f));
@@ -74,7 +75,7 @@ bool LoadModels(void)
 //    pGroundMesh->meshName = "Big_Flat_Mesh_256x256_00_132K_xyz_n_rgba_uv.ply";    
 //    pGroundMesh->meshName = "Big_Flat_Mesh_256x256_07_1K_xyz_n_rgba_uv.ply";    
     pGroundMesh->meshName = "Big_Flat_Mesh_256x256_12_5_xyz_n_rgba_uv.ply";    
-    pGroundMesh->drawPosition.y = -50.0f;
+    //pGroundMesh->drawPosition.y = -50.0f;
     pGroundMesh->drawPosition.z = -50.0f;
     pGroundMesh->friendlyName = "Ground";
 
@@ -97,9 +98,10 @@ bool LoadModels(void)
     cMesh* pZeroYMesh = new cMesh();
     pZeroYMesh->meshName = "Big_Flat_Mesh_256x256_00_132K_xyz_n_rgba_uv.ply";
     pZeroYMesh->friendlyName = "pZeroYMesh";
+    pZeroYMesh->drawPosition.z = -50.0f;
     pZeroYMesh->bIsWireframe = true;
     pZeroYMesh->bDoNotLight = true;
-    pZeroYMesh->wholeObjectDebugColourRGBA = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
+    pZeroYMesh->wholeObjectDebugColourRGBA = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
     pZeroYMesh->bUseDebugColours = true;
     ::g_vec_pMeshesToDraw.push_back(pZeroYMesh);
 

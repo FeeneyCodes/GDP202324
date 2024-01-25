@@ -5,26 +5,48 @@
 #include <algorithm>
 #include <map>
 
-class cCustomer
-{
-public:
-	cCustomer() {};
-	cCustomer( std::string theName, int theAge, std::string theAddress, 
-			  unsigned int theSIN)
-	{
-		this->SIN = theSIN;
-		this->name = theName;
-		this->age = theAge;
-		this->address = theAddress;
-	}
-	unsigned int SIN;
-	std::string name;
-	int age;
-	std::string address;
-};
+#include "cCustomer.h"
+
+#include "cMapV1.h"
+#include "cMapV2.h"
+
 
 int main()
 {
+	std::string names[100];
+
+
+
+	cCustomer michael = cCustomer("Michael", 7, "123 Anywhere", 829383728);
+
+	cMapV2 myHashMap;
+	unsigned int index = myHashMap.calcNameHash("Michaelsdfklsdfhksdjfdskj");
+
+	//myCust.StoreAtIndex(173846283, cCustomer("Ali", 37, "4 Street", 173846283));
+	//myCust.StoreAtIndex(1674582728, cCustomer("Robin", 17, "NFA", 1674582728));
+
+
+
+
+
+	return 0;
+}
+
+
+int main__()
+{
+	cMapV1 myCust;
+	myCust.StoreAtIndex(829383728, cCustomer("Michael", 7, "123 Anywhere", 829383728));
+	myCust.StoreAtIndex(173846283, cCustomer("Ali", 37, "4 Street", 173846283));
+	myCust.StoreAtIndex(1674582728, cCustomer("Robin", 17, "NFA", 1674582728));
+
+	cCustomer foundCust;
+	foundCust = myCust.getAtIndex(829383728);
+
+
+
+
+
 	std::vector<cCustomer> vecCustomers;
 	 
 	vecCustomers.push_back( cCustomer("Michael", 7, "123 Anywhere", 829383728) );
@@ -188,7 +210,7 @@ void DoIt(void)
 	const int HAS_A_COLOUR = 64;	//  00100000
 
 	int has_shape = 1;
-	has_shape << 4;
+//	has_shape << 4;
 	
 	void* myItems[8];
 	myItems[0] = NULL;

@@ -50,8 +50,8 @@
 
 #include "cSoftBodyVerlet.h"
 
-glm::vec3 g_cameraEye = glm::vec3(0.0, 70.0, 181.0f);
-glm::vec3 g_cameraTarget = glm::vec3(0.0f, 5.0f, 0.0f);
+glm::vec3 g_cameraEye = glm::vec3(0.0, 20.0, 181.0f);
+glm::vec3 g_cameraTarget = glm::vec3(0.0f, 30.0f, 0.0f);
 glm::vec3 g_upVector = glm::vec3(0.0f, 1.0f, 0.0f);
 
 
@@ -338,14 +338,15 @@ int main(void)
 
     ::g_pMeshManager->setBasePath("assets/models");
 
-    //sModelDrawInfo bunnyDrawingInfo;
-    //pMeshManager->LoadModelIntoVAO("bun_zipper_res2_xyz_n_rgba.ply",
-    //                               bunnyDrawingInfo, shaderProgramID);
-    //std::cout << "Loaded: " << bunnyDrawingInfo.numberOfVertices << " vertices" << std::endl;
+    sModelDrawInfo bunnyDrawingInfo;
+    ::g_pMeshManager->LoadModelIntoVAO("bun_zipper_res2_xyz_n_rgba_trivialUV_offset_Y.ply",
+                                   bunnyDrawingInfo, shaderProgramID);
+    std::cout << "Loaded: " << bunnyDrawingInfo.numberOfVertices << " vertices" << std::endl;
 
     sModelDrawInfo bathtubDrawingInfo;
 //    ::g_pMeshManager->LoadModelIntoVAO("bathtub_xyz_n_rgba_uv.ply",
-    ::g_pMeshManager->LoadModelIntoVAO("bathtub_xyz_n_rgba_uv_x3_size.ply",
+//    ::g_pMeshManager->LoadModelIntoVAO("bathtub_xyz_n_rgba_uv_x3_size.ply",
+    ::g_pMeshManager->LoadModelIntoVAO("bathtub_xyz_n_rgba_uv_x3_size_Offset_in_Y.ply",
                                    bathtubDrawingInfo, shaderProgramID);
     std::cout << "Loaded: " << bathtubDrawingInfo.numberOfVertices << " vertices" << std::endl;
 
@@ -470,9 +471,11 @@ int main(void)
 
     {
         sModelDrawInfo bathtubDrawingInfo;
-        if ( ::g_pMeshManager->FindDrawInfoByModelName("bathtub_xyz_n_rgba_uv_x3_size.ply", bathtubDrawingInfo) )
+//        if ( ::g_pMeshManager->FindDrawInfoByModelName("bathtub_xyz_n_rgba_uv_x3_size_Offset_in_Y.ply", bathtubDrawingInfo) )
+        if ( ::g_pMeshManager->FindDrawInfoByModelName("bun_zipper_res2_xyz_n_rgba_trivialUV_offset_Y.ply", bathtubDrawingInfo) )
         {
             ::g_SoftBody.CreateSoftBody(bathtubDrawingInfo);
+            std::cout << "Created softbody OK." << std::endl;
         }
     }
 
@@ -787,7 +790,9 @@ int main(void)
 
         // The soft body bathtub
 
-        ::g_SoftBody.VerletUpdate(deltaTime / 500.0f);
+        ::g_SoftBody.VerletUpdate(deltaTime);
+        // 
+        ::g_SoftBody.ApplyCollision(deltaTime);
         // 
         ::g_SoftBody.SatisfyConstraints();
 
@@ -1209,24 +1214,24 @@ void DrawObject(cMesh* pCurrentMesh, glm::mat4 matModelParent, GLuint shaderProg
         GLint bUseDiscardMaskTexture_UL = glGetUniformLocation(shaderProgramID, "bUseDiscardMaskTexture");
 
         // uniform bool bUseHeightMap;
-        if ( pCurrentMesh->friendlyName == "Ground" )
-        {
-            glUniform1f(bUseDiscardMaskTexture_UL, (GLfloat)GL_TRUE);
-
-            //uniform sampler2D maskSamplerTexture01; 	// Texture unit 25
-            GLint textureUnitNumber = 25;
-            GLuint stencilMaskID = ::g_pTextureManager->getTextureIDFromName("FAKE_Stencil_Texture_612x612.bmp");
-            glActiveTexture(GL_TEXTURE0 + textureUnitNumber);
-            glBindTexture(GL_TEXTURE_2D, stencilMaskID);
-
-            GLint bUseDiscardMaskTexture_UL = glGetUniformLocation(shaderProgramID, "maskSamplerTexture01");
-            glUniform1i(bUseDiscardMaskTexture_UL, textureUnitNumber);
-
-        }
-        else
-        {
+//        if ( pCurrentMesh->friendlyName == "Ground" )
+//        {
+//            glUniform1f(bUseDiscardMaskTexture_UL, (GLfloat)GL_TRUE);
+//
+//            //uniform sampler2D maskSamplerTexture01; 	// Texture unit 25
+//            GLint textureUnitNumber = 25;
+//            GLuint stencilMaskID = ::g_pTextureManager->getTextureIDFromName("FAKE_Stencil_Texture_612x612.bmp");
+//            glActiveTexture(GL_TEXTURE0 + textureUnitNumber);
+//            glBindTexture(GL_TEXTURE_2D, stencilMaskID);
+//
+//            GLint bUseDiscardMaskTexture_UL = glGetUniformLocation(shaderProgramID, "maskSamplerTexture01");
+//            glUniform1i(bUseDiscardMaskTexture_UL, textureUnitNumber);
+//
+//        }
+//        else
+//        {
             glUniform1f(bUseDiscardMaskTexture_UL, (GLfloat)GL_FALSE);
-        }
+//        }
     }
 // *********************************************************************
 

@@ -20,6 +20,8 @@ public:
 	bool UpdateDrawInfo(void);
 
 	void VerletUpdate(double deltaTime);
+	// This is for the ground, hitting something, etc.
+	void ApplyCollision(double deltaTime);
 	void SatisfyConstraints(void);
 
 	struct sParticle

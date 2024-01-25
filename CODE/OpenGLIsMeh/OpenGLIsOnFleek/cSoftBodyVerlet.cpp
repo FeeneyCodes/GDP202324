@@ -141,21 +141,13 @@ void cSoftBodyVerlet::VerletUpdate(double deltaTime)
 //
 //		oldx = temp;
 
-
-		// Might be 2x???
-		glm::vec3 new_pos = current_pos + (current_pos - old_pos) + (this->acceleration * (float)(deltaTime * deltaTime) );
+		// This is the actual Verlet integration step (notice there isn't a velocity)
+		pCurrentParticle->position += (current_pos - old_pos) + (this->acceleration * (float)(deltaTime * deltaTime) );
 
 		pCurrentParticle->old_position = current_pos;
-		pCurrentParticle->position = new_pos;
 
 		// Check if there is a LARGE different between old and new positions
-#if _DEBUG 
-		float distDiff = glm::distance(pCurrentParticle->position, pCurrentParticle->old_position);
-		if (distDiff > 0.1f )
-		{
-			std::cout << "LARGE DISTANCE DETECTED!" << std::endl;
-		}
-#endif
+
 
 		this->cleanZeros(pCurrentParticle->position);
 		this->cleanZeros(pCurrentParticle->old_position);
@@ -164,60 +156,45 @@ void cSoftBodyVerlet::VerletUpdate(double deltaTime)
 	return;
 }
 
+void cSoftBodyVerlet::ApplyCollision(double deltaTime)
+{
+	// HACK: Stop any particles that go below the "ground"
+	for (sParticle* pCurrentParticle : vec_pParticles)
+	{
+		if ( pCurrentParticle->position.y < 0.0f )
+		{
+			pCurrentParticle->position.y = 0.0f;
+		}
+	}
+
+	return;
+}
+
+
 void cSoftBodyVerlet::SatisfyConstraints(void)
 {
-//	sParticle* pParticleA = NULL;
-//	sParticle* pParticleB = NULL;
-//	float restLength = 0.0f;
-
 
 	// This is ONE pass of the constraint resolution
 	for (sConstraint* pCurConstraint : this->vec_pConstraints )
 	{
-		// Decide that the direction is from A to B
-		// Calculate direction from normalized length
+		cSoftBodyVerlet::sParticle* pX1 = pCurConstraint->pParticleA;
+		cSoftBodyVerlet::sParticle* pX2 = pCurConstraint->pParticleB;
+		
+		glm::vec3 delta = pX2->position - pX1->position;
 
-		// A --------> B
-		// 
-		// A is 'start' and B is 'end'
-		// 
-		// Going from A to B is going in the positive (+ve) direction
+		float deltaLength = glm::length(delta);
 
-		glm::vec3 vecAB = pCurConstraint->pParticleB->position - pCurConstraint->pParticleA->position;
+		float diff = (deltaLength - pCurConstraint->restLength) / deltaLength;
 
-// DANGER!: This does NOT return the length of the vector!!
-// 		    It returns how many items are in the variable, like how many floats or whatever
-//		float vecABLength = (float)vecAB.length();
-
-		float vecABlength = glm::length(vecAB);
-
-		glm::vec3 vecABdirection = glm::normalize(vecAB);
-		// The centre point between point A and B
-//		glm::vec3 vecABcentre = pCurConstraint->pParticleA->position + (vecAB / 2.0f);
-
-		// Calculate difference between current length and rest length
-		float lengthDiff = pCurConstraint->restLength - vecABlength;
-
-#if _DEBUG 
-		if (lengthDiff > 0.1f)
-		{
-			std::cout << "LARGE DISTANCE DETECTED!" << std::endl;
-		}
-#endif
-
-		// 
-		float lengthDiffRatio = lengthDiff / vecABlength;
-			
-		// Making this non-one, will change how quickly the objects move together q
+		// Making this non-one, will change how quickly the objects move together
 		// For example, making this < 1.0 will make it "bouncier"
 		float tightnessFactor = 1.0f;
 
-		// Adjust the points based on this half length error
-		pCurConstraint->pParticleA->position += vecABlength * 0.5f * lengthDiffRatio * tightnessFactor;
-		pCurConstraint->pParticleB->position -= vecABlength * 0.5f * lengthDiffRatio * tightnessFactor;
+		pX1->position += delta * 0.5f * diff * tightnessFactor;
+		pX2->position -= delta * 0.5f * diff * tightnessFactor;
 
-		this->cleanZeros(pCurConstraint->pParticleA->position);
-		this->cleanZeros(pCurConstraint->pParticleB->position);
+		this->cleanZeros(pX1->position);
+		this->cleanZeros(pX2->position);
 
 	}//for (sConstraint* pCurConstraint...
 
