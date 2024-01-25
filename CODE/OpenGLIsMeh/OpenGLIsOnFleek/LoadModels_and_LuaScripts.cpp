@@ -87,6 +87,7 @@ bool LoadModels(void)
 //    pGroundMesh->textureName[0] = "NvF5e_height_map.bmp";
 //    pGroundMesh->textureName[0] = "Blank_UV_Text_Texture.bmp";
     pGroundMesh->textureName[0] = "TaylorSwift_Eras_Poster.bmp";
+//    pGroundMesh->textureName[0] = "stickers-explosion-texture.bmp";
     pGroundMesh->textureRatios[0] = 1.0f;
 
 //    pGroundMesh->textureName[1] = "taylor-swift-jimmy-fallon.bmp";
@@ -242,9 +243,13 @@ bool LoadModels(void)
     ::g_pParticleMeshModel = new cMesh();
     ::g_pParticleMeshModel->setUniformDrawScale(1.0f);
 //    ::g_pParticleMeshModel->meshName = "legospiderman_head_xyz_n_rgba_uv.ply";
-    ::g_pParticleMeshModel->meshName = "legospiderman_head_xyz_n_rgba_uv_at_Origin.ply";
-    ::g_pParticleMeshModel->textureName[0] = "SpidermanUV_square.bmp";
+//    ::g_pParticleMeshModel->meshName = "legospiderman_head_xyz_n_rgba_uv_at_Origin.ply";
+    ::g_pParticleMeshModel->meshName = "Quad_2_sided_aligned_on_XY_plane.ply";
+//    ::g_pParticleMeshModel->textureName[0] = "SpidermanUV_square.bmp";
+    ::g_pParticleMeshModel->textureName[0] = "stickers-explosion-texture.bmp";
     ::g_pParticleMeshModel->textureRatios[0] = 1.0f;
+    //
+    ::g_pParticleMeshModel->bDoNotLight = true;
 
 
 
@@ -261,13 +266,16 @@ bool LoadModels(void)
     ballEmitter.orientationChangeMinRadians = glm::vec3( 0.0f, 0.0f, -0.1f);
     ballEmitter.orientationChangeMaxRadians = glm::vec3( 0.0f, 0.0f,  0.1f);
 
+    ballEmitter.uniformScaleChangeMin = 0.001f;
+    ballEmitter.uniformScaleChangeMax = 0.003f;
+
     // A little bit of 'gravity'
     ballEmitter.constantForce = glm::vec3(0.0f, -4.0f, 0.0f);
     // 
     ballEmitter.minLifetime = 10.0f;
     ballEmitter.maxLifetime = 15.0f;
-    ballEmitter.minNumParticlesPerUpdate = 1;
-    ballEmitter.maxNumParticlesPerUpdate = 3;
+    ballEmitter.minNumParticlesPerUpdate = 10;
+    ballEmitter.maxNumParticlesPerUpdate = 30;
     //
     ballEmitter.maxNumParticles = 20'000;
 

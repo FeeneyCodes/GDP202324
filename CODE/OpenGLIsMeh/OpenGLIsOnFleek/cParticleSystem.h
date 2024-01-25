@@ -44,6 +44,10 @@ public:
 
 		glm::vec3 orientationChangeMinRadians = glm::vec3(0.0f);
 		glm::vec3 orientationChangeMaxRadians = glm::vec3(0.0f);
+
+		float uniformScaleChangeMin = 0.0f;
+		float uniformScaleChangeMax = 0.0f;
+
 		// Gravity, a 'thrust', etc.
 		glm::vec3 constantForce = glm::vec3(0.0f);
 	};
@@ -72,6 +76,7 @@ public:
 	{
 		glm::vec3 position = glm::vec3(0.0f);
 		glm::quat orientation = glm::quat(glm::vec3(0.0f));
+		glm::vec3 scaleXYZ = glm::vec3(1.0f);
 		// Maybe scale, orientation, etc.
 	};
 	void getParticleList(std::vector< cParticleRender >& vecParticles);

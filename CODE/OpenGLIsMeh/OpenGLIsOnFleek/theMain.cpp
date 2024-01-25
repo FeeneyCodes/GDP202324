@@ -411,7 +411,9 @@ int main(void)
     ::g_pMeshManager->LoadModelIntoVAO("legospiderman_Right_leg_xyz_n_rgba_uv.ply", spiderMan, shaderProgramID);
 
         
-    ::g_pMeshManager->setBasePath("assets/models");
+    ::g_pMeshManager->setBasePath("assets/models/Imposter_Shapes");
+    ::g_pMeshManager->LoadModelIntoVAO("Quad_2_sided_aligned_on_XY_plane.ply", spiderMan, shaderProgramID);
+
 
     // ... and so on
 
@@ -437,6 +439,9 @@ int main(void)
     // Using this for discard transparency mask
     ::g_pTextureManager->Create2DTextureFromBMPFile("FAKE_Stencil_Texture_612x612.bmp", true);
 
+    // Explosion for the imposter, billboard quad particle
+    // https://www.google.com/url?sa=i&url=https%3A%2F%2Fpixers.ca%2Fstickers%2Fexplosion-texture-FO30094132&psig=AOvVaw12NxuJHVqxwc7btMc0pG3O&ust=1706290535512000&source=images&cd=vfe&opi=89978449&ved=0CBMQjRxqFwoTCNCdp-WJ-YMDFQAAAAAdAAAAABAD
+    ::g_pTextureManager->Create2DTextureFromBMPFile("stickers-explosion-texture.bmp", true);
     // Load a cube map
     ::g_pTextureManager->SetBasePath("assets/textures/CubeMaps");
     std::string errors;
@@ -783,6 +788,7 @@ int main(void)
 
             ::g_pParticleMeshModel->drawPosition = curParticle.position;
             ::g_pParticleMeshModel->setDrawOrientation(curParticle.orientation);
+            ::g_pParticleMeshModel->drawScale = curParticle.scaleXYZ;
 
 //            ::g_pParticleMeshModel->setDrawOrientation(glm::vec3(0.0f, 3.141f/2.0f, 0.0f));
 

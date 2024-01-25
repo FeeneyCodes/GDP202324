@@ -87,6 +87,7 @@ void cParticleSystem::Update(double deltaTime)
 			curParticle.rotSpeed = glm::quat(this->m_getRandVec3Float(this->m_EmitterInitState.orientationChangeMinRadians,
 																	  this->m_EmitterInitState.orientationChangeMaxRadians));
 
+
 			// TODO: Maybe we don't want this here? 
 			curParticle.acceleration = this->m_EmitterInitState.constantForce;
 
@@ -110,6 +111,12 @@ void cParticleSystem::Update(double deltaTime)
 			curParticle.orientation *= curParticle.rotSpeed;
 
 			curParticle.lifetime -= (float)deltaTime;
+
+			float scaleChange = this->m_getRandFloat(this->m_EmitterInitState.uniformScaleChangeMin,
+													 this->m_EmitterInitState.uniformScaleChangeMax);
+			curParticle.scaleXYZ.x += scaleChange;
+			curParticle.scaleXYZ.y += scaleChange;
+			curParticle.scaleXYZ.z += scaleChange;
 
 		}
 	}//for (cParticle &curParticle :
@@ -182,6 +189,8 @@ void cParticleSystem::getParticleList(std::vector< cParticleRender >& vecParticl
 			drawnParticle.position = curParticle.position;
 			// 
 			drawnParticle.orientation = curParticle.orientation;
+
+			drawnParticle.scaleXYZ = curParticle.scaleXYZ;
 
 			vecParticles.push_back(drawnParticle);
 		}
