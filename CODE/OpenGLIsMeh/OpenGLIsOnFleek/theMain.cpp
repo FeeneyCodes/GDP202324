@@ -363,6 +363,7 @@ int main(void)
 
     ::g_pMeshManager->setBasePath("assets/models");
 
+    // START OF: FOR THE SOFT BODY OBJECTS
     sModelDrawInfo bunnyDrawingInfo;
 //    ::g_pMeshManager->LoadModelIntoVAO("bun_zipper_res2_xyz_n_rgba_trivialUV_offset_Y.ply",
     ::g_pMeshManager->LoadModelIntoVAO("bun_zipper_res3_xyz_n_rgba_trivialUV_offset_Y.ply",
@@ -374,13 +375,21 @@ int main(void)
                                        verletCubeDrawingInfo, shaderProgramID);
     std::cout << "Loaded: " << verletCubeDrawingInfo.numberOfVertices << " vertices" << std::endl;
 
-
     sModelDrawInfo bathtubDrawingInfo;
 //    ::g_pMeshManager->LoadModelIntoVAO("bathtub_xyz_n_rgba_uv.ply",
 //    ::g_pMeshManager->LoadModelIntoVAO("bathtub_xyz_n_rgba_uv_x3_size.ply",
     ::g_pMeshManager->LoadModelIntoVAO("bathtub_xyz_n_rgba_uv_x3_size_Offset_in_Y.ply",
                                    bathtubDrawingInfo, shaderProgramID);
     std::cout << "Loaded: " << bathtubDrawingInfo.numberOfVertices << " vertices" << std::endl;
+
+    sModelDrawInfo softBodyMesh;
+    ::g_pMeshManager->LoadModelIntoVAO("Grid_10x10_vertical_in_y.ply", softBodyMesh, shaderProgramID);
+    ::g_pMeshManager->LoadModelIntoVAO("Grid_10x10_XZ_plane_at_origin.ply", softBodyMesh, shaderProgramID);
+    ::g_pMeshManager->LoadModelIntoVAO("Grid_100x100_vertical_in_y.ply", softBodyMesh, shaderProgramID);
+    ::g_pMeshManager->LoadModelIntoVAO("Grid_100x100_XZ_plane_at_origin.ply", softBodyMesh, shaderProgramID);
+
+
+    // END OF: Soft body objects
 
     sModelDrawInfo terrainDrawingInfo;
 //    ::g_pMeshManager->LoadModelIntoVAO("Terrain_xyz_n_rgba.ply",
@@ -509,12 +518,35 @@ int main(void)
     ::g_SoftBody.acceleration = glm::vec3(0.0f, -5.0f, 0.0f);
 
     {
-        sModelDrawInfo bathtubDrawingInfo;
+
+
+        sModelDrawInfo softBodyObjectDrawingInfo;
 //        if ( ::g_pMeshManager->FindDrawInfoByModelName("bun_zipper_res2_xyz_n_rgba_trivialUV_offset_Y.ply", bathtubDrawingInfo) )
 //       if ( ::g_pMeshManager->FindDrawInfoByModelName("Cube_1x1x1_xyz_n_rgba_for_Verlet.ply", bathtubDrawingInfo) )
-        if ( ::g_pMeshManager->FindDrawInfoByModelName("bathtub_xyz_n_rgba_uv_x3_size_Offset_in_Y.ply", bathtubDrawingInfo) )
+//        if ( ::g_pMeshManager->FindDrawInfoByModelName("bathtub_xyz_n_rgba_uv_x3_size_Offset_in_Y.ply", bathtubDrawingInfo) )
+//        if ( ::g_pMeshManager->FindDrawInfoByModelName("bun_zipper_res3_xyz_n_rgba_trivialUV_offset_Y.ply", bathtubDrawingInfo) )
+//        if ( ::g_pMeshManager->FindDrawInfoByModelName("Grid_10x10_vertical_in_y.ply", softBodyObjectDrawingInfo) )
+        if ( ::g_pMeshManager->FindDrawInfoByModelName("Grid_100x100_vertical_in_y.ply", softBodyObjectDrawingInfo) )
         {
-            ::g_SoftBody.CreateSoftBody(bathtubDrawingInfo);
+
+            // Move the soft body here
+            glm::mat4 matTransform = glm::translate(glm::mat4(1.0f), glm::vec3( 0.0f, 50.0f, 0.0f) );
+
+            // Rotate if slightly on the x axis (0.1 radians)
+            matTransform = glm::rotate(matTransform,
+                                       glm::radians(90.0f), 
+                                       glm::vec3(1.0f, 0.0f, 0.0f));
+
+            ::g_SoftBody.CreateSoftBody(softBodyObjectDrawingInfo, matTransform);
+//            ::g_SoftBody.CreateSoftBody(softBodyObjectDrawingInfo);
+
+            // Add bracing constraints
+            // With the 'bun_zipper_res3_xyz_n_rgba_trivialUV_offset_Y' model, 
+            //  the triangles are around the same size, and the rest lengths
+            //  seem to be around 1.2 to 1.5, so we'll pick 2.0.
+            // NOTE: You would likely do this manually. 
+//            ::g_SoftBody.CreateRandomBracing(500, 2.0f);
+
             std::cout << "Created softbody OK." << std::endl;
         }
     }
@@ -849,7 +881,7 @@ int main(void)
 
        for ( cSoftBodyVerlet::sParticle* pCurParticle : ::g_SoftBody.vec_pParticles )
        {
-           ::g_DrawDebugSphere(pCurParticle->position, 0.5f, glm::vec4(0.0f, 0.0f, 0.0f, 1.0f) );
+           ::g_DrawDebugSphere(pCurParticle->position, 0.2f, glm::vec4(0.0f, 0.0f, 0.0f, 1.0f) );
        }
 
 

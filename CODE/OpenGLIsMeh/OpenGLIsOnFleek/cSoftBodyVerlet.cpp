@@ -14,8 +14,9 @@ cSoftBodyVerlet::~cSoftBodyVerlet()
 
 }
 
+
 // This is for loading the original model
-bool cSoftBodyVerlet::CreateSoftBody(sModelDrawInfo ModelInfo)
+bool cSoftBodyVerlet::CreateSoftBody(sModelDrawInfo ModelInfo, glm::mat4 matInitalTransform /*=glm::mat4(1.0f)*/ )
 {
 	// Copy the model info
 	this->m_ModelVertexInfo = ModelInfo;
@@ -24,10 +25,27 @@ bool cSoftBodyVerlet::CreateSoftBody(sModelDrawInfo ModelInfo)
 	sVertex* pVerticesLocalCopy = new sVertex[ModelInfo.numberOfVertices];
 	for (unsigned int index = 0; index != ModelInfo.numberOfVertices; index++)
 	{
-		pVerticesLocalCopy[index].x = ModelInfo.pVertices[index].x;
-		pVerticesLocalCopy[index].y = ModelInfo.pVertices[index].y;
-		pVerticesLocalCopy[index].z = ModelInfo.pVertices[index].z;
+		// TODO: If we are taking these vertices, apply some soft boy tranform, 
+		//	then updating the original VAO buffers (which we ARE going to do),
+		//	then we have to be aware that this will CHANGE the original VAO.
+		// In other words, if we have TWO bouncy soft bunnies, we will
+		//	have to load TWO meshes into the VAO...because the soft body
+		//	physics will update each one. 
+		glm::vec4 theVertex = glm::vec4(ModelInfo.pVertices[index].x,
+										ModelInfo.pVertices[index].y,
+										ModelInfo.pVertices[index].z, 1.0f);
+		// Apply transformation
+		theVertex = matInitalTransform * theVertex;
+
+		pVerticesLocalCopy[index].x = theVertex.x;
+		pVerticesLocalCopy[index].y = theVertex.y;
+		pVerticesLocalCopy[index].z = theVertex.z;
 		pVerticesLocalCopy[index].w = ModelInfo.pVertices[index].w;
+
+//		pVerticesLocalCopy[index].x = ModelInfo.pVertices[index].x;
+//		pVerticesLocalCopy[index].y = ModelInfo.pVertices[index].y;
+//		pVerticesLocalCopy[index].z = ModelInfo.pVertices[index].z;
+//		pVerticesLocalCopy[index].w = ModelInfo.pVertices[index].w;
 
 		pVerticesLocalCopy[index].r = ModelInfo.pVertices[index].r;
 		pVerticesLocalCopy[index].g = ModelInfo.pVertices[index].g;
@@ -43,6 +61,8 @@ bool cSoftBodyVerlet::CreateSoftBody(sModelDrawInfo ModelInfo)
 		pVerticesLocalCopy[index].v = ModelInfo.pVertices[index].v;
 	}//for (unsigned int index
 
+
+
 	unsigned int* pIndicesLocalCopy = new unsigned int[ModelInfo.numberOfIndices];
 	for (unsigned int index = 0; index != ModelInfo.numberOfIndices; index++)
 	{
@@ -51,6 +71,8 @@ bool cSoftBodyVerlet::CreateSoftBody(sModelDrawInfo ModelInfo)
 
 	this->m_ModelVertexInfo.pVertices = pVerticesLocalCopy;
 	this->m_ModelVertexInfo.pIndices = pIndicesLocalCopy;
+
+
 
 	// From this point on, we are referencing the copy of the original vertices
 
@@ -159,15 +181,39 @@ void cSoftBodyVerlet::VerletUpdate(double deltaTime)
 void cSoftBodyVerlet::ApplyCollision(double deltaTime)
 {
 	// HACK: Stop any particles that go below the "ground"
+//	for (sParticle* pCurrentParticle : vec_pParticles)
+//	{
+//		if ( pCurrentParticle->position.y < 0.0f )
+//		{
+//			pCurrentParticle->position.y = 0.0f;
+//		}
+//	}
+
+//	this->vec_pParticles[5'000]->position = glm::vec3(0.0f, 30.0f, 0.0f);
+
+	// Collide with a sphere at 20 units above the origin
+	//	with a radius of 5 units.
+	// Check to see if this particle is inside this sphere...
 	for (sParticle* pCurrentParticle : vec_pParticles)
 	{
-		if ( pCurrentParticle->position.y < 0.0f )
-		{
-			pCurrentParticle->position.y = 0.0f;
-		}
-	}
+		glm::vec3 sphereCentre = glm::vec3(0.0f, 20.0f, 24.0f);
+		float sphereRadius = 15.0f;
 
-//	this->vec_pParticles[0]->position = glm::vec3(0.0f, 30.0f, 0.0f);
+		float distanceToSphere = glm::distance(pCurrentParticle->position,
+											   sphereCentre);
+		if (distanceToSphere < sphereRadius )
+		{
+			// it's 'inside' the sphere
+			// Shift or slide the point along the ray from the centre of the sphere
+			glm::vec3 particleToCentreRay = pCurrentParticle->position - sphereCentre;
+			// Normalize to get the direction
+			particleToCentreRay = glm::normalize(particleToCentreRay);
+			// 
+			pCurrentParticle->position = (particleToCentreRay * sphereRadius) + sphereCentre;
+
+		}
+	}//for (sParticle* pCurrentParticle
+
 
 
 	return;
@@ -176,31 +222,49 @@ void cSoftBodyVerlet::ApplyCollision(double deltaTime)
 
 void cSoftBodyVerlet::SatisfyConstraints(void)
 {
-	const unsigned int NUM_ITERATIONS = 5;
+	const unsigned int NUM_ITERATIONS = 3;
 	
 	for ( unsigned int iteration = 0; iteration != NUM_ITERATIONS; iteration++ )
 	{
 		// This is ONE pass of the constraint resolution
 		for (sConstraint* pCurConstraint : this->vec_pConstraints )
 		{
-			cSoftBodyVerlet::sParticle* pX1 = pCurConstraint->pParticleA;
-			cSoftBodyVerlet::sParticle* pX2 = pCurConstraint->pParticleB;
+			if ( pCurConstraint->bIsActive )
+			{
+
+
+				cSoftBodyVerlet::sParticle* pX1 = pCurConstraint->pParticleA;
+				cSoftBodyVerlet::sParticle* pX2 = pCurConstraint->pParticleB;
 		
-			glm::vec3 delta = pX2->position - pX1->position;
+				glm::vec3 delta = pX2->position - pX1->position;
 
-			float deltaLength = glm::length(delta);
+				float deltaLength = glm::length(delta);
 
-			float diff = (deltaLength - pCurConstraint->restLength) / deltaLength;
 
-			// Making this non-one, will change how quickly the objects move together
-			// For example, making this < 1.0 will make it "bouncier"
-			float tightnessFactor = 1.0f;
+				float diff = (deltaLength - pCurConstraint->restLength) / deltaLength;
 
-			pX1->position += delta * 0.5f * diff * tightnessFactor;
-			pX2->position -= delta * 0.5f * diff * tightnessFactor;
+				// If we were having this 'tear' or break apart, 
+				//	you could check some maximum length and if it's 'too long'
+				//	then the constraint 'breaks'
+				// Handle this by:
+				// - Setting a bool (where it doesn't check the constraint any more)
+				// - Remove the constraint (but removing from a vector is sketchy...)
 
-			this->cleanZeros(pX1->position);
-			this->cleanZeros(pX2->position);
+				if ( diff > 0.1f )
+				{
+					pCurConstraint->bIsActive = false;
+				}
+
+				// Making this non-one, will change how quickly the objects move together
+				// For example, making this < 1.0 will make it "bouncier"
+				float tightnessFactor = 1.0f;
+
+				pX1->position += delta * 0.5f * diff * tightnessFactor;
+				pX2->position -= delta * 0.5f * diff * tightnessFactor;
+
+				this->cleanZeros(pX1->position);
+				this->cleanZeros(pX2->position);
+			}//if (pCurConstraint->bIsActive)
 
 		}//for (sConstraint* pCurConstraint...
 	}//for ( unsigned int iteration
@@ -278,3 +342,55 @@ void cSoftBodyVerlet::cleanZeros(glm::vec3& value)
 //		x2.CleanZero();
 //	}
 //}// for ( int itCount = 0; itCount != this->numIterations; 
+
+
+
+void cSoftBodyVerlet::CreateRandomBracing(unsigned int numberOfBraces,
+										  float minDistanceBetweenVertices)
+{
+	for ( unsigned int count = 0; count != numberOfBraces; count++ )
+	{
+		// Assume the distance is OK
+		bool bKeepLookingForParticles = false;
+
+		do 
+		{
+			// Assume the distance is OK
+			bKeepLookingForParticles = false;
+
+			// Pick two random vertices
+			// NOTE: Here, rand() might not be great because there's usually
+			//	onlly about 32,000 possible integer values...
+			// Meaning that if your are chosing from something LARGER than
+			//	around 32,000, you'll miss a bunch of values. 
+			// HOWEVER, you could also multiply rand() by itself
+			unsigned int particleIndex1 = rand() % this->vec_pParticles.size();
+			unsigned int particleIndex2 = rand() % this->vec_pParticles.size();
+
+			sParticle* pParticle1 = this->vec_pParticles[particleIndex1];
+			sParticle* pParticle2 = this->vec_pParticles[particleIndex2];
+			float distBetween = this->calcDistanceBetween(pParticle1, pParticle2);
+
+			// Distance OK?
+			if ( distBetween < minDistanceBetweenVertices )
+			{
+				// No
+				bKeepLookingForParticles = true;
+			}
+			else
+			{
+				// Distance is OK, so make a constraint
+				sConstraint* pBracingConstraint = new sConstraint();
+				pBracingConstraint->pParticleA = pParticle1;
+				pBracingConstraint->pParticleB = pParticle2;
+				pBracingConstraint->restLength = this->calcDistanceBetween(pBracingConstraint->pParticleA, pBracingConstraint->pParticleB);
+			
+				this->vec_pConstraints.push_back(pBracingConstraint);
+			}
+
+		} while (bKeepLookingForParticles);
+
+	}
+
+	return;
+}

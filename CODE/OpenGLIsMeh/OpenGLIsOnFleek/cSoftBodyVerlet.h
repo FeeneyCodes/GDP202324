@@ -13,7 +13,13 @@ public:
 	~cSoftBodyVerlet();
 
 	// This is for loading the original model
-	bool CreateSoftBody(sModelDrawInfo ModelDrawInfo);
+	// The 2nd param is the identy matrix 
+	bool CreateSoftBody(sModelDrawInfo ModelDrawInfo, glm::mat4 matInitalTransform = glm::mat4(1.0f));
+
+	// Create random constraints within the object to 'brace' the shape
+	// These are invisible, though
+	void CreateRandomBracing(unsigned int numberOfBraces,
+							 float minDistanceBetweenVertices);
 
 	// This will update the draw info vertex information from the 
 	//	soft body simulation state (at the current moment)
@@ -22,6 +28,7 @@ public:
 	void VerletUpdate(double deltaTime);
 	// This is for the ground, hitting something, etc.
 	void ApplyCollision(double deltaTime);
+
 	void SatisfyConstraints(void);
 
 	struct sParticle
@@ -47,6 +54,15 @@ public:
 		sParticle* pParticleB = NULL;
 		// How far away they are supposed to be 'at rest'
 		float restLength = 0.0f;
+
+		// if false, this isnt' checked
+		// Like if the constraint is 'broken'
+		bool bIsActive = true;		
+		// This is interesting, too
+		// From: I Spent a Week Making an AI's Video Game Idea - YouTube
+		// https://www.youtube.com/watch?v=PGk0rnyTa1U&ab_channel=SebastianLague
+		// He's using it as to fix the end of the constraint
+		bool bIsLocked = false;
 	};
 
 	// Force, like gravity or whatever
