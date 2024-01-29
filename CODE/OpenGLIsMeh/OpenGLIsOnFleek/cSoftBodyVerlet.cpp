@@ -250,10 +250,10 @@ void cSoftBodyVerlet::SatisfyConstraints(void)
 				// - Setting a bool (where it doesn't check the constraint any more)
 				// - Remove the constraint (but removing from a vector is sketchy...)
 
-				if ( diff > 0.1f )
-				{
-					pCurConstraint->bIsActive = false;
-				}
+//				if ( diff > 0.1f )
+//				{
+//					pCurConstraint->bIsActive = false;
+//				}
 
 				// Making this non-one, will change how quickly the objects move together
 				// For example, making this < 1.0 will make it "bouncier"
