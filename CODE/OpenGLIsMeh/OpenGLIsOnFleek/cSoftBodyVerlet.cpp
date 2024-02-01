@@ -222,7 +222,7 @@ void cSoftBodyVerlet::ApplyCollision(double deltaTime)
 
 void cSoftBodyVerlet::SatisfyConstraints(void)
 {
-	const unsigned int NUM_ITERATIONS = 3;
+	const unsigned int NUM_ITERATIONS = 5	;
 	
 	for ( unsigned int iteration = 0; iteration != NUM_ITERATIONS; iteration++ )
 	{

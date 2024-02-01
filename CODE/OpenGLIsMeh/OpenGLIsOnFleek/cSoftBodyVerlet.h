@@ -55,6 +55,8 @@ public:
 		// How far away they are supposed to be 'at rest'
 		float restLength = 0.0f;
 
+		unsigned int numIterations = 1;
+
 		// if false, this isnt' checked
 		// Like if the constraint is 'broken'
 		bool bIsActive = true;		
