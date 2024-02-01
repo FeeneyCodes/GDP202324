@@ -62,7 +62,7 @@ int main(int argc, char* argv[])
 	sAddUpInfo numberInfoForThread;
 
 	int count = 0;
-	while ( count < 100'000 )
+	while ( count < 1'000'000 )
 	{
 //		vecTheNumbers.push_back( (float)(rand() % 1'000) );
 //		::g_vecNums.push_back( (float)(rand() % 1'000) );
@@ -86,7 +86,7 @@ int main(int argc, char* argv[])
 		NULL,					// lpThreadAttributes,
 		0,						// dwStackSize,
 		AddThemUpThreaded,		// lpStartAddress,
-		pParams,//  lpParameter,
+		pParams,//  lpParameter,		(void*)(&numberInfoForThread)
 		0,						// dwCreationFlags (0 or CREATE_SUSPENDED)
 		&ThreadId); // lpThreadId
 
@@ -134,6 +134,7 @@ int main(int argc, char* argv[])
 
 	while ( ! pThreadInfo->bTheadIsDone )
 	{
+		Sleep(0);
 		std::cout << "Still waiting..." << std::endl;
 	}
 
@@ -149,16 +150,65 @@ int main(int argc, char* argv[])
 //	std::cout << theTotal << std::endl;
 	std::cout << numberInfoForThread.total << std::endl;
 
+
+
+	// Multiple thread example
+	const unsigned int NUM_THREADS = 10;
+	DWORD ThreadIds[NUM_THREADS] = {0};
+	HANDLE threadHandles[NUM_THREADS] = { 0 };
+
+	for ( unsigned int threadIndex = 0; threadIndex != NUM_THREADS; threadIndex++ )
+	{
+
+		threadHandles[threadIndex] = CreateThread(
+			NULL,					// lpThreadAttributes,
+			0,						// dwStackSize,
+			AddThemUpThreaded,		// lpStartAddress,
+			pParams,//  lpParameter,
+			0,						// dwCreationFlags (0 or CREATE_SUSPENDED)
+			&(ThreadIds[threadIndex]) ); // lpThreadId
+	}
+
+//	DWORD WaitForMultipleObjects(
+//		[in] DWORD        nCount,
+//		[in] const HANDLE* lpHandles,
+//		[in] BOOL         bWaitAll,
+//		[in] DWORD        dwMilliseconds
+//	);
+
+	// Note that you can pass ANY number of threads, but
+	//	it'll only wait for MAXIMUM_WAIT_OBJECTS
+	// Which is 64 on VS2022
+	// (usually 32 or 64 or something small)
+	// #define MAXIMUM_WAIT_OBJECTS 64     // Maximum number of wait objects
+
+	WaitForMultipleObjects(NUM_THREADS,
+						   threadHandles,
+						   TRUE,
+						   INFINITE);
+
+
+
 	return 0;
 }
 
 
 
+//uintptr_t _beginthreadex( // NATIVE CODE
+//						 void* security,
+//						 unsigned stack_size,
+//						 unsigned (__stdcall* start_address)(void*),
+//						 void* arglist,
+//						 unsigned initflag,
+//						 unsigned* thrdaddr
+//);
 
 
+//DWORD WINAPI AddThemUpThreaded(LPVOID lpParameter);
 
-
-
+//#include <thread>
+//unsigned (__stdcall* start_address)(void*),
+//unsigned int AddThemUpThreaded(void* lpParameter)
 
 
 

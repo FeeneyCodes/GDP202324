@@ -25,9 +25,9 @@ bool cBasicTextureManager::Create2DTextureFromBMPFile( std::string textureFileNa
 
 	// Texture is loaded OK
 	//this->m_nextTextureUnitOffset++;
-	
+//	EnterCS(Map_CS);
 	this->m_map_TexNameToTexture[ textureFileName ] = pTempTexture;
-
+//	LeaveCS(Map_CS);
 	return true;
 }
 
@@ -42,8 +42,10 @@ void cBasicTextureManager::m_appendErrorString( std::string nextErrorText )
 
 GLuint cBasicTextureManager::getTextureIDFromName( std::string textureFileName )
 {
+//	EnterCS(Map_CS);
 	std::map< std::string, CTextureFromBMP* >::iterator itTexture
 		= this->m_map_TexNameToTexture.find( textureFileName );
+//	LeaveCS(Map_CS);
 	// Found it?
 	if ( itTexture == this->m_map_TexNameToTexture.end() )
 	{
