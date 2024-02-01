@@ -83,6 +83,7 @@ cSoftBodyVerlet g_SoftBody;
 
 // Offscreen frame buffer object
 cFBO* g_pFBO_1 = NULL;
+cFBO* g_pFBO_2 = NULL;
 
 
 
@@ -275,6 +276,19 @@ static void error_callback(int error, const char* description)
 
 void TestSort(void);
 
+
+// The drawing passes
+
+// Draws the original screen (soft cloth, t-swizzle, skybox, etc.)
+void DrawPass_1(GLuint shaderProgramID, GLFWwindow* pWindow, cHiResTimer* p_HRTimer,
+                int screenWidth, int screenHeight,
+                glm::vec3 cameraEye, glm::vec3 cameraTarget);
+
+// Only draws the TV.
+void DrawPass_2(GLuint shaderProgramID, GLFWwindow* pWindow,
+                int screenWidth, int screenHeight);
+
+
 int main(void)
 {
     TestSort();
@@ -323,6 +337,20 @@ int main(void)
         std::cout << "FBO created OK." << std::endl;
     }
 
+
+    // Create an offscreen frame buffer object
+    ::g_pFBO_2 = new cFBO();
+    if ( ! ::g_pFBO_2->init(1920, 1080, FBOError) )
+    {
+        std::cout << "Error creating FBO: " << FBOError << std::endl;
+    }
+    else
+    {
+        std::cout << "FBO created OK." << std::endl;
+    }
+
+
+#pragma region AllTheLoadingCarp
 
 //    cHiResTimer* p_HRTimer = new cHiResTimer();
     // Get average of last 30 frames
@@ -388,7 +416,6 @@ int main(void)
     ::g_pMeshManager->LoadModelIntoVAO("Grid_100x100_vertical_in_y.ply", softBodyMesh, shaderProgramID);
     ::g_pMeshManager->LoadModelIntoVAO("Grid_100x100_XZ_plane_at_origin.ply", softBodyMesh, shaderProgramID);
 
-
     // END OF: Soft body objects
 
     sModelDrawInfo terrainDrawingInfo;
@@ -408,6 +435,10 @@ int main(void)
     ::g_pMeshManager->LoadModelIntoVAO("Big_Flat_Mesh_256x256_07_1K_xyz_n_rgba_uv.ply",
                                    terrainDrawingInfo, shaderProgramID);
     std::cout << "Loaded: " << terrainDrawingInfo.numberOfVertices << " vertices" << std::endl;
+
+
+    // 
+
 
 
 //    sModelDrawInfo HilbertRampDrawingInfo;
@@ -455,6 +486,12 @@ int main(void)
     ::g_pMeshManager->setBasePath("assets/models/Imposter_Shapes");
     ::g_pMeshManager->LoadModelIntoVAO("Quad_2_sided_aligned_on_XY_plane.ply", spiderMan, shaderProgramID);
 
+    // The retro TV
+    ::g_pMeshManager->setBasePath("assets/models/Retro_TV");
+    ::g_pMeshManager->LoadModelIntoVAO("RetroTV.edited.bodyonly.ply", spiderMan, shaderProgramID);
+    ::g_pMeshManager->LoadModelIntoVAO("RetroTV.edited.screenonly.ply", spiderMan, shaderProgramID);
+
+
 
     // ... and so on
 
@@ -479,6 +516,12 @@ int main(void)
     
     // Using this for discard transparency mask
     ::g_pTextureManager->Create2DTextureFromBMPFile("FAKE_Stencil_Texture_612x612.bmp", true);
+
+    // Using this for discard transparency mask
+    ::g_pTextureManager->Create2DTextureFromBMPFile("Yellow.bmp", true);
+    ::g_pTextureManager->Create2DTextureFromBMPFile("Blue.bmp", true);
+
+
 
     // Explosion for the imposter, billboard quad particle
     // https://www.google.com/url?sa=i&url=https%3A%2F%2Fpixers.ca%2Fstickers%2Fexplosion-texture-FO30094132&psig=AOvVaw12NxuJHVqxwc7btMc0pG3O&ust=1706290535512000&source=images&cd=vfe&opi=89978449&ved=0CBMQjRxqFwoTCNCdp-WJ-YMDFQAAAAAdAAAAABAD
@@ -525,8 +568,8 @@ int main(void)
 //       if ( ::g_pMeshManager->FindDrawInfoByModelName("Cube_1x1x1_xyz_n_rgba_for_Verlet.ply", bathtubDrawingInfo) )
 //        if ( ::g_pMeshManager->FindDrawInfoByModelName("bathtub_xyz_n_rgba_uv_x3_size_Offset_in_Y.ply", bathtubDrawingInfo) )
 //        if ( ::g_pMeshManager->FindDrawInfoByModelName("bun_zipper_res3_xyz_n_rgba_trivialUV_offset_Y.ply", bathtubDrawingInfo) )
-//        if ( ::g_pMeshManager->FindDrawInfoByModelName("Grid_10x10_vertical_in_y.ply", softBodyObjectDrawingInfo) )
-        if ( ::g_pMeshManager->FindDrawInfoByModelName("Grid_100x100_vertical_in_y.ply", softBodyObjectDrawingInfo) )
+        if ( ::g_pMeshManager->FindDrawInfoByModelName("Grid_10x10_vertical_in_y.ply", softBodyObjectDrawingInfo) )
+//        if ( ::g_pMeshManager->FindDrawInfoByModelName("Grid_100x100_vertical_in_y.ply", softBodyObjectDrawingInfo) )
         {
 
             // Move the soft body here
@@ -561,18 +604,18 @@ int main(void)
     ::g_pTheLights->SetUniformLocations(shaderProgramID);
 
     ::g_pTheLights->theLights[0].param2.x = 1.0f;   // Turn on
-//    ::g_pTheLights->theLights[0].param1.x = 0.0f;   // 0 = point light
-    ::g_pTheLights->theLights[0].param1.x = 1.0f;   // 1 = spot light
+    ::g_pTheLights->theLights[0].param1.x = 0.0f;   // 0 = point light
+//    ::g_pTheLights->theLights[0].param1.x = 1.0f;   // 1 = spot light
     // With spots, set direction (relative)
-    ::g_pTheLights->theLights[0].direction = glm::vec4(0.0f, -1.0f, 0.0f, 1.0f);
+//    ::g_pTheLights->theLights[0].direction = glm::vec4(0.0f, -1.0f, 0.0f, 1.0f);
     //	vec4 param1;	// x = lightType, y = inner angle, z = outer angle, w = TBD
-    ::g_pTheLights->theLights[0].param1.y = 15.0f;
-    ::g_pTheLights->theLights[0].param1.z = 25.0f;
+//    ::g_pTheLights->theLights[0].param1.y = 15.0f;
+//    ::g_pTheLights->theLights[0].param1.z = 25.0f;
 
 
-    ::g_pTheLights->theLights[0].position.x = -46.0f;
-    ::g_pTheLights->theLights[0].position.y = 23.0f;
-    ::g_pTheLights->theLights[0].position.z = -26.0f;
+    ::g_pTheLights->theLights[0].position.x = -10.0f;
+    ::g_pTheLights->theLights[0].position.y = 10.0f;
+    ::g_pTheLights->theLights[0].position.z = 50.0f;
 
 
 
@@ -620,59 +663,299 @@ int main(void)
 //
 // *************************************************************************************
 
+#pragma endregion AllTheLoadingCarp
+
     while (!glfwWindowShouldClose(window))
     {
 
-        // Switch the "main" shader
-//        shaderProgramID = pShaderThing->getIDFromFriendlyName("shader01");
-//        glUseProgram(shaderProgramID);
+// STARTOF: Pass #1   
+        // Draw original scene
 
-        float ratio;
-        int width, height;
+        {
+            glBindFramebuffer(GL_FRAMEBUFFER, ::g_pFBO_1->ID);
+            float ratio;
+    //        int width, height;
+    //        glfwGetFramebufferSize(window, &width, &height);
+    //        ratio = width / (float)height;
+            ratio = ::g_pFBO_1->width / (float)::g_pFBO_1->height;
+            glViewport(0, 0, ::g_pFBO_1->width, (float)::g_pFBO_1->height);
 
-        glUseProgram(shaderProgramID);
+    //        glViewport(0, 0, width, height);
+    //        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+            ::g_pFBO_1->clearBuffers(true, true);
 
-        glfwGetFramebufferSize(window, &width, &height);
-        ratio = width / (float)height;
+            glm::vec3 scene_1_CameraEye = glm::vec3(0.0, 20.0, 181.0f);
+            glm::vec3 scene_1_CameraTarget = glm::vec3(0.0f, 10.0f, 0.0f);
 
-        glViewport(0, 0, width, height);
-        glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
-        // While drawing a pixel, see if the pixel that's already there is closer or not?
-        glEnable(GL_DEPTH_TEST);
-        // (Usually) the default - does NOT draw "back facing" triangles
-        glEnable(GL_CULL_FACE);
-        glCullFace(GL_BACK);
+            DrawPass_1(shaderProgramID, window, p_HRTimer, ::g_pFBO_1->width, ::g_pFBO_1->height,
+                       scene_1_CameraEye, scene_1_CameraTarget);
+        }
+
+        // Draw a single full-screen quad
+        // Centred on the camera 
+        // The texture source is FBO_1
+        // I output that to FBO_2
+
+        {
+            // Same scene, but from a different camera location
+            // onto FBO 2 this time
+            glBindFramebuffer(GL_FRAMEBUFFER, ::g_pFBO_2->ID);
+            float ratio;
+    //        int width, height;
+    //        glfwGetFramebufferSize(window, &width, &height);
+    //        ratio = width / (float)height;
+            ratio = ::g_pFBO_2->width / (float)::g_pFBO_2->height;
+            glViewport(0, 0, ::g_pFBO_2->width, (float)::g_pFBO_2->height);
+
+    //        glViewport(0, 0, width, height);
+    //        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+            ::g_pFBO_2->clearBuffers(true, true);
+
+            glm::vec3 scene_2_CameraEye = glm::vec3(181.0, 100.0, 0.0f);
+            glm::vec3 scene_2_CameraTarget = glm::vec3(0.0f, 0.0f, 0.0f);
+
+
+            DrawPass_1(shaderProgramID, window, p_HRTimer, ::g_pFBO_2->width, ::g_pFBO_2->height,
+                       scene_2_CameraEye, scene_2_CameraTarget);
+        }
+
+
+// ENDOF: Pass #1
+
+
+// STARTOF: Pass #2
+        {
+            // Draw ONLY the TV(s)
+
+            // Point the rendering to the actual screen
+            // 
+            // "0" turns off or sets it to the default framebuffer
+            glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+            float ratio;
+            int width, height;
+            glfwGetFramebufferSize(window, &width, &height);
+            ratio = width / (float)height;
+
+            glViewport(0, 0, width, height);
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+            DrawPass_2(shaderProgramID, window, width, height);
+        }
+// ENDOF: Pass #2
+
+
+//        DrawPass_3();
+
+
+        // Here's where we "present" to the screen
+        glfwSwapBuffers(window);
+        glfwPollEvents();
+
+        // Update the title screen
+        std::stringstream ssTitle;
+        ssTitle << "Camera (x,y,z): "
+            << ::g_cameraEye.x << ", "
+            << ::g_cameraEye.y << ", "
+            << ::g_cameraEye.z << ") "
+            << "Light[" << ::g_selectedLight << "]: "
+            << ::g_pTheLights->theLights[::g_selectedLight].position.x << ", "
+            << ::g_pTheLights->theLights[::g_selectedLight].position.y << ", "
+            << ::g_pTheLights->theLights[::g_selectedLight].position.z << "  "
+            << "const:" << ::g_pTheLights->theLights[::g_selectedLight].atten.x << " "
+            << "linear:" << ::g_pTheLights->theLights[::g_selectedLight].atten.y << " "
+            << "quad:" << ::g_pTheLights->theLights[::g_selectedLight].atten.z << " "
+            << "inner: " << ::g_pTheLights->theLights[::g_selectedLight].param1.y << " "
+            << "outer: " << ::g_pTheLights->theLights[::g_selectedLight].param1.z << " ";
+
+//        glfwSetWindowTitle(window, "HEY!");
+
+        std::string theTitle = ssTitle.str();
+
+        glfwSetWindowTitle(window, theTitle.c_str() );
+
+
+    }
+
+    // Delete everything
+
+
+    glfwDestroyWindow(window);
+
+
+
+
+    glfwTerminate();
+    exit(EXIT_SUCCESS);
+}
+
+
+void DrawPass_2(GLuint shaderProgramID, GLFWwindow* pWindow,
+                int screenWidth, int screenHeight)
+{
+    float ratio;
+
+    glUseProgram(shaderProgramID);
+
+    //glfwGetFramebufferSize(pWindow, &width, &height);
+    ratio = screenWidth / (float)screenHeight;
+
+    //glViewport(0, 0, width, height);
+    //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    // While drawing a pixel, see if the pixel that's already there is closer or not?
+    glEnable(GL_DEPTH_TEST);
+    // (Usually) the default - does NOT draw "back facing" triangles
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_BACK);
 
 
 // *****************************************************************
 
-        ::g_pTheLights->UpdateUniformValues(shaderProgramID);
+    ::g_pTheLights->UpdateUniformValues(shaderProgramID);
 
 
 // *****************************************************************
         //uniform vec4 eyeLocation;
-        GLint eyeLocation_UL = glGetUniformLocation(shaderProgramID, "eyeLocation");
-        glUniform4f(eyeLocation_UL,
-                    ::g_cameraEye.x, ::g_cameraEye.y, ::g_cameraEye.z, 1.0f);
+    GLint eyeLocation_UL = glGetUniformLocation(shaderProgramID, "eyeLocation");
+    glUniform4f(eyeLocation_UL,
+                ::g_cameraEye.x, ::g_cameraEye.y, ::g_cameraEye.z, 1.0f);
 
 
 
 //       //mat4x4_ortho(p, -ratio, ratio, -1.f, 1.f, 1.f, -1.f);
-        glm::mat4 matProjection = glm::perspective(0.6f,
-                                                   ratio,
-                                                   0.1f,        // Near (as big)
-                                                   10'000.0f);    // Far (as small)
+    glm::mat4 matProjection = glm::perspective(0.6f,
+                                               ratio,
+                                               0.1f,        // Near (as big)
+                                               10'000.0f);    // Far (as small)
 
-        glm::mat4 matView = glm::lookAt(::g_cameraEye,
-                                        ::g_cameraTarget,
-                                        ::g_upVector);
+    glm::mat4 matView = glm::lookAt(::g_cameraEye,
+                                    ::g_cameraTarget,
+                                    ::g_upVector);
 
-        GLint matProjection_UL = glGetUniformLocation(shaderProgramID, "matProjection");
-        glUniformMatrix4fv(matProjection_UL, 1, GL_FALSE, glm::value_ptr(matProjection));
+    GLint matProjection_UL = glGetUniformLocation(shaderProgramID, "matProjection");
+    glUniformMatrix4fv(matProjection_UL, 1, GL_FALSE, glm::value_ptr(matProjection));
 
-        GLint matView_UL = glGetUniformLocation(shaderProgramID, "matView");
-        glUniformMatrix4fv(matView_UL, 1, GL_FALSE, glm::value_ptr(matView));
+    GLint matView_UL = glGetUniformLocation(shaderProgramID, "matView");
+    glUniformMatrix4fv(matView_UL, 1, GL_FALSE, glm::value_ptr(matView));
+
+    //"RetroTV.edited.bodyonly.ply"
+    //"RetroTV.edited.screenonly.ply"
+
+// STARTOF: LEFT TV
+    cMesh tvBody;
+    tvBody.meshName = "RetroTV.edited.bodyonly.ply";
+    tvBody.textureName[0] = "Yellow.bmp";
+    tvBody.textureRatios[0] = 1.0f;
+    tvBody.adjustRoationAngleFromEuler(glm::vec3(glm::radians(-90.0f), 0.0f, 0.0f));
+    tvBody.setUniformDrawScale(0.5f);
+    tvBody.drawPosition.x = -40.0f;
+
+    DrawObject(&tvBody, glm::mat4(1.0f), shaderProgramID);
+
+    cMesh tvScreen;
+    tvScreen.meshName = "RetroTV.edited.screenonly.ply";
+    tvScreen.adjustRoationAngleFromEuler(glm::vec3(glm::radians(-90.0f), 0.0f, 0.0f));
+    tvScreen.setUniformDrawScale(0.5f);
+    tvScreen.drawPosition.x = -40.0f;
+
+    // Set the framebuffer object (from the 1st pass)
+    // to the texture on the TV screen
+    tvScreen.textureIsFromFBO = true;
+    tvScreen.FBOTextureNumber = ::g_pFBO_1->colourTexture_0_ID;
+    tvScreen.textureRatios[0] = 1.0f;
+
+    // Brighten up the screen
+    tvScreen.bDoNotLight = true;
+
+    DrawObject(&tvScreen, glm::mat4(1.0f), shaderProgramID);
+// ENDOF: LEFT TV
+
+
+ // STARTOF: RIGHT TV
+    tvBody.drawPosition.x = +40.0f;
+
+    DrawObject(&tvBody, glm::mat4(1.0f), shaderProgramID);
+
+    tvScreen.drawPosition.x = +40.0f;
+
+    // Set the framebuffer object (from the 1st pass)
+    // to the texture on the TV screen
+    tvScreen.textureIsFromFBO = true;
+    tvScreen.FBOTextureNumber = ::g_pFBO_2->colourTexture_0_ID;
+    tvScreen.textureRatios[0] = 1.0f;
+
+    // Brighten up the screen
+    tvScreen.bDoNotLight = true;
+
+    DrawObject(&tvScreen, glm::mat4(1.0f), shaderProgramID);
+// ENDOF: RIGHT TV
+
+
+    return;
+}
+
+
+void DrawPass_1(GLuint shaderProgramID, 
+                GLFWwindow* pWindow, 
+                cHiResTimer* p_HRTimer,
+                int screenWidth, int screenHeight,
+                glm::vec3 sceneEye, glm::vec3 sceneTarget)
+{
+        // Switch the "main" shader
+//        shaderProgramID = pShaderThing->getIDFromFriendlyName("shader01");
+//        glUseProgram(shaderProgramID);
+
+    float ratio;
+//    int width, height;
+
+    glUseProgram(shaderProgramID);
+
+//    glfwGetFramebufferSize(pWindow, &width, &height);
+    ratio = screenWidth / (float)screenHeight;
+
+//    glViewport(0, 0, width, height);
+//    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    // While drawing a pixel, see if the pixel that's already there is closer or not?
+    glEnable(GL_DEPTH_TEST);
+    // (Usually) the default - does NOT draw "back facing" triangles
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_BACK);
+
+
+// *****************************************************************
+
+    ::g_pTheLights->UpdateUniformValues(shaderProgramID);
+
+
+// *****************************************************************
+        //uniform vec4 eyeLocation;
+    GLint eyeLocation_UL = glGetUniformLocation(shaderProgramID, "eyeLocation");
+
+
+
+    glUniform4f(eyeLocation_UL,
+                sceneEye.x, sceneEye.y, sceneEye.z, 1.0f);
+
+
+
+//       //mat4x4_ortho(p, -ratio, ratio, -1.f, 1.f, 1.f, -1.f);
+    glm::mat4 matProjection = glm::perspective(0.6f,
+                                               ratio,
+                                               0.1f,        // Near (as big)
+                                               10'000.0f);    // Far (as small)
+
+    glm::mat4 matView = glm::lookAt(sceneEye,
+                                    sceneTarget,
+                                    glm::vec3(0.0f, 1.0f, 1.0f));
+
+    GLint matProjection_UL = glGetUniformLocation(shaderProgramID, "matProjection");
+    glUniformMatrix4fv(matProjection_UL, 1, GL_FALSE, glm::value_ptr(matProjection));
+
+    GLint matView_UL = glGetUniformLocation(shaderProgramID, "matView");
+    glUniformMatrix4fv(matView_UL, 1, GL_FALSE, glm::value_ptr(matView));
 
 
 
@@ -682,23 +965,23 @@ int main(void)
 //        ::g_pFBO_1->clearBuffers(true, true);
 //        //::g_pFBO_1->clearColourBuffer(0);
 //        //::g_pFBO_1->clearDepthBuffer();
-       
+
         // *********************************************************************
         // Draw all the objects
-        for ( unsigned int index = 0; index != ::g_vec_pMeshesToDraw.size(); index++ )
+    for (unsigned int index = 0; index != ::g_vec_pMeshesToDraw.size(); index++)
+    {
+        cMesh* pCurrentMesh = ::g_vec_pMeshesToDraw[index];
+
+        if (pCurrentMesh->bIsVisible)
         {
-            cMesh* pCurrentMesh = ::g_vec_pMeshesToDraw[index];
 
-            if (pCurrentMesh->bIsVisible)
-            {
+            glm::mat4 matModel = glm::mat4(1.0f);   // Identity matrix
 
-                glm::mat4 matModel = glm::mat4(1.0f);   // Identity matrix
+            DrawObject(pCurrentMesh, matModel, shaderProgramID);
+        }//if (pCurrentMesh->bIsVisible)
 
-                DrawObject(pCurrentMesh, matModel, shaderProgramID);
-            }//if (pCurrentMesh->bIsVisible)
-
-        }//for ( unsigned int index
-        // *********************************************************************
+    }//for ( unsigned int index
+    // *********************************************************************
 
 
 
@@ -716,40 +999,40 @@ int main(void)
 
 
         // Draw the skybox
-        {
-            // HACK: I'm making this here, but hey...
-            cMesh theSkyBox;
-            theSkyBox.meshName = "Sphere_1_unit_Radius_xyz_n_rgba_uv.ply";
-            theSkyBox.setUniformDrawScale(10.0f);
+    {
+        // HACK: I'm making this here, but hey...
+        cMesh theSkyBox;
+        theSkyBox.meshName = "Sphere_1_unit_Radius_xyz_n_rgba_uv.ply";
+        theSkyBox.setUniformDrawScale(10.0f);
 
-            theSkyBox.setUniformDrawScale(5'000.0f);
-            theSkyBox.setDrawPosition(::g_cameraEye);
+        theSkyBox.setUniformDrawScale(5'000.0f);
+        theSkyBox.setDrawPosition(::g_cameraEye);
 //            theSkyBox.bIsWireframe = true;
 
             // Depth test
 //            glDisable(GL_DEPTH_TEST);       // Writes no matter what
             // Write to depth buffer (depth mask)
 //            glDepthMask(GL_FALSE);          // Won't write to the depth buffer
-            
+
             // uniform bool bIsSkyBox;
-            GLint bIsSkyBox_UL = glGetUniformLocation(shaderProgramID, "bIsSkyBox");
-            glUniform1f(bIsSkyBox_UL, (GLfloat) GL_TRUE);
+        GLint bIsSkyBox_UL = glGetUniformLocation(shaderProgramID, "bIsSkyBox");
+        glUniform1f(bIsSkyBox_UL, (GLfloat)GL_TRUE);
 
-            // The normals for this sphere are facing "out" but we are inside the sphere
-            glCullFace(GL_FRONT);
+        // The normals for this sphere are facing "out" but we are inside the sphere
+        glCullFace(GL_FRONT);
 
-            DrawObject(&theSkyBox, glm::mat4(1.0f), shaderProgramID);
+        DrawObject(&theSkyBox, glm::mat4(1.0f), shaderProgramID);
 
-            glUniform1f(bIsSkyBox_UL, (GLfloat)GL_FALSE);
+        glUniform1f(bIsSkyBox_UL, (GLfloat)GL_FALSE);
 
-            // Put the culling back to "normal" (back facing are not drawn)
-            glCullFace(GL_BACK);
-        }
-
-
+        // Put the culling back to "normal" (back facing are not drawn)
+        glCullFace(GL_BACK);
+    }
 
 
- 
+
+
+
 //        // Time per frame (more or less)
 //        double currentTime = glfwGetTime();
 //        double deltaTime = currentTime - lastTime;
@@ -762,47 +1045,47 @@ int main(void)
 //        std::cout << deltaTime << std::endl;
 //        lastTime = currentTime;
 
-        double deltaTime = p_HRTimer->getFrameTime();
+    double deltaTime = p_HRTimer->getFrameTime();
 //        std::cout << deltaTime << std::endl;
 
 
 // ***********************************************************************
-        if ( ! ::g_vecAnimationCommands.empty() )
-        {
-            ::g_vecAnimationCommands[0].Update(deltaTime);
+    if (!::g_vecAnimationCommands.empty())
+    {
+        ::g_vecAnimationCommands[0].Update(deltaTime);
 
-            // Done? 
-            if (::g_vecAnimationCommands[0].isDone() )
-            {
-                // Erase the item from vector
-                // Is "slow" in that it has to copy the vector again
-                ::g_vecAnimationCommands.erase(::g_vecAnimationCommands.begin());
-            }
-        }//if (!vecAnimationCommands.empty())
+        // Done? 
+        if (::g_vecAnimationCommands[0].isDone())
+        {
+            // Erase the item from vector
+            // Is "slow" in that it has to copy the vector again
+            ::g_vecAnimationCommands.erase(::g_vecAnimationCommands.begin());
+        }
+    }//if (!vecAnimationCommands.empty())
 // ***********************************************************************
 
 
-        DrawLightDebugSpheres(matProjection, matView, shaderProgramID);
+    DrawLightDebugSpheres(matProjection, matView, shaderProgramID);
 
 
-        // Point the spotlight at the bathtub
-        cMesh* pBathTub = g_pFindMeshByFriendlyName("bathtub");
-        if ( pBathTub )
-        {
-            glm::vec3 bathTubToLightRay = pBathTub->drawPosition - glm::vec3(::g_pTheLights->theLights[0].position);
+    // Point the spotlight at the bathtub
+    cMesh* pBathTub = g_pFindMeshByFriendlyName("bathtub");
+    if (pBathTub)
+    {
+        glm::vec3 bathTubToLightRay = pBathTub->drawPosition - glm::vec3(::g_pTheLights->theLights[0].position);
 
-            bathTubToLightRay = glm::normalize(bathTubToLightRay);
+        bathTubToLightRay = glm::normalize(bathTubToLightRay);
 
-            ::g_pTheLights->theLights[0].direction = glm::vec4(bathTubToLightRay, 1.0f);
-        }
+        ::g_pTheLights->theLights[0].direction = glm::vec4(bathTubToLightRay, 1.0f);
+    }
 
-        // HACK:
-        cMesh* pSpidey = g_pFindMeshByFriendlyName("SpiderManBody");
+    // HACK:
+    cMesh* pSpidey = g_pFindMeshByFriendlyName("SpiderManBody");
 //        pSpidey->drawOrientation.y += 0.001f;
-        if ( pSpidey )
-        {
-            pSpidey->adjustRoationAngleFromEuler(glm::vec3(0.0f, 0.0f, 0.0f));
-        }
+    if (pSpidey)
+    {
+        pSpidey->adjustRoationAngleFromEuler(glm::vec3(0.0f, 0.0f, 0.0f));
+    }
 
 //        cMesh* pTayTayGround = g_pFindMeshByFriendlyName("Ground");
 //        pTayTayGround->textureRatios[1] += 0.0001f;
@@ -843,46 +1126,46 @@ int main(void)
 //        ::g_pPhysics->Update(deltaTime);
 
 
-        
+
         // Update the particles
-        ::g_anEmitter.Update(deltaTime);
+    ::g_anEmitter.Update(deltaTime);
 
-        std::vector< cParticleSystem::cParticleRender > vecParticles_to_draw;
+    std::vector< cParticleSystem::cParticleRender > vecParticles_to_draw;
 
-        ::g_DrawDebugSphere(::g_anEmitter.getPosition(), 1.0f, glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
+    ::g_DrawDebugSphere(::g_anEmitter.getPosition(), 1.0f, glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
 
 
-        ::g_anEmitter.getParticleList(vecParticles_to_draw);
-        for (cParticleSystem::cParticleRender &curParticle : vecParticles_to_draw )
-        {
+    ::g_anEmitter.getParticleList(vecParticles_to_draw);
+    for (cParticleSystem::cParticleRender& curParticle : vecParticles_to_draw)
+    {
 //            ::g_DrawDebugSphere(curParticle.position, 0.1f, glm::vec4(0.0f, 0.0f, 0.0f, 1.0f));
 
-            glm::mat4 matModel = glm::mat4(1.0f);   // Identity matrix
+        glm::mat4 matModel = glm::mat4(1.0f);   // Identity matrix
 
-            ::g_pParticleMeshModel->setUniformDrawScale(1.0f);
+        ::g_pParticleMeshModel->setUniformDrawScale(1.0f);
 
-            ::g_pParticleMeshModel->drawPosition = curParticle.position;
-            ::g_pParticleMeshModel->setDrawOrientation(curParticle.orientation);
-            ::g_pParticleMeshModel->drawScale = curParticle.scaleXYZ;
+        ::g_pParticleMeshModel->drawPosition = curParticle.position;
+        ::g_pParticleMeshModel->setDrawOrientation(curParticle.orientation);
+        ::g_pParticleMeshModel->drawScale = curParticle.scaleXYZ;
 
 //            ::g_pParticleMeshModel->setDrawOrientation(glm::vec3(0.0f, 3.141f/2.0f, 0.0f));
 
-            DrawObject(::g_pParticleMeshModel, matModel, shaderProgramID);
-        }
+        DrawObject(::g_pParticleMeshModel, matModel, shaderProgramID);
+    }
 
 
-       // The soft body bathtub
+   // The soft body bathtub
 
-       ::g_SoftBody.VerletUpdate(deltaTime);
-       // 
-       ::g_SoftBody.ApplyCollision(deltaTime);
-       // 
-       ::g_SoftBody.SatisfyConstraints();
+    ::g_SoftBody.VerletUpdate(deltaTime);
+    // 
+    ::g_SoftBody.ApplyCollision(deltaTime);
+    // 
+    ::g_SoftBody.SatisfyConstraints();
 
-       for ( cSoftBodyVerlet::sParticle* pCurParticle : ::g_SoftBody.vec_pParticles )
-       {
-           ::g_DrawDebugSphere(pCurParticle->position, 0.2f, glm::vec4(0.0f, 0.0f, 0.0f, 1.0f) );
-       }
+    for (cSoftBodyVerlet::sParticle* pCurParticle : ::g_SoftBody.vec_pParticles)
+    {
+        ::g_DrawDebugSphere(pCurParticle->position, 0.2f, glm::vec4(0.0f, 0.0f, 0.0f, 1.0f));
+    }
 
 
 //        // Redirect the output back to the screen
@@ -922,45 +1205,24 @@ int main(void)
 //       glUniform1f(bIsOffScreenTextureQuad_ID, (GLfloat)GL_FALSE);
 
 
-        glfwSwapBuffers(window);
-        glfwPollEvents();
 
-        // Update the title screen
-        std::stringstream ssTitle;
-        ssTitle << "Camera (x,y,z): "
-            << ::g_cameraEye.x << ", "
-            << ::g_cameraEye.y << ", "
-            << ::g_cameraEye.z << ") "
-            << "Light[" << ::g_selectedLight << "]: "
-            << ::g_pTheLights->theLights[::g_selectedLight].position.x << ", "
-            << ::g_pTheLights->theLights[::g_selectedLight].position.y << ", "
-            << ::g_pTheLights->theLights[::g_selectedLight].position.z << "  "
-            << "const:" << ::g_pTheLights->theLights[::g_selectedLight].atten.x << " "
-            << "linear:" << ::g_pTheLights->theLights[::g_selectedLight].atten.y << " "
-            << "quad:" << ::g_pTheLights->theLights[::g_selectedLight].atten.z << " "
-            << "inner: " << ::g_pTheLights->theLights[::g_selectedLight].param1.y << " "
-            << "outer: " << ::g_pTheLights->theLights[::g_selectedLight].param1.z << " ";
-
-//        glfwSetWindowTitle(window, "HEY!");
-
-        std::string theTitle = ssTitle.str();
-
-        glfwSetWindowTitle(window, theTitle.c_str() );
-
-
-    }
-
-    // Delete everything
-
-
-    glfwDestroyWindow(window);
+    return;
+}// void DrawPass_1(
 
 
 
 
-    glfwTerminate();
-    exit(EXIT_SUCCESS);
-}
+
+
+
+
+
+
+
+
+
+
+
 
 // Returns NULL if not found
 cMesh* g_pFindMeshByFriendlyName(std::string friendlyNameToFind)
@@ -1076,6 +1338,53 @@ void SetUpTextures(cMesh* pCurrentMesh, GLuint shaderProgramID)
 //    uniform vec4 textureMixRatio_0_3;
 //    uniform vec4 textureMixRatio_4_7;
 
+    //    uniform vec4 textureMixRatio_0_3;
+//    uniform vec4 textureMixRatio_4_7;
+
+    GLint textureMixRatio_0_3_UL = glGetUniformLocation(shaderProgramID, "textureMixRatio_0_3");
+//    GLint textureMixRatio_4_7_UL = glGetUniformLocation(shaderProgramID, "textureMixRatio_4_7");
+
+    glUniform4f(textureMixRatio_0_3_UL,
+                pCurrentMesh->textureRatios[0],
+                pCurrentMesh->textureRatios[1],
+                pCurrentMesh->textureRatios[2],
+                pCurrentMesh->textureRatios[3]);
+//    glUniform4f(textureMixRatio_4_7_UL,
+//                pCurrentMesh->textureRatios[4],
+//                pCurrentMesh->textureRatios[5],
+//                pCurrentMesh->textureRatios[6],
+//                pCurrentMesh->textureRatios[7]);
+
+
+    // Also set up the height map and discard texture
+
+    {
+        // uniform sampler2D heightMapSampler;		// Texture unit 20
+        GLint textureUnitNumber = 20;
+        GLuint Texture20 = ::g_pTextureManager->getTextureIDFromName("NvF5e_height_map.bmp");
+        glActiveTexture(GL_TEXTURE0 + textureUnitNumber);
+        glBindTexture(GL_TEXTURE_2D, Texture20);
+        GLint texture_20_UL = glGetUniformLocation(shaderProgramID, "heightMapSampler");
+        glUniform1i(texture_20_UL, textureUnitNumber);
+    }
+
+
+
+    // Is this taking a texture from an FBO??
+    if ( pCurrentMesh->textureIsFromFBO)
+    {
+        GLint textureUnitNumber = 0;
+//        GLuint Texture00 = ::g_pTextureManager->getTextureIDFromName(pCurrentMesh->textureName[textureUnitNumber]);
+        glActiveTexture(GL_TEXTURE0 + textureUnitNumber);
+//        glBindTexture(GL_TEXTURE_2D, Texture00);
+        glBindTexture(GL_TEXTURE_2D, pCurrentMesh->FBOTextureNumber);
+        GLint texture_00_UL = glGetUniformLocation(shaderProgramID, "texture_00");
+        glUniform1i(texture_00_UL, textureUnitNumber);
+
+        // Likely don't want anything else
+        return;
+    }
+
 
     {
         GLint textureUnitNumber = 0;
@@ -1114,35 +1423,7 @@ void SetUpTextures(cMesh* pCurrentMesh, GLuint shaderProgramID)
     }    
     // and so on to however many texture you are using
 
-//    uniform vec4 textureMixRatio_0_3;
-//    uniform vec4 textureMixRatio_4_7;
 
-    GLint textureMixRatio_0_3_UL = glGetUniformLocation(shaderProgramID, "textureMixRatio_0_3");
-//    GLint textureMixRatio_4_7_UL = glGetUniformLocation(shaderProgramID, "textureMixRatio_4_7");
-
-    glUniform4f(textureMixRatio_0_3_UL,
-                pCurrentMesh->textureRatios[0],
-                pCurrentMesh->textureRatios[1],
-                pCurrentMesh->textureRatios[2],
-                pCurrentMesh->textureRatios[3]);
-//    glUniform4f(textureMixRatio_4_7_UL,
-//                pCurrentMesh->textureRatios[4],
-//                pCurrentMesh->textureRatios[5],
-//                pCurrentMesh->textureRatios[6],
-//                pCurrentMesh->textureRatios[7]);
-
-
-    // Also set up the height map and discard texture
-
-    {
-        // uniform sampler2D heightMapSampler;		// Texture unit 20
-        GLint textureUnitNumber = 20;
-        GLuint Texture20 = ::g_pTextureManager->getTextureIDFromName("NvF5e_height_map.bmp");
-        glActiveTexture(GL_TEXTURE0 + textureUnitNumber);
-        glBindTexture(GL_TEXTURE_2D, Texture20);
-        GLint texture_20_UL = glGetUniformLocation(shaderProgramID, "heightMapSampler");
-        glUniform1i(texture_20_UL, textureUnitNumber);
-    }    
 
 
 

@@ -9,6 +9,17 @@ in vec2 fTextureCoords;			// u is x or red, v is y or green
 // These are listed in order, starting from zero
 out vec4 outputColour;			// GL_COLOR_ATTACHMENT0      // To the frame buffer (aka screen)
 
+//out vec4 finalLightColour_and_Brightness;
+//out vec4 vertexNormal;
+//out vec4 motionSOmeting_Spec_SOmething;
+//out vec4 vertexColour;
+//
+//out vec4 vertexWorldPositionXYZ_;
+//out vec4 vertexWorldNormal;
+//out vec4 vertexSpecular_and_Power;
+//out vec4 vertexFinalColourRGB;
+
+
 //uniform vec3 directionalLightColour;
 // rgb are the rgb of the light colour
 //uniform vec4 directionalLight_Direction_power;
@@ -122,6 +133,14 @@ void main()
 	{
 //		outputColour.rgb = vec3(1.0f, 0.0f, 0.0f);
 		vec3 theColour = texture( textureOffScreen, fTextureCoords.st ).rgb;
+		
+		// I can do cool here
+		
+		outputColour.rgb = theColour;
+						   
+		outputColour.a = 1.0f;
+		return;
+
 //		outputColour.rgb = theColour;
 		
 //		vec2 textCoordsScreen = vec2( gl_FragCoord.x / 1920, gl_FragCoord.y  / 1080 );

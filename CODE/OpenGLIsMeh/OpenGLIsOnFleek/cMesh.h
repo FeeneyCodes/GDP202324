@@ -29,6 +29,12 @@ public:
 	static const int NUM_TEXTURES = 8;
 	std::string textureName[NUM_TEXTURES];
 	float textureRatios[NUM_TEXTURES];
+	
+	// HACK:
+	// Here is some framebuffer object textures
+	// If this is true, then we assign the colour texture from the FBO
+	bool textureIsFromFBO = false;
+	unsigned int FBOTextureNumber = 0;
 
 
 	std::string meshName;
