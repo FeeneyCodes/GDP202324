@@ -47,6 +47,11 @@ public:
 						  sModelDrawInfo& updatedDrawInfo,
 						  unsigned int shaderProgramID);
 
+	// Same as above but ONLY updates the vertex buffer information
+	bool UpdateVertexBuffers(std::string fileName,
+						  sModelDrawInfo& updatedDrawInfo,
+						  unsigned int shaderProgramID);
+
 
 private:
 

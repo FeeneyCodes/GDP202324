@@ -16,6 +16,11 @@ public:
 	// The 2nd param is the identy matrix 
 	bool CreateSoftBody(sModelDrawInfo ModelDrawInfo, glm::mat4 matInitalTransform = glm::mat4(1.0f));
 
+	// Will update the vertex information to match the particles
+	void UpdateVertexPositions(void);
+
+	void UpdateNormals(void);
+
 	// Create random constraints within the object to 'brace' the shape
 	// These are invisible, though
 	void CreateRandomBracing(unsigned int numberOfBraces,

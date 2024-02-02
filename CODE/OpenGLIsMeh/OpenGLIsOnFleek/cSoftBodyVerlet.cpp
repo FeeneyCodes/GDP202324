@@ -133,6 +133,95 @@ bool cSoftBodyVerlet::CreateSoftBody(sModelDrawInfo ModelInfo, glm::mat4 matInit
 	return true;
 }
 
+void cSoftBodyVerlet::UpdateVertexPositions(void)
+{
+	// Copy the current particle positions to the local vertex locations
+
+	for ( sParticle* curParticle : this->vec_pParticles)
+	{
+		curParticle->pModelVertex->x = curParticle->position.x;
+		curParticle->pModelVertex->y = curParticle->position.y;
+		curParticle->pModelVertex->z = curParticle->position.z;
+	}
+
+	// At this point, our local sModelDrawInfo pVertices array has the 
+	//	current locations of the particles (i.e. the mesh is updated)
+
+	// TODO: Update normals, etc.
+
+	return;
+}
+
+void cSoftBodyVerlet::UpdateNormals(void)
+{
+	// Go through each triagle and calculate the normals. 
+	// Accumulate those normals at each vertex.
+	// Normalize the normals
+
+	// Clear the existing normals because they are invalid
+	for ( unsigned int vertIndex = 0; vertIndex != this->m_ModelVertexInfo.numberOfVertices; vertIndex++ )
+	{
+		this->m_ModelVertexInfo.pVertices[vertIndex].nx = 0.0f;
+		this->m_ModelVertexInfo.pVertices[vertIndex].ny = 0.0f;
+		this->m_ModelVertexInfo.pVertices[vertIndex].nz = 0.0f;
+	}
+
+
+	for ( unsigned int triIndex = 0; triIndex != this->m_ModelVertexInfo.numberOfTriangles; triIndex++ )
+	{
+		// Indices are sets of 3, one per 
+		unsigned int vertAIndex = this->m_ModelVertexInfo.pIndices[triIndex + 0];
+		unsigned int vertBIndex = this->m_ModelVertexInfo.pIndices[triIndex + 1];
+		unsigned int vertCIndex = this->m_ModelVertexInfo.pIndices[triIndex + 2];
+
+		// note the references so that when we update this, it will update the mesh
+		// (otherwise we'll be updating a copy of it)
+		sVertex& vertexA = this->m_ModelVertexInfo.pVertices[vertAIndex];
+		sVertex& vertexB = this->m_ModelVertexInfo.pVertices[vertBIndex];
+		sVertex& vertexC = this->m_ModelVertexInfo.pVertices[vertCIndex];
+
+		glm::vec3 vertA = glm::vec3(vertexA.x, vertexA.y, vertexA.z);
+		glm::vec3 vertB = glm::vec3(vertexB.x, vertexB.y, vertexB.z);
+		glm::vec3 vertC = glm::vec3(vertexC.x, vertexC.y, vertexC.z);
+
+		glm::vec3 triangleEdgeAtoB = vertB - vertA;
+		glm::vec3 triangleEdgeAtoC = vertC - vertA;
+
+		glm::vec3 theNormal = glm::cross(triangleEdgeAtoB, triangleEdgeAtoC);
+		theNormal = glm::normalize(theNormal);
+
+		// Add (accumulate) this normal to the three vertices
+		vertexA.nx += theNormal.x;
+		vertexA.ny += theNormal.y;
+		vertexA.nz += theNormal.z;
+
+		vertexB.nx += theNormal.x;
+		vertexB.ny += theNormal.y;
+		vertexB.nz += theNormal.z;
+
+		vertexC.nx += theNormal.x;
+		vertexC.ny += theNormal.y;
+		vertexC.nz += theNormal.z;
+	}// for ( unsigned int triIndex = 0
+
+	// Now normalize the accumulated normals
+	for (unsigned int vertIndex = 0; vertIndex != this->m_ModelVertexInfo.numberOfVertices; vertIndex++)
+	{
+		glm::vec3 theNomral = glm::vec3(this->m_ModelVertexInfo.pVertices[vertIndex].nx,
+										this->m_ModelVertexInfo.pVertices[vertIndex].ny,
+										this->m_ModelVertexInfo.pVertices[vertIndex].nz);
+
+		theNomral = glm::normalize(theNomral);
+
+		this->m_ModelVertexInfo.pVertices[vertIndex].nx = theNomral.x;
+		this->m_ModelVertexInfo.pVertices[vertIndex].ny = theNomral.y;
+		this->m_ModelVertexInfo.pVertices[vertIndex].nz = theNomral.z;
+	}
+
+	return;
+}
+
+
 float cSoftBodyVerlet::calcDistanceBetween(sParticle* pPartA, sParticle* pPartB)
 {
 	return glm::distance(pPartA->position, pPartB->position);

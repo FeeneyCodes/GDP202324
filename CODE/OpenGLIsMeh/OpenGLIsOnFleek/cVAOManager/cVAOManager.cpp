@@ -638,6 +638,40 @@ bool cVAOManager::m_LoadTheFile_Ply_XYZ_N_RGBA_UV(std::string theFileName, sMode
 }
 
 
+    // Same as above but ONLY updates the vertex buffer information
+bool cVAOManager::UpdateVertexBuffers(std::string fileName,
+                         sModelDrawInfo& updatedDrawInfo,
+                         unsigned int shaderProgramID)
+{
+        // This exists? 
+    sModelDrawInfo updatedDrawInfo_TEMP;
+    if (!this->FindDrawInfoByModelName(fileName, updatedDrawInfo_TEMP))
+    {
+        // Didn't find this buffer
+        return false;
+    }
+
+
+    glBindBuffer(GL_ARRAY_BUFFER, updatedDrawInfo.VertexBufferID);
+
+// Original call to create and copy the initial data:
+//     
+//    glBufferData(GL_ARRAY_BUFFER,
+//                 sizeof(sVertex) * updatedDrawInfo.numberOfVertices,	
+//                 (GLvoid*)updatedDrawInfo.pVertices,					
+//                 GL_DYNAMIC_DRAW);
+
+    glBufferSubData(GL_ARRAY_BUFFER,
+                    0,  // Offset
+                    sizeof(sVertex) * updatedDrawInfo.numberOfVertices,
+                    (GLvoid*)updatedDrawInfo.pVertices);
+
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+    return true;
+}
+
+
 
 bool cVAOManager::UpdateVAOBuffers(std::string fileName,
                       sModelDrawInfo& updatedDrawInfo,

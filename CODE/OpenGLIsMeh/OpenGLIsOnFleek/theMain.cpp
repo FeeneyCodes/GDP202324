@@ -564,21 +564,22 @@ int main(void)
 
 
         sModelDrawInfo softBodyObjectDrawingInfo;
-//        if ( ::g_pMeshManager->FindDrawInfoByModelName("bun_zipper_res2_xyz_n_rgba_trivialUV_offset_Y.ply", bathtubDrawingInfo) )
+//        if ( ::g_pMeshManager->FindDrawInfoByModelName("bun_zipper_res2_xyz_n_rgba_trivialUV_offset_Y.ply", softBodyObjectDrawingInfo) )
 //       if ( ::g_pMeshManager->FindDrawInfoByModelName("Cube_1x1x1_xyz_n_rgba_for_Verlet.ply", bathtubDrawingInfo) )
-//        if ( ::g_pMeshManager->FindDrawInfoByModelName("bathtub_xyz_n_rgba_uv_x3_size_Offset_in_Y.ply", bathtubDrawingInfo) )
-//        if ( ::g_pMeshManager->FindDrawInfoByModelName("bun_zipper_res3_xyz_n_rgba_trivialUV_offset_Y.ply", bathtubDrawingInfo) )
-        if ( ::g_pMeshManager->FindDrawInfoByModelName("Grid_10x10_vertical_in_y.ply", softBodyObjectDrawingInfo) )
+        if ( ::g_pMeshManager->FindDrawInfoByModelName("bathtub_xyz_n_rgba_uv_x3_size_Offset_in_Y.ply", softBodyObjectDrawingInfo) )
+//        if ( ::g_pMeshManager->FindDrawInfoByModelName("bun_zipper_res3_xyz_n_rgba_trivialUV_offset_Y.ply", softBodyObjectDrawingInfo) )
+//        if ( ::g_pMeshManager->FindDrawInfoByModelName("Grid_10x10_vertical_in_y.ply", softBodyObjectDrawingInfo) )
 //        if ( ::g_pMeshManager->FindDrawInfoByModelName("Grid_100x100_vertical_in_y.ply", softBodyObjectDrawingInfo) )
         {
 
             // Move the soft body here
-            glm::mat4 matTransform = glm::translate(glm::mat4(1.0f), glm::vec3( 0.0f, 50.0f, 0.0f) );
+            glm::mat4 matTransform = glm::mat4(1.0f);
+//            glm::mat4 matTransform = glm::translate(glm::mat4(1.0f), glm::vec3( 0.0f, 50.0f, 0.0f) );
 
             // Rotate if slightly on the x axis (0.1 radians)
-            matTransform = glm::rotate(matTransform,
-                                       glm::radians(90.0f), 
-                                       glm::vec3(1.0f, 0.0f, 0.0f));
+     //       matTransform = glm::rotate(matTransform,
+     //                                  glm::radians(90.0f), 
+     //                                  glm::vec3(1.0f, 0.0f, 0.0f));
 
             ::g_SoftBody.CreateSoftBody(softBodyObjectDrawingInfo, matTransform);
 //            ::g_SoftBody.CreateSoftBody(softBodyObjectDrawingInfo);
@@ -612,6 +613,9 @@ int main(void)
 //    ::g_pTheLights->theLights[0].param1.y = 15.0f;
 //    ::g_pTheLights->theLights[0].param1.z = 25.0f;
 
+    ::g_pTheLights->theLights[0].atten.x = 0.0f;        // Constant attenuation
+    ::g_pTheLights->theLights[0].atten.y = 0.002f;        // Linear attenuation
+    ::g_pTheLights->theLights[0].atten.z = 0.001f;        // Quadratic attenuation
 
     ::g_pTheLights->theLights[0].position.x = -10.0f;
     ::g_pTheLights->theLights[0].position.y = 10.0f;
@@ -622,9 +626,6 @@ int main(void)
     // How "bright" the lights is
     // Really the opposite of brightness.
     //  how dim do you want this
-    ::g_pTheLights->theLights[0].atten.x = 0.0f;        // Constant attenuation
-    ::g_pTheLights->theLights[0].atten.y = 0.01f;        // Linear attenuation
-    ::g_pTheLights->theLights[0].atten.z = 0.01f;        // Quadratic attenuation
 
     // Light #1 is a directional light 
     ::g_pTheLights->theLights[1].param2.x = 1.0f;   // Turn on
@@ -672,17 +673,17 @@ int main(void)
         // Draw original scene
 
         {
-            glBindFramebuffer(GL_FRAMEBUFFER, ::g_pFBO_1->ID);
+//            glBindFramebuffer(GL_FRAMEBUFFER, ::g_pFBO_1->ID);
             float ratio;
-    //        int width, height;
-    //        glfwGetFramebufferSize(window, &width, &height);
-    //        ratio = width / (float)height;
+            int width, height;
+            glfwGetFramebufferSize(window, &width, &height);
+            ratio = width / (float)height;
             ratio = ::g_pFBO_1->width / (float)::g_pFBO_1->height;
             glViewport(0, 0, ::g_pFBO_1->width, (float)::g_pFBO_1->height);
 
-    //        glViewport(0, 0, width, height);
-    //        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-            ::g_pFBO_1->clearBuffers(true, true);
+            glViewport(0, 0, width, height);
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    //        ::g_pFBO_1->clearBuffers(true, true);
 
             glm::vec3 scene_1_CameraEye = glm::vec3(0.0, 20.0, 181.0f);
             glm::vec3 scene_1_CameraTarget = glm::vec3(0.0f, 10.0f, 0.0f);
@@ -697,52 +698,52 @@ int main(void)
         // The texture source is FBO_1
         // I output that to FBO_2
 
-        {
-            // Same scene, but from a different camera location
-            // onto FBO 2 this time
-            glBindFramebuffer(GL_FRAMEBUFFER, ::g_pFBO_2->ID);
-            float ratio;
-    //        int width, height;
-    //        glfwGetFramebufferSize(window, &width, &height);
-    //        ratio = width / (float)height;
-            ratio = ::g_pFBO_2->width / (float)::g_pFBO_2->height;
-            glViewport(0, 0, ::g_pFBO_2->width, (float)::g_pFBO_2->height);
-
-    //        glViewport(0, 0, width, height);
-    //        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-            ::g_pFBO_2->clearBuffers(true, true);
-
-            glm::vec3 scene_2_CameraEye = glm::vec3(181.0, 100.0, 0.0f);
-            glm::vec3 scene_2_CameraTarget = glm::vec3(0.0f, 0.0f, 0.0f);
-
-
-            DrawPass_1(shaderProgramID, window, p_HRTimer, ::g_pFBO_2->width, ::g_pFBO_2->height,
-                       scene_2_CameraEye, scene_2_CameraTarget);
-        }
+//        {
+//            // Same scene, but from a different camera location
+//            // onto FBO 2 this time
+//            glBindFramebuffer(GL_FRAMEBUFFER, ::g_pFBO_2->ID);
+//            float ratio;
+//    //        int width, height;
+//    //        glfwGetFramebufferSize(window, &width, &height);
+//    //        ratio = width / (float)height;
+//            ratio = ::g_pFBO_2->width / (float)::g_pFBO_2->height;
+//            glViewport(0, 0, ::g_pFBO_2->width, (float)::g_pFBO_2->height);
+//
+//    //        glViewport(0, 0, width, height);
+//    //        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+//            ::g_pFBO_2->clearBuffers(true, true);
+//
+//            glm::vec3 scene_2_CameraEye = glm::vec3(181.0, 100.0, 0.0f);
+//            glm::vec3 scene_2_CameraTarget = glm::vec3(0.0f, 0.0f, 0.0f);
+//
+//
+//            DrawPass_1(shaderProgramID, window, p_HRTimer, ::g_pFBO_2->width, ::g_pFBO_2->height,
+//                       scene_2_CameraEye, scene_2_CameraTarget);
+//        }
 
 
 // ENDOF: Pass #1
 
 
 // STARTOF: Pass #2
-        {
-            // Draw ONLY the TV(s)
-
-            // Point the rendering to the actual screen
-            // 
-            // "0" turns off or sets it to the default framebuffer
-            glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-            float ratio;
-            int width, height;
-            glfwGetFramebufferSize(window, &width, &height);
-            ratio = width / (float)height;
-
-            glViewport(0, 0, width, height);
-            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-            DrawPass_2(shaderProgramID, window, width, height);
-        }
+//        {
+//            // Draw ONLY the TV(s)
+//
+//            // Point the rendering to the actual screen
+//            // 
+//            // "0" turns off or sets it to the default framebuffer
+//            glBindFramebuffer(GL_FRAMEBUFFER, 0);
+//
+//            float ratio;
+//            int width, height;
+//            glfwGetFramebufferSize(window, &width, &height);
+//            ratio = width / (float)height;
+//
+//            glViewport(0, 0, width, height);
+//            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+//
+//            DrawPass_2(shaderProgramID, window, width, height);
+//        }
 // ENDOF: Pass #2
 
 
@@ -844,21 +845,26 @@ void DrawPass_2(GLuint shaderProgramID, GLFWwindow* pWindow,
     //"RetroTV.edited.screenonly.ply"
 
 // STARTOF: LEFT TV
+    glm::vec3 leftTVPosition = glm::vec3(15.0f, -20.0f, 75.0f);
+
     cMesh tvBody;
     tvBody.meshName = "RetroTV.edited.bodyonly.ply";
     tvBody.textureName[0] = "Yellow.bmp";
     tvBody.textureRatios[0] = 1.0f;
     tvBody.adjustRoationAngleFromEuler(glm::vec3(glm::radians(-90.0f), 0.0f, 0.0f));
-    tvBody.setUniformDrawScale(0.5f);
-    tvBody.drawPosition.x = -40.0f;
+//    tvBody.setUniformDrawScale(0.5f);
+//    tvBody.setUniformDrawScale(0.5f);
+//    tvBody.drawPosition.x = -40.0f;
+    tvBody.drawPosition = leftTVPosition;
 
     DrawObject(&tvBody, glm::mat4(1.0f), shaderProgramID);
 
     cMesh tvScreen;
     tvScreen.meshName = "RetroTV.edited.screenonly.ply";
     tvScreen.adjustRoationAngleFromEuler(glm::vec3(glm::radians(-90.0f), 0.0f, 0.0f));
-    tvScreen.setUniformDrawScale(0.5f);
-    tvScreen.drawPosition.x = -40.0f;
+//    tvScreen.setUniformDrawScale(0.5f);
+//    tvScreen.drawPosition.x = -40.0f;
+    tvScreen.drawPosition = leftTVPosition;
 
     // Set the framebuffer object (from the 1st pass)
     // to the texture on the TV screen
@@ -874,22 +880,22 @@ void DrawPass_2(GLuint shaderProgramID, GLFWwindow* pWindow,
 
 
  // STARTOF: RIGHT TV
-    tvBody.drawPosition.x = +40.0f;
-
-    DrawObject(&tvBody, glm::mat4(1.0f), shaderProgramID);
-
-    tvScreen.drawPosition.x = +40.0f;
-
-    // Set the framebuffer object (from the 1st pass)
-    // to the texture on the TV screen
-    tvScreen.textureIsFromFBO = true;
-    tvScreen.FBOTextureNumber = ::g_pFBO_2->colourTexture_0_ID;
-    tvScreen.textureRatios[0] = 1.0f;
-
-    // Brighten up the screen
-    tvScreen.bDoNotLight = true;
-
-    DrawObject(&tvScreen, glm::mat4(1.0f), shaderProgramID);
+//   tvBody.drawPosition.x = +40.0f;
+//
+//   DrawObject(&tvBody, glm::mat4(1.0f), shaderProgramID);
+//
+//   tvScreen.drawPosition.x = +40.0f;
+//
+//   // Set the framebuffer object (from the 1st pass)
+//   // to the texture on the TV screen
+//   tvScreen.textureIsFromFBO = true;
+//   tvScreen.FBOTextureNumber = ::g_pFBO_2->colourTexture_0_ID;
+//   tvScreen.textureRatios[0] = 1.0f;
+//
+//   // Brighten up the screen
+//   tvScreen.bDoNotLight = true;
+//
+//   DrawObject(&tvScreen, glm::mat4(1.0f), shaderProgramID);
 // ENDOF: RIGHT TV
 
 
@@ -1164,8 +1170,49 @@ void DrawPass_1(GLuint shaderProgramID,
 
     for (cSoftBodyVerlet::sParticle* pCurParticle : ::g_SoftBody.vec_pParticles)
     {
-        ::g_DrawDebugSphere(pCurParticle->position, 0.2f, glm::vec4(0.0f, 0.0f, 0.0f, 1.0f));
+        ::g_DrawDebugSphere(pCurParticle->position, 0.01f, glm::vec4(0.0f, 0.0f, 0.0f, 1.0f));
     }
+
+    // Update the mesh in the VAO based on the current particle positions
+    ::g_SoftBody.UpdateVertexPositions();
+
+    ::g_SoftBody.UpdateNormals();
+
+    // Update vertex positions in mesh (in VAO aka on the GPU)
+    ::g_pMeshManager->UpdateVertexBuffers(::g_SoftBody.m_ModelVertexInfo.meshName,
+                                          ::g_SoftBody.m_ModelVertexInfo,
+                                          shaderProgramID);
+
+    // Draw actual mesh
+    {
+        glm::mat4 matModel = glm::mat4(1.0f);   // Identity matrix
+
+        cMesh softBodyMesh;
+        softBodyMesh.meshName = ::g_SoftBody.m_ModelVertexInfo.meshName;
+        softBodyMesh.textureName[0] = "SpidermanUV_square.bmp";
+        softBodyMesh.textureRatios[0] = 1.0f;
+
+        glDisable(GL_CULL_FACE);
+        DrawObject(&softBodyMesh, matModel, shaderProgramID);
+        glEnable(GL_CULL_FACE);
+
+    }
+
+
+    // TEST: See if we can shift a mesh
+//    sModelDrawInfo gridMesh;
+//    if ( ::g_pMeshManager->FindDrawInfoByModelName("Grid_100x100_vertical_in_y.ply", gridMesh) )
+//    if ( ::g_pMeshManager->FindDrawInfoByModelName("bathtub_xyz_n_rgba_uv_x3_size_Offset_in_Y.ply", gridMesh) )
+//    {
+//        for ( unsigned int index = 0; index != gridMesh.numberOfVertices; index++ )
+//        {
+//            gridMesh.pVertices[index].x += 0.1f;
+//        }
+//    }
+//    // Now update the mesh in the VAO
+//    ::g_pMeshManager->UpdateVAOBuffers("Grid_100x100_vertical_in_y.ply", gridMesh, shaderProgramID);
+ //   ::g_pMeshManager->UpdateVAOBuffers("bathtub_xyz_n_rgba_uv_x3_size_Offset_in_Y.ply", gridMesh, shaderProgramID);
+    
 
 
 //        // Redirect the output back to the screen
@@ -1532,6 +1579,8 @@ void DrawObject(cMesh* pCurrentMesh, glm::mat4 matModelParent, GLuint shaderProg
     {
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     }
+
+
 
 //        glPointSize(10.0f);
 
