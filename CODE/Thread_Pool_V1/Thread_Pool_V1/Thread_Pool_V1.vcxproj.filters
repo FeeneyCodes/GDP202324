@@ -15,10 +15,13 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="theMain.cpp">
+    <ClCompile Include="theMain_1.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="cGameEntity.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="theMain_2.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

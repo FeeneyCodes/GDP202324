@@ -37,18 +37,21 @@
 
 #include "cLightManager.h"
 #include "cLightHelper.h"
-
 #include "TextureManager/cBasicTextureManager.h"
-
 #include "cHiResTimer.h"
-
 #include "cCommand_MoveTo.h"
-
 #include "LuaBrain/cLuaBrain.h"
-
 #include "cParticleSystem.h"
-
 #include "cSoftBodyVerlet.h"
+
+// for the CreateThread(), etc.
+#include <Windows.h>	// All things windows
+#define WIN32_LEAN_AND_MEAN	
+
+#include "sSoftBodyThreadInfo.h"
+DWORD WINAPI UpdateSoftBodyThread(LPVOID lpParameter);
+//unsigned long UpdateEntityThread( void* lpParameter );
+
 
 // Frame Buffer Object (i.e. we render to this instead of the main screen)
 #include "FBO/cFBO.h"
@@ -62,6 +65,9 @@ glm::vec3 g_cameraEye = glm::vec3(0.0, 20.0, 181.0f);
 glm::vec3 g_cameraTarget = glm::vec3(0.0f, 10.0f, 0.0f);
 glm::vec3 g_upVector = glm::vec3(0.0f, 1.0f, 0.0f);
 
+// The thread will call this...
+void UpdateSoftBody(cSoftBodyVerlet& theSoftBody,
+                    double deltaTime);
 
 
 cVAOManager* g_pMeshManager = NULL;
@@ -566,8 +572,8 @@ int main(void)
         sModelDrawInfo softBodyObjectDrawingInfo;
 //        if ( ::g_pMeshManager->FindDrawInfoByModelName("bun_zipper_res2_xyz_n_rgba_trivialUV_offset_Y.ply", softBodyObjectDrawingInfo) )
 //       if ( ::g_pMeshManager->FindDrawInfoByModelName("Cube_1x1x1_xyz_n_rgba_for_Verlet.ply", bathtubDrawingInfo) )
-        if ( ::g_pMeshManager->FindDrawInfoByModelName("bathtub_xyz_n_rgba_uv_x3_size_Offset_in_Y.ply", softBodyObjectDrawingInfo) )
-//        if ( ::g_pMeshManager->FindDrawInfoByModelName("bun_zipper_res3_xyz_n_rgba_trivialUV_offset_Y.ply", softBodyObjectDrawingInfo) )
+//        if ( ::g_pMeshManager->FindDrawInfoByModelName("bathtub_xyz_n_rgba_uv_x3_size_Offset_in_Y.ply", softBodyObjectDrawingInfo) )
+        if ( ::g_pMeshManager->FindDrawInfoByModelName("bun_zipper_res3_xyz_n_rgba_trivialUV_offset_Y.ply", softBodyObjectDrawingInfo) )
 //        if ( ::g_pMeshManager->FindDrawInfoByModelName("Grid_10x10_vertical_in_y.ply", softBodyObjectDrawingInfo) )
 //        if ( ::g_pMeshManager->FindDrawInfoByModelName("Grid_100x100_vertical_in_y.ply", softBodyObjectDrawingInfo) )
         {
@@ -594,6 +600,27 @@ int main(void)
             std::cout << "Created softbody OK." << std::endl;
         }
     }
+
+    // Spawn thread to handle the soft body
+    sSoftBodyThreadInfo SBIParams;
+    SBIParams.p_theSoftBody = &::g_SoftBody;
+    SBIParams.desiredUpdateTime = 1.0 / 60.0;   // 60FPS
+    SBIParams.bIsAlive = true;
+
+    // Maybe set this to false and right before the while, set it to true
+    SBIParams.bRun = true;
+
+    sSoftBodyThreadInfo* pSBI = &SBIParams;
+
+    DWORD ThreadId = 0;
+    HANDLE threadHandle = 0;
+    threadHandle = CreateThread(
+        NULL,					// lpThreadAttributes,
+        0,						// dwStackSize,
+        UpdateSoftBodyThread,		// lpStartAddress,
+        (void*)pSBI,				//  lpParameter,
+        0,						// dwCreationFlags (0 or CREATE_SUSPENDED)
+        &ThreadId); // lpThreadId
 
 
 
@@ -1162,23 +1189,37 @@ void DrawPass_1(GLuint shaderProgramID,
 
    // The soft body bathtub
 
-    ::g_SoftBody.VerletUpdate(deltaTime);
-    // 
-    ::g_SoftBody.ApplyCollision(deltaTime);
-    // 
-    ::g_SoftBody.SatisfyConstraints();
+//    ::g_SoftBody.VerletUpdate(deltaTime);
+//    // 
+//    ::g_SoftBody.ApplyCollision(deltaTime);
+//    // 
+//    ::g_SoftBody.SatisfyConstraints();
+//
+//   // Update the mesh in the VAO based on the current particle positions
+//    ::g_SoftBody.UpdateVertexPositions();
+//    ::g_SoftBody.UpdateNormals();//    
+    
 
-    for (cSoftBodyVerlet::sParticle* pCurParticle : ::g_SoftBody.vec_pParticles)
-    {
-        ::g_DrawDebugSphere(pCurParticle->position, 0.01f, glm::vec4(0.0f, 0.0f, 0.0f, 1.0f));
-    }
+//    UpdateSoftBody(::g_SoftBody, deltaTime);
 
-    // Update the mesh in the VAO based on the current particle positions
-    ::g_SoftBody.UpdateVertexPositions();
+//    sSoftBodyThreadInfo SBIParams;
+//    SBIParams.p_theSoftBody = &::g_SoftBody;
+//    SBIParams.deltaTime = deltaTime;
+//
+//    sSoftBodyThreadInfo* pSBI = &SBIParams;
+//    
+//    UpdateEntityThread( (void*)pSBI);
 
-    ::g_SoftBody.UpdateNormals();
+//    for (cSoftBodyVerlet::sParticle* pCurParticle : ::g_SoftBody.vec_pParticles)
+//    {
+//        ::g_DrawDebugSphere(pCurParticle->position, 0.01f, glm::vec4(0.0f, 0.0f, 0.0f, 1.0f));
+//    }
+
+
 
     // Update vertex positions in mesh (in VAO aka on the GPU)
+    // g_SoftBody->GetModelDrawInfo();
+//    pVertics* pLocalArray = ::g_SoftBody.m_ModelVertexInfo.pVertices;
     ::g_pMeshManager->UpdateVertexBuffers(::g_SoftBody.m_ModelVertexInfo.meshName,
                                           ::g_SoftBody.m_ModelVertexInfo,
                                           shaderProgramID);

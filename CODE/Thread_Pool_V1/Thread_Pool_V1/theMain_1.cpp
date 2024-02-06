@@ -33,7 +33,6 @@ struct sWorkerThreadInfo
 };
 
 
-
 DWORD WINAPI UpdateEntityThread(LPVOID lpParameter)
 {
 
@@ -42,19 +41,41 @@ DWORD WINAPI UpdateEntityThread(LPVOID lpParameter)
 //	cGameEntity* pTheEntity = (cGameEntity*)lpParameter;
 	sWorkerThreadInfo* pWTI = (sWorkerThreadInfo*)lpParameter;
 
+//	DWORD threadWaitTime = 0.0;
+//	DWORD idealWaitTime = pWTI->sleepTime;
+
+//	double lastTime = glfwGetTime();
+
 	while (pWTI->bThreadAlive)
 	{
+//		double currentTime = glfwGetTime();
+//		double deltaTime = currentTime - lastTime;
+//		lastTime = currentTime;
+//
+//		if ( deltaTime < idealWaitTime )
+//		{
+//			threadWaitTime++;
+//		}
+//		if ( deltaTime > idealWaitTime )
+//		{
+//			threadWaitTime--;
+//		}
+
+
 		if ( pWTI->bRun )
 		{
+			// CRIT
 			pWTI->pTheEntity->Update();
 			pWTI->pTheEntity->PrintPosition();	
 			// Updated, go to sleep
 			pWTI->bRun = false;
+			// CRIT
 		}
 		else
 		{
 			// Go to sleep (be idle) for a while
 			Sleep(pWTI->sleepTime);
+//			Sleep(threadWaitTime);
 		}
 	}
 	return 0;
@@ -151,8 +172,10 @@ int main(int argc, char* argv[])
 		for ( unsigned int index = 0; index != NUM_THREADS; index++ )
 		{
 			// Set the entity we want the thread to update
+			// CRIT
 			pWTI->pTheEntity = vec_pEntities[index];
 			pWTI->bRun = true;
+			// CRIT
 			Sleep(5);	// I've got something else to do
 		}
 

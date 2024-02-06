@@ -165,6 +165,9 @@
     <ClCompile Include="GLFW_Callbacks.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="softBody_Update_thread.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Basic Shader Manager\cShaderManager.h">
@@ -256,6 +259,9 @@
     </ClInclude>
     <ClInclude Include="FBO\cFBO.h">
       <Filter>FBO</Filter>
+    </ClInclude>
+    <ClInclude Include="sSoftBodyThreadInfo.h">
+      <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

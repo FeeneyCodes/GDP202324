@@ -137,12 +137,14 @@ void cSoftBodyVerlet::UpdateVertexPositions(void)
 {
 	// Copy the current particle positions to the local vertex locations
 
+	// ENTER CRITICAL SECTION
 	for ( sParticle* curParticle : this->vec_pParticles)
 	{
 		curParticle->pModelVertex->x = curParticle->position.x;
 		curParticle->pModelVertex->y = curParticle->position.y;
 		curParticle->pModelVertex->z = curParticle->position.z;
 	}
+	// LEAVE CRITICAL SECTION
 
 	// At this point, our local sModelDrawInfo pVertices array has the 
 	//	current locations of the particles (i.e. the mesh is updated)
@@ -204,6 +206,8 @@ void cSoftBodyVerlet::UpdateNormals(void)
 		vertexC.nz += theNormal.z;
 	}// for ( unsigned int triIndex = 0
 
+	// ENTER CRITICAL SECTION
+
 	// Now normalize the accumulated normals
 	for (unsigned int vertIndex = 0; vertIndex != this->m_ModelVertexInfo.numberOfVertices; vertIndex++)
 	{
@@ -217,6 +221,8 @@ void cSoftBodyVerlet::UpdateNormals(void)
 		this->m_ModelVertexInfo.pVertices[vertIndex].ny = theNomral.y;
 		this->m_ModelVertexInfo.pVertices[vertIndex].nz = theNomral.z;
 	}
+
+	// LEAVE CRITICAL SECTION
 
 	return;
 }
@@ -270,13 +276,13 @@ void cSoftBodyVerlet::VerletUpdate(double deltaTime)
 void cSoftBodyVerlet::ApplyCollision(double deltaTime)
 {
 	// HACK: Stop any particles that go below the "ground"
-//	for (sParticle* pCurrentParticle : vec_pParticles)
-//	{
-//		if ( pCurrentParticle->position.y < 0.0f )
-//		{
-//			pCurrentParticle->position.y = 0.0f;
-//		}
-//	}
+	for (sParticle* pCurrentParticle : vec_pParticles)
+	{
+		if ( pCurrentParticle->position.y < 0.0f )
+		{
+			pCurrentParticle->position.y = 0.0f;
+		}
+	}
 
 //	this->vec_pParticles[5'000]->position = glm::vec3(0.0f, 30.0f, 0.0f);
 

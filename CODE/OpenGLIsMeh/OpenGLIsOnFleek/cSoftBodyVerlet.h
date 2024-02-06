@@ -79,7 +79,12 @@ public:
 	std::vector< sParticle* > vec_pParticles;
 	std::vector< sConstraint* > vec_pConstraints;
 
+	// Make this private...
 	sModelDrawInfo m_ModelVertexInfo;
+
+	// This method is public and has THE SAME critical section
+	//	we have in the Update vertex and normal code
+	sModelDrawInfo* pGetModelDrawInfo(void);
 
 	// Max update time is 60Hz
 	const double MAX_DELTATIME = 1.0 / 60.0;

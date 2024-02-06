@@ -170,6 +170,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="ScenePersistence.cpp" />
+    <ClCompile Include="softBody_Update_thread.cpp" />
     <ClCompile Include="Source.cpp" />
     <ClCompile Include="sPhsyicsProperties.cpp" />
     <ClCompile Include="TextureManager\C24BitBMPpixel.cpp" />
@@ -200,6 +201,7 @@
     <ClInclude Include="FBO\cFBO.h" />
     <ClInclude Include="iCommand.h" />
     <ClInclude Include="LuaBrain\cLuaBrain.h" />
+    <ClInclude Include="sSoftBodyThreadInfo.h" />
     <ClInclude Include="sTriangle.h" />
     <ClInclude Include="cVAOManager\cVAOManager.h" />
     <ClInclude Include="cVAOManager\sModelDrawInfo.h" />
