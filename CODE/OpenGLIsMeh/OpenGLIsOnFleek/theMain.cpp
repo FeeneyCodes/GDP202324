@@ -294,6 +294,10 @@ void DrawPass_1(GLuint shaderProgramID, GLFWwindow* pWindow, cHiResTimer* p_HRTi
 void DrawPass_2(GLuint shaderProgramID, GLFWwindow* pWindow,
                 int screenWidth, int screenHeight);
 
+// Only a full screen quad
+void DrawPass_FSQ(GLuint shaderProgramID, GLFWwindow* pWindow,
+                  int screenWidth, int screenHeight);
+
 
 int main(void)
 {
@@ -491,6 +495,7 @@ int main(void)
         
     ::g_pMeshManager->setBasePath("assets/models/Imposter_Shapes");
     ::g_pMeshManager->LoadModelIntoVAO("Quad_2_sided_aligned_on_XY_plane.ply", spiderMan, shaderProgramID);
+    ::g_pMeshManager->LoadModelIntoVAO("Quad_1_sided_aligned_on_XY_plane.ply", spiderMan, shaderProgramID);
 
     // The retro TV
     ::g_pMeshManager->setBasePath("assets/models/Retro_TV");
@@ -700,25 +705,51 @@ int main(void)
         // Draw original scene
 
         {
-//            glBindFramebuffer(GL_FRAMEBUFFER, ::g_pFBO_1->ID);
+            glBindFramebuffer(GL_FRAMEBUFFER, ::g_pFBO_1->ID);
             float ratio;
             int width, height;
-            glfwGetFramebufferSize(window, &width, &height);
-            ratio = width / (float)height;
+//            glfwGetFramebufferSize(window, &width, &height);
+//            ratio = width / (float)height;
             ratio = ::g_pFBO_1->width / (float)::g_pFBO_1->height;
             glViewport(0, 0, ::g_pFBO_1->width, (float)::g_pFBO_1->height);
 
-            glViewport(0, 0, width, height);
-            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    //        ::g_pFBO_1->clearBuffers(true, true);
+//            glViewport(0, 0, width, height);
+//            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+            ::g_pFBO_1->clearBuffers(true, true);
 
-            glm::vec3 scene_1_CameraEye = glm::vec3(0.0, 20.0, 181.0f);
-            glm::vec3 scene_1_CameraTarget = glm::vec3(0.0f, 10.0f, 0.0f);
+//            glm::vec3 scene_1_CameraEye = glm::vec3(0.0, 20.0, 181.0f);
+//            glm::vec3 scene_1_CameraTarget = glm::vec3(0.0f, 10.0f, 0.0f);
+            glm::vec3 scene_1_CameraEye = ::g_cameraEye;
+            glm::vec3 scene_1_CameraTarget = ::g_cameraTarget;
 
 
             DrawPass_1(shaderProgramID, window, p_HRTimer, ::g_pFBO_1->width, ::g_pFBO_1->height,
                        scene_1_CameraEye, scene_1_CameraTarget);
         }
+
+
+
+        // Only a full screen quad
+        {
+            // Output directed to screen
+            glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+            float ratio;
+            int screenWidth, screenHeight;
+            glfwGetFramebufferSize(window, &screenWidth, &screenHeight);
+            ratio = screenWidth / (float)screenHeight;
+//            ratio = ::g_pFBO_1->width / (float)::g_pFBO_1->height;
+//            glViewport(0, 0, ::g_pFBO_1->width, (float)::g_pFBO_1->height);
+
+            glViewport(0, 0, screenWidth, screenHeight);
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    //        ::g_pFBO_1->clearBuffers(true, true);
+
+
+            DrawPass_FSQ(shaderProgramID, window, screenWidth, screenHeight);
+        }
+
+
 
         // Draw a single full-screen quad
         // Centred on the camera 
@@ -817,6 +848,97 @@ int main(void)
     glfwTerminate();
     exit(EXIT_SUCCESS);
 }
+
+// Only a full screen quad
+void DrawPass_FSQ(GLuint shaderProgramID, GLFWwindow* pWindow,
+                  int screenWidth, int screenHeight)
+{
+    float ratio;
+
+    glUseProgram(shaderProgramID);
+
+    //glfwGetFramebufferSize(pWindow, &width, &height);
+    ratio = screenWidth / (float)screenHeight;
+
+
+    // While drawing a pixel, see if the pixel that's already there is closer or not?
+    glEnable(GL_DEPTH_TEST);
+    // (Usually) the default - does NOT draw "back facing" triangles
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_BACK);
+
+
+    // Camera is pointing directly at the full screen quad
+    glm::vec3 FSQ_CameraEye = glm::vec3(0.0, 0.0, 5.0f);
+    glm::vec3 FSQ_CameraTarget = glm::vec3(0.0f, 0.0f, 0.0f);
+
+
+    //uniform vec4 eyeLocation;
+    GLint eyeLocation_UL = glGetUniformLocation(shaderProgramID, "eyeLocation");
+    glUniform4f(eyeLocation_UL,
+                FSQ_CameraEye.x, FSQ_CameraEye.y, FSQ_CameraEye.z, 1.0f);
+
+
+
+//       //mat4x4_ortho(p, -ratio, ratio, -1.f, 1.f, 1.f, -1.f);
+    glm::mat4 matProjection = glm::perspective(0.6f,
+                                               ratio,
+                                               0.1f,        // Near (as big)
+                                               100.0f);    // Far (as small)
+
+    glm::mat4 matView = glm::lookAt(FSQ_CameraEye,
+                                    FSQ_CameraTarget,
+                                    ::g_upVector);
+
+    GLint matProjection_UL = glGetUniformLocation(shaderProgramID, "matProjection");
+    glUniformMatrix4fv(matProjection_UL, 1, GL_FALSE, glm::value_ptr(matProjection));
+
+    GLint matView_UL = glGetUniformLocation(shaderProgramID, "matView");
+    glUniformMatrix4fv(matView_UL, 1, GL_FALSE, glm::value_ptr(matView));
+
+    // Set up the textures for this offscreen quad
+    //uniform bool bIsOffScreenTextureQuad;
+    GLint bIsOffScreenTextureQuad_UL = glGetUniformLocation(shaderProgramID, "bIsOffScreenTextureQuad");
+    glUniform1f(bIsOffScreenTextureQuad_UL, (GLfloat)GL_TRUE);
+
+    // uniform vec2 screenWidthAndHeight;	// x is width
+    GLint screenWidthAndHeight_UL = glGetUniformLocation(shaderProgramID, "screenWidthAndHeight");
+    glUniform2f(screenWidthAndHeight_UL, 
+                (GLfloat)screenWidth, 
+                (GLfloat)screenHeight);
+
+
+    // Point the FBO from the 1st pass to this texture...
+
+    GLint textureUnitNumber = 70;
+    glActiveTexture(GL_TEXTURE0 + textureUnitNumber);
+    glBindTexture(GL_TEXTURE_2D, ::g_pFBO_1->colourTexture_0_ID);
+
+    //uniform sampler2D textureOffScreen;
+    GLint textureOffScreen_UL = glGetUniformLocation(shaderProgramID, "textureOffScreen");
+    glUniform1i(textureOffScreen_UL, textureUnitNumber);
+
+
+    cMesh fullScreenQuad;
+    fullScreenQuad.meshName = "Quad_1_sided_aligned_on_XY_plane.ply";
+    fullScreenQuad.meshName = "legospiderman_head_xyz_n_rgba_uv_at_Origin.ply";
+
+//    fullScreenQuad.textureName[0] = "Yellow.bmp";
+//    fullScreenQuad.textureRatios[0] = 1.0f;
+    fullScreenQuad.setUniformDrawScale(5.0f);
+    fullScreenQuad.drawPosition = glm::vec3(0.0f);
+    fullScreenQuad.adjustRoationAngleFromEuler(glm::vec3(glm::radians(-90.0f), 0.0f, 0.0f));
+
+    DrawObject(&fullScreenQuad, glm::mat4(1.0f), shaderProgramID);
+
+
+    glUniform1f(bIsOffScreenTextureQuad_UL, (GLfloat)GL_FALSE);
+
+
+    return;
+}
+
+
 
 
 void DrawPass_2(GLuint shaderProgramID, GLFWwindow* pWindow,

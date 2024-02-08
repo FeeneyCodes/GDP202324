@@ -66,6 +66,7 @@ uniform sampler2D maskSamplerTexture01;
 // From the FBO
 uniform bool bIsOffScreenTextureQuad;
 uniform sampler2D textureOffScreen;
+uniform vec2 screenWidthAndHeight;	// x is width
 
 //... and so on
 //uniform float textureMixRatio[8];
@@ -106,6 +107,15 @@ vec4 calculateLightContrib( vec3 vertexMaterialColour, vec3 vertexNormal,
                             vec3 vertexWorldPos, vec4 vertexSpecular );
 
 
+// Some 2nd pass effects...
+vec3 getFBOColour();
+vec3 ChromicAberration( float amount );
+vec3 BasicBlurScreen();
+vec3 BlurScreen(int pixelOffset);
+vec3 BlurScreenFaster(int pixelOffset);
+
+
+
 void main()
 {
 //	gl_FragColor = vec4(color, 1.0);
@@ -132,44 +142,32 @@ void main()
 	if ( bIsOffScreenTextureQuad )
 	{
 //		outputColour.rgb = vec3(1.0f, 0.0f, 0.0f);
-		vec3 theColour = texture( textureOffScreen, fTextureCoords.st ).rgb;
-		
-		// I can do cool here
-		
-		outputColour.rgb = theColour;
-						   
-		outputColour.a = 1.0f;
-		return;
+//		vec3 theColour = texture( textureOffScreen, fTextureCoords.st ).rgb;		
+//		outputColour.rgb = theColour;						   
+//		outputColour.a = 1.0f;
+//		return;
+//
+		// Convert the integer pixel location (10, 15) or (1902, 546)
+		// 	into a texture coordinate from 0.0 to 1.0
+//		vec2 textCoordsScreen = vec2( gl_FragCoord.x / screenWidthAndHeight.x, 
+//		                              gl_FragCoord.y / screenWidthAndHeight.y );
+//		vec3 theColour = texture( textureOffScreen, textCoordsScreen.st ).rgb;	
+//		vec3 HUDTextureColour = texture( textureHUF, textCoordsScreen.st).rgb;
+//
+//		outputColour.rgb = theColour * 0.5f + HUDTextureColour.rgb * 0.5f;
+//
+		// All of these assume we are sampling from the textureOffscreen sampler
 
-//		outputColour.rgb = theColour;
-		
-//		vec2 textCoordsScreen = vec2( gl_FragCoord.x / 1920, gl_FragCoord.y  / 1080 );
-//		vec3 theColour = texture( textureOffScreen, textCoordsScreen.st ).rgb;
+//		outputColour.rgb = getFBOColour();
+//		outputColour.rgb = ChromicAberration(0.5f);
+//		outputColour.rgb = BasicBlurScreen();
 
-// 'night vision' 
-//		float brightness = ( theColour.r + theColour.g + theColour.b ) / 3.0f;
-//		outputColour.rgb = vec3( 0.0f, brightness, 0.0f );
+		// 3 gives this: *** * *** = 7x7= 49
+		// 5 gives this: ***** * ***** = 11x11 = 121 samples
+//		outputColour.rgb = BlurScreen(25);
 
-//		.....
-//		..x..
-//		.....
-
-		theColour.r = texture( textureOffScreen, 
-		                       vec2( fTextureCoords.s + 0.01f, 
-							         fTextureCoords.t + 0.01f ) ).r;
+		outputColour.rgb = BlurScreenFaster(25);
 		
-		theColour.b = texture( textureOffScreen, 
-		                       vec2( fTextureCoords.s - 0.01f, 
-							         fTextureCoords.t + 0.05f ) ).b;		
-							   
-		theColour.g = texture( textureOffScreen, 
-		                       vec2( fTextureCoords.s - 0.015f, 
-							         fTextureCoords.t - 0.06f  ) ).g;	
-									 
-		
-		
-
-		outputColour.rgb = theColour;
 						   
 		outputColour.a = 1.0f;
 		return;
@@ -264,6 +262,160 @@ void main()
 //	outputColour.rgb += vec3( textureCoords.st, 0.0f);
 }
 
+// Does nothing, just samples the FBO texture
+vec3 getFBOColour()
+{
+	vec2 textCoordsScreen = vec2( gl_FragCoord.x / screenWidthAndHeight.x, 
+	                              gl_FragCoord.y / screenWidthAndHeight.y );
+	vec3 theColour = texture( textureOffScreen, textCoordsScreen.st ).rgb;	
+	
+	return theColour;
+}
+
+vec3 ChromicAberration( float amount )
+{
+	vec2 textCoordsScreen = vec2( gl_FragCoord.x / screenWidthAndHeight.x, 
+	                              gl_FragCoord.y / screenWidthAndHeight.y );
+					
+	vec3 theColour = vec3(0.0f);
+					
+	// Red coordinate is off up (-0.025 in y) and to the left (-0.01f in x)
+	vec2 redYV = vec2( textCoordsScreen.x - (amount * 0.01f),
+					   textCoordsScreen.y - (amount * 0.025f));					   
+	theColour.r = texture( textureOffScreen, redYV ).r;	
+	
+	// Green coordinate is off up (+0.002 in y) and to the right (+0.01f in x)
+	vec2 greenYV = vec2( textCoordsScreen.x + (amount * 0.01f),
+					     textCoordsScreen.y + (amount * 0.002f));					   
+	theColour.g = texture( textureOffScreen, greenYV ).g;	
+	
+	// Green coordinate is off the left (-0.015f in x)
+	vec2 blueYV = vec2( textCoordsScreen.x - (amount * 0.015f),
+					     textCoordsScreen.y);					   
+	theColour.b = texture( textureOffScreen, blueYV ).b;	
+	
+	return theColour;
+}
+
+vec3 BasicBlurScreen()
+{
+	//   *
+	// * O *
+	//   *
+	// "O" is the pixel we are "on"
+	// * are the adjacent pixels
+	
+	vec2 pixelUV = vec2( gl_FragCoord.x / screenWidthAndHeight.x, 
+	                              gl_FragCoord.y / screenWidthAndHeight.y );
+					
+	vec3 theColourPixel =  texture( textureOffScreen, pixelUV ).rgb;	
+				
+	// To the left (-ve in X)
+	vec2 pixel0 = vec2( (gl_FragCoord.x - 1) / screenWidthAndHeight.x, 
+	                     gl_FragCoord.y / screenWidthAndHeight.y );					
+	vec3 pixel0Colour =  texture( textureOffScreen, pixel0 ).rgb;	
+
+	// To the right (+ve in X)
+	vec2 pixel1 = vec2( (gl_FragCoord.x + 1) / screenWidthAndHeight.x, 
+	                     gl_FragCoord.y / screenWidthAndHeight.y );					
+	vec3 pixel1Colour =  texture( textureOffScreen, pixel1 ).rgb;	
+	
+	// Above (-ve in y)
+	vec2 pixel2 = vec2(  gl_FragCoord.x / screenWidthAndHeight.x, 
+	                     (gl_FragCoord.y - 1) / screenWidthAndHeight.y );					
+	vec3 pixel2Colour =  texture( textureOffScreen, pixel2 ).rgb;	
+	
+	// Below (+ve in y)
+	vec2 pixel3 = vec2(  gl_FragCoord.x / screenWidthAndHeight.x, 
+	                     (gl_FragCoord.y + 1) / screenWidthAndHeight.y );					
+	vec3 pixel3Colour =  texture( textureOffScreen, pixel3 ).rgb;	
+	
+	// There are five (5) pixels so average by dividing by 5
+	vec3 finalColour = vec3(0.0f);
+	finalColour += (theColourPixel + pixel0Colour + pixel1Colour + pixel2Colour + pixel3Colour) / 5.0f;
+
+	return finalColour;
+}
+
+vec3 BlurScreen(int pixelOffset)
+{
+	// pixelOffset = 1   pixelOffset = 2
+	// 3x3               5x5
+	// * * *             * * * * * 
+	// * O *             * * * * * 
+	// * * *             * * O * * 
+	//                   * * * * * 
+	//                   * * * * * 
+	// 
+	// "O" is the pixel we are "on"
+	// * are the adjacent pixels
+	
+	vec3 outColour = vec3(0.0f);
+	int totalSamples = 0;
+	
+	for ( int xOffset = -pixelOffset; xOffset <= pixelOffset; xOffset++ )
+	{
+		for ( int yOffset = -pixelOffset; yOffset <= pixelOffset; yOffset++ )
+		{
+			totalSamples++;
+			
+			vec2 pixelUV = vec2( (gl_FragCoord.x + xOffset) / screenWidthAndHeight.x, 
+	                             (gl_FragCoord.y + yOffset) / screenWidthAndHeight.y );
+					
+			outColour += texture( textureOffScreen, pixelUV ).rgb;	
+		}	
+	}
+
+	// Average this colour by the number of samples
+	outColour.rgb /= float(totalSamples);
+
+	return outColour;
+}
+
+vec3 BlurScreenFaster(int pixelOffset)
+{
+	// pixelOffset = 1   pixelOffset = 2
+	// 3x3               5x5
+	//   *                   * 
+	// * O *                 * 
+	//   *               * * O * * 
+	//                       *  
+	//                       * 
+	// 
+	// "O" is the pixel we are "on"
+	// * are the adjacent pixels
+	
+	vec3 outColour = vec3(0.0f);
+	int totalSamples = 0;
+	
+	// Add up a horizontal sample
+	for ( int xOffset = -pixelOffset; xOffset <= pixelOffset; xOffset++ )
+	{
+		totalSamples++;
+			
+		vec2 pixelUV = vec2( (gl_FragCoord.x + xOffset) / screenWidthAndHeight.x, 
+	                          gl_FragCoord.y / screenWidthAndHeight.y );
+					
+		outColour += texture( textureOffScreen, pixelUV ).rgb;	
+	}
+	
+	// Add up a vertical sample
+	for ( int yOffset = -pixelOffset; yOffset <= pixelOffset; yOffset++ )
+	{
+		totalSamples++;
+			
+		vec2 pixelUV = vec2( gl_FragCoord.x / screenWidthAndHeight.x, 
+	                         (gl_FragCoord.y + yOffset) / screenWidthAndHeight.y );
+					
+		outColour += texture( textureOffScreen, pixelUV ).rgb;	
+	}	
+
+
+	// Average this colour by the number of samples
+	outColour.rgb /= float(totalSamples);
+
+	return outColour;
+}
 
 vec4 calculateLightContrib( vec3 vertexMaterialColour, vec3 vertexNormal, 
                             vec3 vertexWorldPos, vec4 vertexSpecular )
