@@ -286,28 +286,28 @@ void cSoftBodyVerlet::ApplyCollision(double deltaTime)
 
 //	this->vec_pParticles[5'000]->position = glm::vec3(0.0f, 30.0f, 0.0f);
 
-	// Collide with a sphere at 20 units above the origin
-	//	with a radius of 5 units.
-	// Check to see if this particle is inside this sphere...
-	for (sParticle* pCurrentParticle : vec_pParticles)
-	{
-		glm::vec3 sphereCentre = glm::vec3(0.0f, 20.0f, 24.0f);
-		float sphereRadius = 15.0f;
-
-		float distanceToSphere = glm::distance(pCurrentParticle->position,
-											   sphereCentre);
-		if (distanceToSphere < sphereRadius )
-		{
-			// it's 'inside' the sphere
-			// Shift or slide the point along the ray from the centre of the sphere
-			glm::vec3 particleToCentreRay = pCurrentParticle->position - sphereCentre;
-			// Normalize to get the direction
-			particleToCentreRay = glm::normalize(particleToCentreRay);
-			// 
-			pCurrentParticle->position = (particleToCentreRay * sphereRadius) + sphereCentre;
-
-		}
-	}//for (sParticle* pCurrentParticle
+//	// Collide with a sphere at 20 units above the origin
+//	//	with a radius of 5 units.
+//	// Check to see if this particle is inside this sphere...
+//	for (sParticle* pCurrentParticle : vec_pParticles)
+//	{
+//		glm::vec3 sphereCentre = glm::vec3(0.0f, 20.0f, 24.0f);
+//		float sphereRadius = 15.0f;
+//
+//		float distanceToSphere = glm::distance(pCurrentParticle->position,
+//											   sphereCentre);
+//		if (distanceToSphere < sphereRadius )
+//		{
+//			// it's 'inside' the sphere
+//			// Shift or slide the point along the ray from the centre of the sphere
+//			glm::vec3 particleToCentreRay = pCurrentParticle->position - sphereCentre;
+//			// Normalize to get the direction
+//			particleToCentreRay = glm::normalize(particleToCentreRay);
+//			// 
+//			pCurrentParticle->position = (particleToCentreRay * sphereRadius) + sphereCentre;
+//
+//		}
+//	}//for (sParticle* pCurrentParticle
 
 
 
@@ -317,7 +317,7 @@ void cSoftBodyVerlet::ApplyCollision(double deltaTime)
 
 void cSoftBodyVerlet::SatisfyConstraints(void)
 {
-	const unsigned int NUM_ITERATIONS = 5	;
+	const unsigned int NUM_ITERATIONS = 10;
 	
 	for ( unsigned int iteration = 0; iteration != NUM_ITERATIONS; iteration++ )
 	{
@@ -437,6 +437,108 @@ void cSoftBodyVerlet::cleanZeros(glm::vec3& value)
 //		x2.CleanZero();
 //	}
 //}// for ( int itCount = 0; itCount != this->numIterations; 
+
+
+glm::vec3 cSoftBodyVerlet::getCentrePoint(void)
+{
+	glm::vec3 centreXYZ = glm::vec3(0.0f);
+
+	for (sParticle* pCurrentParticle : this->vec_pParticles)
+	{
+		centreXYZ += pCurrentParticle->position;
+	}
+	// Get average
+	centreXYZ /= (float)this->vec_pParticles.size();
+
+	return centreXYZ;
+}
+
+
+void cSoftBodyVerlet::findCentreVerticesOfWheel(std::vector< unsigned int >& particleIndices)
+{
+	particleIndices.clear(); 
+
+	// Wheel is 1.0 x 1.0 x 0.3
+	// 'hub' in the wheel looks like it's around 0.1 wide
+	const float CLOSE_ENOUGH_EPSILON = 0.05f;
+
+	for ( unsigned int index = 0; index != this->vec_pParticles.size(); index++ )
+	{
+		sParticle* pCurrentParticle = this->vec_pParticles[index];
+
+		if ( fabs(pCurrentParticle->position.y) <= CLOSE_ENOUGH_EPSILON )
+		{
+			if ( fabs(pCurrentParticle->position.z) <= CLOSE_ENOUGH_EPSILON )
+			{
+				// Likely along the axis of the wheel
+				particleIndices.push_back(index);
+			}
+		}
+	}//for ( unsigned int index
+
+	return;
+}
+
+	// Creates constraints from the other vertices to the edges of the wheel
+void cSoftBodyVerlet::CreateWheelBracing(void)
+{
+	// When the wheel is at the origin, the three vertices along the x axis are:
+	//  43
+	// 113
+	// 167
+	sParticle* pAxleParticle43 = this->vec_pParticles[43];
+	sParticle* pAxleParticle113 = this->vec_pParticles[113];
+	sParticle* pAxleParticle167 = this->vec_pParticles[167];
+
+	for (unsigned int index = 0; index != this->vec_pParticles.size(); index++)
+	{
+		sParticle* pCurrentParticle = this->vec_pParticles[index];
+		// 
+		// Skip the axle particles
+		if (index == 43) { continue; }
+		if (index == 113) { continue; }
+		if (index == 167) { continue; }
+
+		// Connect this particle to each of the centre axle particles:
+
+		{	// To particle 43
+			sParticle* pThisParticle = this->vec_pParticles[index];
+			float distBetween = this->calcDistanceBetween(pThisParticle, pAxleParticle43);
+
+			sConstraint* pBracingConstraint = new sConstraint();
+			pBracingConstraint->pParticleA = pThisParticle;
+			pBracingConstraint->pParticleB = pAxleParticle43;
+			pBracingConstraint->restLength = distBetween;
+			this->vec_pConstraints.push_back(pBracingConstraint);
+		}
+		
+		{	// To particle 113
+			sParticle* pThisParticle = this->vec_pParticles[index];
+			float distBetween = this->calcDistanceBetween(pThisParticle, pAxleParticle113);
+
+			sConstraint* pBracingConstraint = new sConstraint();
+			pBracingConstraint->pParticleA = pThisParticle;
+			pBracingConstraint->pParticleB = pAxleParticle113;
+			pBracingConstraint->restLength = distBetween;
+			this->vec_pConstraints.push_back(pBracingConstraint);
+		}	
+	
+		{	// To particle 167
+			sParticle* pThisParticle = this->vec_pParticles[index];
+			float distBetween = this->calcDistanceBetween(pThisParticle, pAxleParticle167);
+
+			sConstraint* pBracingConstraint = new sConstraint();
+			pBracingConstraint->pParticleA = pThisParticle;
+			pBracingConstraint->pParticleB = pAxleParticle167;
+			pBracingConstraint->restLength = distBetween;
+			this->vec_pConstraints.push_back(pBracingConstraint);
+		}	
+	}
+	return;
+}
+
+
+
 
 
 

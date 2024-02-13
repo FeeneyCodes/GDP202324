@@ -5,6 +5,8 @@
 #include <vector>
 #include "LuaBrain/cLuaBrain.h"
 #include "cParticleSystem.h"
+#include <sstream>
+#include <iostream>
 
 extern std::vector< cMesh* > g_vec_pMeshesToDraw;
 //extern std::vector< sPhsyicsProperties* > g_vec_pPhysicalProps;
@@ -299,6 +301,79 @@ bool LoadModels(void)
     ::g_pOffscreenTextureQuad->textureName[0] = "stickers-explosion-texture.bmp";
     ::g_pOffscreenTextureQuad->textureRatios[0] = 1.0f;
 
+
+
+    cMesh* pTieFighter = new cMesh();
+    pTieFighter->meshName = "Tie-Fighter_cleaned.ply";
+    pTieFighter->textureName[0] = "stickers-explosion-texture.bmp";
+    pTieFighter->textureRatios[0] = 1.0f;
+    pTieFighter->drawPosition.y = 30.0f;
+    pTieFighter->drawPosition.x = 30.0f;
+    pTieFighter->friendlyName = "TieFighter";
+    ::g_vec_pMeshesToDraw.push_back(pTieFighter);
+
+
+    cMesh* wheel = new cMesh();
+    wheel->meshName = "Wheel_15.ply";
+    wheel->textureName[0] = "stickers-explosion-texture.bmp";
+    wheel->textureRatios[0] = 1.0f;
+    wheel->friendlyName = "Wheel";
+//    ::g_vec_pMeshesToDraw.push_back(wheel);
+
+
+
+
+    // Draw a ton of bunnies
+    float boxSize = 100.0f;
+    float boxStep = 10.0f;
+
+    std::stringstream ssName;
+
+    int bunnyCount = 0;
+
+    for ( float x = -boxSize; x <= boxSize; x += boxStep )
+    {
+        for ( float y = -boxSize; y <= boxSize; y += boxStep )
+        {
+            for ( float z = -(2.0f * boxSize); z <= 0; z += boxStep )
+            {
+                cMesh* pBunny = new cMesh();
+//               pBunny->meshName = "bun_zipper_xyz_n_rgba_uv.ply";
+//                pBunny->meshName = "bun_zipper_res4_xyz_n_rgba_uv.ply";
+                pBunny->textureName[0] = "stickers-explosion-texture.bmp";
+                pBunny->textureRatios[0] = 1.0f;
+                pBunny->setUniformDrawScale(30.0f);
+
+                pBunny->drawPosition.x = x;
+                pBunny->drawPosition.y = y;
+                pBunny->drawPosition.z = z;
+
+
+                //bun_zipper_xyz_n_rgba_uv.ply
+                //bun_zipper_res2_xyz_n_rgba_uv.ply
+                //bun_zipper_res3_xyz_n_rgba_uv.ply
+                //bun_zipper_res4_xyz_n_rgba_uv.ply
+
+                // Add some LOD info 
+                pBunny->vecLODs.push_back(cMesh::sLODInfo("bun_zipper_res4_xyz_n_rgba_uv.ply", FLT_MAX));
+                pBunny->vecLODs.push_back(cMesh::sLODInfo("bun_zipper_res3_xyz_n_rgba_uv.ply", 200.0f));
+                pBunny->vecLODs.push_back(cMesh::sLODInfo("bun_zipper_res2_xyz_n_rgba_uv.ply", 75.0f));
+                pBunny->vecLODs.push_back(cMesh::sLODInfo("bun_zipper_xyz_n_rgba_uv.ply", 25.0f));
+
+
+                std::stringstream ssName;
+                ssName << "Bunny_" << (int)x << "_" << (int)y << "_" << (int)z;
+                pBunny->friendlyName = ssName.str();
+
+                g_vec_pMeshesToDraw.push_back(pBunny);
+
+                bunnyCount++;
+            }
+        }
+
+    }
+
+    std::cout << "Bunny count = " << bunnyCount << std::endl;
 
 
     return true;

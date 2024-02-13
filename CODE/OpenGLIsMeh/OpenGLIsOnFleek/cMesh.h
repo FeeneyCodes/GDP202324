@@ -8,6 +8,9 @@
 #include <vector>
 
 #include "iPhysicsMeshTransformAccess.h"
+#include <float.h>		// for floating point limit
+
+
 
 
 
@@ -39,6 +42,23 @@ public:
 
 	std::string meshName;
 
+	struct sLODInfo
+	{
+		// If we are within THIS distance...
+		float minDistance = FLT_MAX;		// Max floating point value
+		// Draw this mesh
+		std::string meshName;
+
+		sLODInfo(std::string LODmeshName, float LODminDist)
+		{
+			this->meshName = LODmeshName;
+			this->minDistance = LODminDist;
+		}
+	};
+
+	std::vector<sLODInfo> vecLODs;
+
+
 	std::string friendlyName;		// "Ground"
 
 	glm::vec3 drawPosition;
@@ -63,6 +83,9 @@ public:
 // Which is exactly the same as:
 //		this->m_qOrientation = this->m_qOrientation * qChange;
 	}
+
+	void Update(double deltaTime);
+	bool bNeedsUpdate = true;
 
 	glm::quat get_qOrientation(void)
 	{

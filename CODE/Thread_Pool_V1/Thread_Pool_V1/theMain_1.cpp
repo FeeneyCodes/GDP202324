@@ -23,6 +23,21 @@ float getRandomFloat(float a, float b) {
 	return a + r;
 }
 
+void Dothis(void)
+{
+
+	return;
+}
+
+class iThreadUpdate
+{
+public:
+	virtual ~iThreadUpdate() {};
+
+	virtual void Update(double deltaTime) = 0;
+	static void DoThis(void);
+	void* pFunctionToRun;
+};
 
 struct sWorkerThreadInfo
 {
@@ -30,11 +45,15 @@ struct sWorkerThreadInfo
 	bool bRun = true;	// if false, thread is idle
 	DWORD sleepTime;	// Wait time for sleeping
 	bool bThreadAlive = true;	// If false, thread exits
+	iThreadUpdate* pThreadJob = NULL;
 };
 
 
 DWORD WINAPI UpdateEntityThread(LPVOID lpParameter)
 {
+	void* pFunction = Dothis;
+	void* pFunction = iThreadUpdate::DoThis;
+//	void* pFunction = iThreadUpdate::Update;
 
 
 	// Get the specific pointer type
@@ -76,6 +95,7 @@ DWORD WINAPI UpdateEntityThread(LPVOID lpParameter)
 			// Go to sleep (be idle) for a while
 			Sleep(pWTI->sleepTime);
 //			Sleep(threadWaitTime);
+//			Sleep(0);
 		}
 	}
 	return 0;

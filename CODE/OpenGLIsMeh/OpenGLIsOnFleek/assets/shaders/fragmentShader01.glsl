@@ -166,8 +166,9 @@ void main()
 		// 5 gives this: ***** * ***** = 11x11 = 121 samples
 //		outputColour.rgb = BlurScreen(25);
 
-		outputColour.rgb = BlurScreenFaster(25);
+//		outputColour.rgb = BlurScreenFaster(5);
 		
+		outputColour.rgb = getFBOColour();
 						   
 		outputColour.a = 1.0f;
 		return;

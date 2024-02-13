@@ -86,6 +86,7 @@ std::vector<double> g_vecLastFrameTimes;
 cParticleSystem g_anEmitter;
 
 cSoftBodyVerlet g_SoftBody;
+cSoftBodyVerlet g_Wheel;
 
 // Offscreen frame buffer object
 cFBO* g_pFBO_1 = NULL;
@@ -334,6 +335,9 @@ int main(void)
     gladLoadGLLoader( (GLADloadproc)glfwGetProcAddress);
     glfwSwapInterval(1);
 
+//    glShaderSource(GLuint shader, GLsizei count, const GLchar** string, const GLint* length);
+//    FARPROC gl_glShaderSourceFucntion = GetProcAddress(NULL, "glShaderSource");
+//    gl_glShaderSourceFucntion(...);
 
     // Create an offscreen frame buffer object
     ::g_pFBO_1 = new cFBO();
@@ -447,7 +451,18 @@ int main(void)
     std::cout << "Loaded: " << terrainDrawingInfo.numberOfVertices << " vertices" << std::endl;
 
 
-    // 
+    // LOD Bunny Rabbits:
+    //bun_zipper_xyz_n_rgba_uv.ply        // 200,000 vertices     70,000 faces
+    //bun_zipper_res2_xyz_n_rgba.ply      //  19,000 vertices     16,000 faces
+    //bun_zipper_res3_xyz_n_rgba_uv.ply   //  11,000 vertices      3,800 faces
+    //bun_zipper_res4_xyz_n_rgba_uv.ply   //   2,800 vertices      960 faces
+
+    sModelDrawInfo bunnyTemp;
+    ::g_pMeshManager->LoadModelIntoVAO("bun_zipper_xyz_n_rgba_uv.ply", bunnyTemp, shaderProgramID);
+    ::g_pMeshManager->LoadModelIntoVAO("bun_zipper_res2_xyz_n_rgba_uv.ply", bunnyTemp, shaderProgramID);
+    ::g_pMeshManager->LoadModelIntoVAO("bun_zipper_res3_xyz_n_rgba_uv.ply", bunnyTemp, shaderProgramID);
+    ::g_pMeshManager->LoadModelIntoVAO("bun_zipper_res4_xyz_n_rgba_uv.ply", bunnyTemp, shaderProgramID);
+
 
 
 
@@ -502,6 +517,14 @@ int main(void)
     ::g_pMeshManager->LoadModelIntoVAO("RetroTV.edited.bodyonly.ply", spiderMan, shaderProgramID);
     ::g_pMeshManager->LoadModelIntoVAO("RetroTV.edited.screenonly.ply", spiderMan, shaderProgramID);
 
+
+    sModelDrawInfo xWingFighter;
+    ::g_pMeshManager->setBasePath("assets/models/TieFighter");
+    ::g_pMeshManager->LoadModelIntoVAO("Tie-Fighter_cleaned.ply", xWingFighter, shaderProgramID);
+
+    sModelDrawInfo wheel;
+    ::g_pMeshManager->setBasePath("assets/models");
+    ::g_pMeshManager->LoadModelIntoVAO("Wheel_15.ply", wheel, shaderProgramID);
 
 
     // ... and so on
@@ -576,21 +599,35 @@ int main(void)
 
         sModelDrawInfo softBodyObjectDrawingInfo;
 //        if ( ::g_pMeshManager->FindDrawInfoByModelName("bun_zipper_res2_xyz_n_rgba_trivialUV_offset_Y.ply", softBodyObjectDrawingInfo) )
-//       if ( ::g_pMeshManager->FindDrawInfoByModelName("Cube_1x1x1_xyz_n_rgba_for_Verlet.ply", bathtubDrawingInfo) )
+       if ( ::g_pMeshManager->FindDrawInfoByModelName("Cube_1x1x1_xyz_n_rgba_for_Verlet.ply", softBodyObjectDrawingInfo) )
 //        if ( ::g_pMeshManager->FindDrawInfoByModelName("bathtub_xyz_n_rgba_uv_x3_size_Offset_in_Y.ply", softBodyObjectDrawingInfo) )
-        if ( ::g_pMeshManager->FindDrawInfoByModelName("bun_zipper_res3_xyz_n_rgba_trivialUV_offset_Y.ply", softBodyObjectDrawingInfo) )
+//        if ( ::g_pMeshManager->FindDrawInfoByModelName("bun_zipper_res3_xyz_n_rgba_trivialUV_offset_Y.ply", softBodyObjectDrawingInfo) )
 //        if ( ::g_pMeshManager->FindDrawInfoByModelName("Grid_10x10_vertical_in_y.ply", softBodyObjectDrawingInfo) )
 //        if ( ::g_pMeshManager->FindDrawInfoByModelName("Grid_100x100_vertical_in_y.ply", softBodyObjectDrawingInfo) )
+//        if ( ::g_pMeshManager->FindDrawInfoByModelName("Tie-Fighter_cleaned.ply", softBodyObjectDrawingInfo) )
         {
 
             // Move the soft body here
             glm::mat4 matTransform = glm::mat4(1.0f);
 //            glm::mat4 matTransform = glm::translate(glm::mat4(1.0f), glm::vec3( 0.0f, 50.0f, 0.0f) );
 
-            // Rotate if slightly on the x axis (0.1 radians)
-     //       matTransform = glm::rotate(matTransform,
-     //                                  glm::radians(90.0f), 
-     //                                  glm::vec3(1.0f, 0.0f, 0.0f));
+            matTransform = glm::translate(matTransform, glm::vec3(-50.0f, 50.0f, 0.0f));
+
+            matTransform = glm::rotate(matTransform,
+                                       glm::radians(45.0f), 
+                                       glm::vec3(1.0f, 0.0f, 0.0f));
+            matTransform = glm::rotate(matTransform,
+                                       glm::radians(45.0f), 
+                                       glm::vec3(0.0f, 0.0f, 1.0f));
+
+            // Scale the soft body to approx the same size as the Tie Fighter
+            // From the bounding boxes:
+            // Cube is 10x10x10
+            // Tie is 29.26 x 34.6 x 25.14
+            // 
+            matTransform = glm::scale(matTransform,
+                                      glm::vec3(2.926f, 3.46f, 2.514f));
+
 
             ::g_SoftBody.CreateSoftBody(softBodyObjectDrawingInfo, matTransform);
 //            ::g_SoftBody.CreateSoftBody(softBodyObjectDrawingInfo);
@@ -600,7 +637,7 @@ int main(void)
             //  the triangles are around the same size, and the rest lengths
             //  seem to be around 1.2 to 1.5, so we'll pick 2.0.
             // NOTE: You would likely do this manually. 
-//            ::g_SoftBody.CreateRandomBracing(500, 2.0f);
+            ::g_SoftBody.CreateRandomBracing(20, 1.0f);
 
             std::cout << "Created softbody OK." << std::endl;
         }
@@ -628,6 +665,41 @@ int main(void)
         &ThreadId); // lpThreadId
 
 
+    // And a squishy wheel
+    sModelDrawInfo wheelDrawInfo;
+    if (::g_pMeshManager->FindDrawInfoByModelName("Wheel_15.ply", wheelDrawInfo))
+    {
+        // Move the soft body here
+        glm::mat4 matTransform = glm::mat4(1.0f);
+//            glm::mat4 matTransform = glm::translate(glm::mat4(1.0f), glm::vec3( 0.0f, 50.0f, 0.0f) );
+
+        matTransform = glm::translate(matTransform, glm::vec3(0.0f, 10.0f, 0.0f));
+
+        matTransform = glm::rotate(matTransform,
+                                  glm::radians(-90.0f),
+                                   glm::vec3(0.0f, 1.0f, 0.0f));
+//        matTransform = glm::rotate(matTransform,
+//                                   glm::radians(45.0f),
+//                                   glm::vec3(0.0f, 0.0f, 1.0f));
+
+        matTransform = glm::scale(matTransform, glm::vec3(15.0f, 15.0f, 15.0f));
+
+
+        ::g_Wheel.CreateSoftBody(wheelDrawInfo, matTransform);
+
+//        std::vector<unsigned int> vecAxleParticles;
+//        ::g_Wheel.findCentreVerticesOfWheel(vecAxleParticles);
+        // When the wheel is at the origin, the three vertices along the x axis are:
+        //  43
+        // 113
+        // 167
+
+        ::g_Wheel.acceleration = glm::vec3(0.0f, -9.0f, 0.0f);
+//        ::g_Wheel.CreateRandomBracing(200, 1.0f);
+        ::g_Wheel.CreateWheelBracing();
+
+        std::cout << "Created wheel softbody OK." << std::endl;    
+    }
 
 //    LoadTheRobotronModels(shaderProgramID);
 
@@ -728,6 +800,73 @@ int main(void)
         }
 
 
+        // Update the tie figther to align with the cube vertlet 'soft' object
+        // But the 'soft' object isn't that soft because we have a lot of constaints in there
+        // 
+        // Upper left = 2
+        // Upper right = 3
+        // Lower left = 0
+        // Lower right = 1
+        // Back left lower = 4
+        //
+        // y axis is v2 - v0
+        // x axis is v1 - v0
+        // Z axis is v4 - v0
+
+        glm::vec3 vert0 = ::g_SoftBody.vec_pParticles[0]->position;
+        glm::vec3 vert1 = ::g_SoftBody.vec_pParticles[1]->position;
+        glm::vec3 vert2 = ::g_SoftBody.vec_pParticles[2]->position;
+        glm::vec3 vert4 = ::g_SoftBody.vec_pParticles[4]->position;
+
+        cMesh* pTie = ::g_pFindMeshByFriendlyName("TieFighter");
+        if ( pTie )
+        {
+            // Align the tie fighter with the using the quatLookAt()
+            // https://glm.g-truc.net/0.9.9/api/a00663.html#gabe7fc5ec5feb41ab234d5d2b6254697f
+            //
+            //GLM_FUNC_DECL qua<T, Q> glm::quatLookAt	(vec< 3, T, Q > const& direction,
+            //                                         vec< 3, T, Q > const& up
+            //    Build a look at quaternion based on the default handedness.
+            //
+            //   Parameters
+            //    direction	Desired forward direction.Needs to be normalized.
+            //    up	Up vector, how the camera is oriented.Typically (0, 1, 0).
+
+            // The tie is facing forward on the -ve z axis and 'up' along the y axis
+            glm::vec3 forwardVector = glm::normalize(vert4 - vert0);
+            glm::vec3 upVector = glm::normalize(vert2 - vert0);
+
+            pTie->setDrawOrientation(glm::quatLookAt(forwardVector, upVector));
+
+            pTie->drawPosition = ::g_SoftBody.getCentrePoint();
+
+        }//if ( pTie )
+
+
+        // We are going to slightly shift the two particles at the centre of the wheel
+        //  by applying a slight acceleration (force) to them
+//        std::vector<unsigned int> vecAxleParticles;
+//        ::g_Wheel.findCentreVerticesOfWheel(vecAxleParticles);
+        // When the wheel is at the origin, the three vertices along the x axis are:
+        //  43
+        // 113
+        // 167
+        {
+            float adjustmentInX = -0.01f;
+            ::g_Wheel.vec_pParticles[43]->position = ::g_Wheel.vec_pParticles[43]->old_position;
+            ::g_Wheel.vec_pParticles[113]->position = ::g_Wheel.vec_pParticles[113]->old_position;
+            ::g_Wheel.vec_pParticles[167]->position = ::g_Wheel.vec_pParticles[167]->old_position;
+
+           ::g_Wheel.vec_pParticles[43]->position.x += adjustmentInX;
+           ::g_Wheel.vec_pParticles[113]->position.x += adjustmentInX;
+           ::g_Wheel.vec_pParticles[167]->position.x += adjustmentInX;
+
+           float heightOfWheelOverGround = 7.4f;
+           ::g_Wheel.vec_pParticles[43]->position.y = heightOfWheelOverGround;
+           ::g_Wheel.vec_pParticles[113]->position.y = heightOfWheelOverGround;
+           ::g_Wheel.vec_pParticles[167]->position.y = heightOfWheelOverGround;
+        }
+        
 
         // Only a full screen quad
         {
@@ -1332,35 +1471,70 @@ void DrawPass_1(GLuint shaderProgramID,
 //    
 //    UpdateEntityThread( (void*)pSBI);
 
-//    for (cSoftBodyVerlet::sParticle* pCurParticle : ::g_SoftBody.vec_pParticles)
-//    {
-//        ::g_DrawDebugSphere(pCurParticle->position, 0.01f, glm::vec4(0.0f, 0.0f, 0.0f, 1.0f));
-//    }
+    for (cSoftBodyVerlet::sParticle* pCurParticle : ::g_SoftBody.vec_pParticles)
+    {
+        ::g_DrawDebugSphere(pCurParticle->position, 2.0f, glm::vec4(0.0f, 0.0f, 0.0f, 1.0f));
+    }
 
 
 
     // Update vertex positions in mesh (in VAO aka on the GPU)
     // g_SoftBody->GetModelDrawInfo();
 //    pVertics* pLocalArray = ::g_SoftBody.m_ModelVertexInfo.pVertices;
-    ::g_pMeshManager->UpdateVertexBuffers(::g_SoftBody.m_ModelVertexInfo.meshName,
-                                          ::g_SoftBody.m_ModelVertexInfo,
+//    ::g_pMeshManager->UpdateVertexBuffers(::g_SoftBody.m_ModelVertexInfo.meshName,
+//                                          ::g_SoftBody.m_ModelVertexInfo,
+ //                                         shaderProgramID);
+
+    // Draw actual mesh
+//    {
+//        glm::mat4 matModel = glm::mat4(1.0f);   // Identity matrix
+//
+//        cMesh softBodyMesh;
+//        softBodyMesh.meshName = ::g_SoftBody.m_ModelVertexInfo.meshName;
+//        softBodyMesh.textureName[0] = "SpidermanUV_square.bmp";
+//        softBodyMesh.textureRatios[0] = 1.0f;
+//
+//        glDisable(GL_CULL_FACE);
+//        DrawObject(&softBodyMesh, matModel, shaderProgramID);
+//        glEnable(GL_CULL_FACE);
+//
+//    }
+
+
+    //  Draw the wheel based on the soft body
+    ::g_Wheel.VerletUpdate(deltaTime);
+    // 
+    ::g_Wheel.ApplyCollision(deltaTime);
+    // 
+    ::g_Wheel.SatisfyConstraints();
+
+   // Update the mesh in the VAO based on the current particle positions
+    ::g_Wheel.UpdateVertexPositions();
+    ::g_Wheel.UpdateNormals();//   
+
+    ::g_pMeshManager->UpdateVertexBuffers(::g_Wheel.m_ModelVertexInfo.meshName,
+                                          ::g_Wheel.m_ModelVertexInfo,
                                           shaderProgramID);
+
+
+    for (cSoftBodyVerlet::sParticle* pCurParticle : ::g_Wheel.vec_pParticles)
+    {
+        ::g_DrawDebugSphere(pCurParticle->position, 0.1f, glm::vec4(0.0f, 0.0f, 0.0f, 1.0f));
+    }
 
     // Draw actual mesh
     {
         glm::mat4 matModel = glm::mat4(1.0f);   // Identity matrix
 
         cMesh softBodyMesh;
-        softBodyMesh.meshName = ::g_SoftBody.m_ModelVertexInfo.meshName;
+        softBodyMesh.meshName = ::g_Wheel.m_ModelVertexInfo.meshName;
         softBodyMesh.textureName[0] = "SpidermanUV_square.bmp";
         softBodyMesh.textureRatios[0] = 1.0f;
 
         glDisable(GL_CULL_FACE);
         DrawObject(&softBodyMesh, matModel, shaderProgramID);
         glEnable(GL_CULL_FACE);
-
     }
-
 
     // TEST: See if we can shift a mesh
 //    sModelDrawInfo gridMesh;
@@ -1847,8 +2021,28 @@ void DrawObject(cMesh* pCurrentMesh, glm::mat4 matModelParent, GLuint shaderProg
     }
 // *********************************************************************
 
+    std::string meshToDraw = pCurrentMesh->meshName;
+
+    // See if there is any LOD info in this mesh? 
+    if ( ! pCurrentMesh->vecLODs.empty() )
+    {
+        // Yes, so choose the LOD based on distance from camera
+
+        float distToCamera = glm::distance(pCurrentMesh->drawPosition, g_cameraEye);
+
+        // Choose mesh based on distance
+        for ( cMesh::sLODInfo &curLOD : pCurrentMesh->vecLODs )
+        {
+            if ( distToCamera < curLOD.minDistance )
+            {
+                meshToDraw = curLOD.meshName;
+            }
+        }
+
+    }//if ( ! pCurrentMesh->vecLODs.empty() )
+
     sModelDrawInfo modelInfo;
-    if (::g_pMeshManager->FindDrawInfoByModelName(pCurrentMesh->meshName, modelInfo))
+    if (::g_pMeshManager->FindDrawInfoByModelName(meshToDraw, modelInfo))
     {
         // Found it!!!
 

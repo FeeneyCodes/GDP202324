@@ -21,6 +21,7 @@ public:
 
 	void UpdateNormals(void);
 
+
 	// Create random constraints within the object to 'brace' the shape
 	// These are invisible, though
 	void CreateRandomBracing(unsigned int numberOfBraces,
@@ -88,6 +89,20 @@ public:
 
 	// Max update time is 60Hz
 	const double MAX_DELTATIME = 1.0 / 60.0;
+
+
+
+	// HACK:
+	// Some functions that we likely should figure out before hand...
+	glm::vec3 getCentrePoint(void);
+
+	// For rotating the wheel, the 'Wheel_15' wheel is around the x-axis
+	// So we are looking for two vertices that have Z and Y ~ 0.0f
+	// This will return a vector of vertex indices that are along this axis
+	void findCentreVerticesOfWheel(std::vector< unsigned int >& particleIndices);
+
+	// Creates constraints from the other vertices to the edges of the wheel
+	void CreateWheelBracing(void);
 
 };
 
