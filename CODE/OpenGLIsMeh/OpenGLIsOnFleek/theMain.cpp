@@ -800,6 +800,15 @@ int main(void)
         }
 
 
+
+        //glBegin(GL_LINES);
+        //glColor3f(0.0f, 0.0f, 0.0f);
+
+        //glVertex3f(0.0f, 0.0f, 0.0f);
+        //glVertex3f(25.0f, 10.0f, 0.0f);
+
+        //glEnd();
+
         // Update the tie figther to align with the cube vertlet 'soft' object
         // But the 'soft' object isn't that soft because we have a lot of constaints in there
         // 

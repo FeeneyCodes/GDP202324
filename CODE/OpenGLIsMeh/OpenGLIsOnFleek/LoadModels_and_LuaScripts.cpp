@@ -338,7 +338,7 @@ bool LoadModels(void)
             for ( float z = -(2.0f * boxSize); z <= 0; z += boxStep )
             {
                 cMesh* pBunny = new cMesh();
-//               pBunny->meshName = "bun_zipper_xyz_n_rgba_uv.ply";
+//                pBunny->meshName = "bun_zipper_xyz_n_rgba_uv.ply";
 //                pBunny->meshName = "bun_zipper_res4_xyz_n_rgba_uv.ply";
                 pBunny->textureName[0] = "stickers-explosion-texture.bmp";
                 pBunny->textureRatios[0] = 1.0f;
