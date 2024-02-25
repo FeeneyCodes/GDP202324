@@ -84,7 +84,7 @@ bool cFBO::init( int width, int height, std::string &error )
 
 	static const GLenum draw_bufers[] = 
 	{ 
-		GL_COLOR_ATTACHMENT0
+		GL_COLOR_ATTACHMENT0,
 	};
 	glDrawBuffers(1, draw_bufers);		// There are 4 outputs now
 

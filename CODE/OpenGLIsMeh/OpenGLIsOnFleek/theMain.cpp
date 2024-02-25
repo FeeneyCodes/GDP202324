@@ -300,6 +300,13 @@ void DrawPass_FSQ(GLuint shaderProgramID, GLFWwindow* pWindow,
                   int screenWidth, int screenHeight);
 
 
+void PrintDrawInfo(sModelDrawInfo& drawInfo)
+{
+    std::cout << drawInfo.meshName << " loaded "
+        << drawInfo.numberOfVertices << " vertices" << std::endl;
+    return;
+}
+
 int main(void)
 {
     TestSort();
@@ -402,6 +409,21 @@ int main(void)
     ::g_DebugSphereMesh_shaderProgramID = shaderProgramID;
 
     ::g_pMeshManager = new cVAOManager();
+
+#pragma region mining_complex
+    {
+        sModelDrawInfo miningComplex;
+        ::g_pMeshManager->setBasePath("assets/models/42IsisMiningComplex");
+        ::g_pMeshManager->LoadModelIntoVAO("asteroid_industrial_xyz_n_rgba_uv.ply", miningComplex, shaderProgramID);
+        PrintDrawInfo(miningComplex);
+        ::g_pMeshManager->LoadModelIntoVAO("asteroid_main_xyz_n_rgba_uv.ply", miningComplex, shaderProgramID);
+        PrintDrawInfo(miningComplex);
+        ::g_pMeshManager->LoadModelIntoVAO("asteroid_other_xyz_n_rgba_uv.ply", miningComplex, shaderProgramID);
+        PrintDrawInfo(miningComplex);
+        ::g_pMeshManager->LoadModelIntoVAO("stuff_main_asteroid_xyz_n_rgba_uv.ply", miningComplex, shaderProgramID);
+        PrintDrawInfo(miningComplex);
+    }
+#pragma endregion
 
     ::g_pMeshManager->setBasePath("assets/models");
 

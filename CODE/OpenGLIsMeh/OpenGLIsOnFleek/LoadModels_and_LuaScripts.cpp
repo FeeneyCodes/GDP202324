@@ -45,6 +45,35 @@ bool LoadModels(void)
 {
     LoadLuaScripts();
 
+#pragma region mining_complex
+    cMesh* pAsteroid_industrial = new cMesh();
+    pAsteroid_industrial->meshName = "asteroid_industrial_xyz_n_rgba_uv.ply";
+    ::g_vec_pMeshesToDraw.push_back(pAsteroid_industrial);
+
+    cMesh* pAsteroid_main = new cMesh();
+    pAsteroid_main->meshName = "asteroid_main_xyz_n_rgba_uv.ply";
+    ::g_vec_pMeshesToDraw.push_back(pAsteroid_main);
+
+    cMesh* pAsteroid_other = new cMesh();
+    pAsteroid_other->meshName = "asteroid_other_xyz_n_rgba_uv.ply";
+    ::g_vec_pMeshesToDraw.push_back(pAsteroid_other);
+
+    cMesh* pStuff_main_asteroid = new cMesh();
+    pStuff_main_asteroid->meshName = "stuff_main_asteroid_xyz_n_rgba_uv.ply";
+    ::g_vec_pMeshesToDraw.push_back(pStuff_main_asteroid);
+
+    for (cMesh* pCurMesh : ::g_vec_pMeshesToDraw)
+    {
+        pCurMesh->bIsVisible = true;
+//        pCurMesh->bIsWireframe = true;
+//        pCurMesh->bUseDebugColours = true;
+//        pCurMesh->wholeObjectDebugColourRGBA = glm::vec4(1.0f);
+        pCurMesh->textureName[0] = "Yellow.bmp";
+        pCurMesh->textureRatios[0] = 1.0f;
+    }
+#pragma endregion
+
+
     ::g_pDebugSphereMesh = new cMesh();
 //    ::g_pDebugSphereMesh->meshName = "Sphere_1_unit_Radius.ply";
     ::g_pDebugSphereMesh->meshName = "Sphere_1_unit_Radius_xyz_n_rgba_uv.ply";
@@ -331,47 +360,47 @@ bool LoadModels(void)
 
     int bunnyCount = 0;
 
-    for ( float x = -boxSize; x <= boxSize; x += boxStep )
-    {
-        for ( float y = -boxSize; y <= boxSize; y += boxStep )
-        {
-            for ( float z = -(2.0f * boxSize); z <= 0; z += boxStep )
-            {
-                cMesh* pBunny = new cMesh();
-//                pBunny->meshName = "bun_zipper_xyz_n_rgba_uv.ply";
-//                pBunny->meshName = "bun_zipper_res4_xyz_n_rgba_uv.ply";
-                pBunny->textureName[0] = "stickers-explosion-texture.bmp";
-                pBunny->textureRatios[0] = 1.0f;
-                pBunny->setUniformDrawScale(30.0f);
-
-                pBunny->drawPosition.x = x;
-                pBunny->drawPosition.y = y;
-                pBunny->drawPosition.z = z;
-
-
-                //bun_zipper_xyz_n_rgba_uv.ply
-                //bun_zipper_res2_xyz_n_rgba_uv.ply
-                //bun_zipper_res3_xyz_n_rgba_uv.ply
-                //bun_zipper_res4_xyz_n_rgba_uv.ply
-
-                // Add some LOD info 
-                pBunny->vecLODs.push_back(cMesh::sLODInfo("bun_zipper_res4_xyz_n_rgba_uv.ply", FLT_MAX));
-                pBunny->vecLODs.push_back(cMesh::sLODInfo("bun_zipper_res3_xyz_n_rgba_uv.ply", 200.0f));
-                pBunny->vecLODs.push_back(cMesh::sLODInfo("bun_zipper_res2_xyz_n_rgba_uv.ply", 75.0f));
-                pBunny->vecLODs.push_back(cMesh::sLODInfo("bun_zipper_xyz_n_rgba_uv.ply", 25.0f));
-
-
-                std::stringstream ssName;
-                ssName << "Bunny_" << (int)x << "_" << (int)y << "_" << (int)z;
-                pBunny->friendlyName = ssName.str();
-
-                g_vec_pMeshesToDraw.push_back(pBunny);
-
-                bunnyCount++;
-            }
-        }
-
-    }
+//    for ( float x = -boxSize; x <= boxSize; x += boxStep )
+//    {
+//        for ( float y = -boxSize; y <= boxSize; y += boxStep )
+//        {
+//            for ( float z = -(2.0f * boxSize); z <= 0; z += boxStep )
+//            {
+//                cMesh* pBunny = new cMesh();
+////                pBunny->meshName = "bun_zipper_xyz_n_rgba_uv.ply";
+////                pBunny->meshName = "bun_zipper_res4_xyz_n_rgba_uv.ply";
+//                pBunny->textureName[0] = "stickers-explosion-texture.bmp";
+//                pBunny->textureRatios[0] = 1.0f;
+//                pBunny->setUniformDrawScale(30.0f);
+//
+//                pBunny->drawPosition.x = x;
+//                pBunny->drawPosition.y = y;
+//                pBunny->drawPosition.z = z;
+//
+//
+//                //bun_zipper_xyz_n_rgba_uv.ply
+//                //bun_zipper_res2_xyz_n_rgba_uv.ply
+//                //bun_zipper_res3_xyz_n_rgba_uv.ply
+//                //bun_zipper_res4_xyz_n_rgba_uv.ply
+//
+//                // Add some LOD info 
+//                pBunny->vecLODs.push_back(cMesh::sLODInfo("bun_zipper_res4_xyz_n_rgba_uv.ply", FLT_MAX));
+//                pBunny->vecLODs.push_back(cMesh::sLODInfo("bun_zipper_res3_xyz_n_rgba_uv.ply", 200.0f));
+//                pBunny->vecLODs.push_back(cMesh::sLODInfo("bun_zipper_res2_xyz_n_rgba_uv.ply", 75.0f));
+//                pBunny->vecLODs.push_back(cMesh::sLODInfo("bun_zipper_xyz_n_rgba_uv.ply", 25.0f));
+//
+//
+//                std::stringstream ssName;
+//                ssName << "Bunny_" << (int)x << "_" << (int)y << "_" << (int)z;
+//                pBunny->friendlyName = ssName.str();
+//
+//                g_vec_pMeshesToDraw.push_back(pBunny);
+//
+//                bunnyCount++;
+//            }
+//        }
+//
+//    }
 
     std::cout << "Bunny count = " << bunnyCount << std::endl;
 
