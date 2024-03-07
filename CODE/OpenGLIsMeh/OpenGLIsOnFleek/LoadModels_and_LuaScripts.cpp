@@ -7,6 +7,7 @@
 #include "cParticleSystem.h"
 #include <sstream>
 #include <iostream>
+#include <fstream>
 
 extern std::vector< cMesh* > g_vec_pMeshesToDraw;
 //extern std::vector< sPhsyicsProperties* > g_vec_pPhysicalProps;
@@ -46,33 +47,114 @@ bool LoadModels(void)
     LoadLuaScripts();
 
 #pragma region mining_complex
-    cMesh* pAsteroid_industrial = new cMesh();
-    pAsteroid_industrial->meshName = "asteroid_industrial_xyz_n_rgba_uv.ply";
-    ::g_vec_pMeshesToDraw.push_back(pAsteroid_industrial);
-
-    cMesh* pAsteroid_main = new cMesh();
-    pAsteroid_main->meshName = "asteroid_main_xyz_n_rgba_uv.ply";
-    ::g_vec_pMeshesToDraw.push_back(pAsteroid_main);
-
-    cMesh* pAsteroid_other = new cMesh();
-    pAsteroid_other->meshName = "asteroid_other_xyz_n_rgba_uv.ply";
-    ::g_vec_pMeshesToDraw.push_back(pAsteroid_other);
-
-    cMesh* pStuff_main_asteroid = new cMesh();
-    pStuff_main_asteroid->meshName = "stuff_main_asteroid_xyz_n_rgba_uv.ply";
-    ::g_vec_pMeshesToDraw.push_back(pStuff_main_asteroid);
-
-    for (cMesh* pCurMesh : ::g_vec_pMeshesToDraw)
-    {
-        pCurMesh->bIsVisible = true;
-//        pCurMesh->bIsWireframe = true;
-//        pCurMesh->bUseDebugColours = true;
-//        pCurMesh->wholeObjectDebugColourRGBA = glm::vec4(1.0f);
-        pCurMesh->textureName[0] = "Yellow.bmp";
-        pCurMesh->textureRatios[0] = 1.0f;
-    }
+//    cMesh* pAsteroid_industrial = new cMesh();
+//    pAsteroid_industrial->meshName = "asteroid_industrial_xyz_n_rgba_uv.ply";
+//    ::g_vec_pMeshesToDraw.push_back(pAsteroid_industrial);
+//
+//    cMesh* pAsteroid_main = new cMesh();
+//    pAsteroid_main->meshName = "asteroid_main_xyz_n_rgba_uv.ply";
+//    ::g_vec_pMeshesToDraw.push_back(pAsteroid_main);
+//
+//    cMesh* pAsteroid_other = new cMesh();
+//    pAsteroid_other->meshName = "asteroid_other_xyz_n_rgba_uv.ply";
+//    ::g_vec_pMeshesToDraw.push_back(pAsteroid_other);
+//
+//    cMesh* pStuff_main_asteroid = new cMesh();
+//    pStuff_main_asteroid->meshName = "stuff_main_asteroid_xyz_n_rgba_uv.ply";
+//    ::g_vec_pMeshesToDraw.push_back(pStuff_main_asteroid);
+//
+//    for (cMesh* pCurMesh : ::g_vec_pMeshesToDraw)
+//    {
+//        pCurMesh->bIsVisible = true;
+////        pCurMesh->bIsWireframe = true;
+////        pCurMesh->bUseDebugColours = true;
+////        pCurMesh->wholeObjectDebugColourRGBA = glm::vec4(1.0f);
+//        pCurMesh->textureName[0] = "Yellow.bmp";
+//        pCurMesh->textureRatios[0] = 1.0f;
+//    }
 #pragma endregion
 
+    // Load the test dungeon
+#pragma region Load_test_dungeon
+
+    std::ifstream dungeonFile("assets/models/The Dark Labyrinth of Himundua the Lunatic 01 (cleaned).tsv");
+    if ( dungeonFile.is_open() )
+    {
+        std::cout << "Generating dungeon...";
+
+        // Scan to 2nd DUNGEON_BEGIN
+        std::string token;
+        while ( dungeonFile >> token )
+        {
+            if (token == "DUNGEON_BEGIN") break;
+        }
+        while ( dungeonFile >> token )
+        {
+            if (token == "DUNGEON_BEGIN") break;
+        }
+
+        std::vector< std::string > vecDungeon;
+        while ( dungeonFile >> token )
+        {
+            if ( token == "DUNGEON_END" )
+            {
+                break;
+            }
+            vecDungeon.push_back(token);
+//            std::cout << token << std::endl;
+        }
+
+        unsigned int numRows = (unsigned int)vecDungeon.size();
+        unsigned int numCols = (unsigned int)vecDungeon[0].size();
+
+        std::cout << "Dungeon is " << numRows + 1 << " (columns) x " << numCols + 1 << " (rows)" << std::endl;
+
+        float cellSize = 1.0f;
+        float xOffset = (-cellSize * numCols) / 2.0f;
+        float yOffset = (-cellSize * numRows) / 2.0f;
+
+        for ( unsigned int rowIndex = 0; rowIndex < numRows; rowIndex++ )
+        {
+            for ( unsigned int colIndex = 0; colIndex < numCols; colIndex++ )
+            {
+                char cell = (char)vecDungeon[rowIndex][colIndex];
+
+                cMesh* pCell = new cMesh();
+
+                pCell->drawPosition.x = xOffset + (colIndex * cellSize);
+                pCell->drawPosition.y = yOffset + (rowIndex * cellSize);
+                pCell->drawPosition.z = -50.0f;
+
+                pCell->setUniformDrawScale(cellSize);
+
+                pCell->bIsVisible = true;
+                pCell->bUseDebugColours = true;
+
+                switch ( cell )
+                {
+                case '.':   // It's a floor, Jim
+                    pCell->meshName = "Flat_1x1_units.ply";
+                    pCell->drawPosition.z -= (cellSize / 2.0f);
+                    pCell->setDrawOrientation(glm::vec3(glm::radians(90.0f), 0.0f, 0.0f));
+                    pCell->wholeObjectDebugColourRGBA = glm::vec4(0.0f, 1.0f, 0.0f, 1.0f);
+                    ::g_vec_pMeshesToDraw.push_back(pCell);
+                    break;
+                case 'X':
+                    pCell->meshName = "Cube_1x1x1_xyz_n_rgba.ply";
+                    pCell->wholeObjectDebugColourRGBA = glm::vec4(0.0f, 0.0f, 1.0f, 1.0f);
+                    ::g_vec_pMeshesToDraw.push_back(pCell);
+                    break;  // It's a wall, Jim
+                default:
+                    // WTF, Jim?
+                    std::cout << "Error: unexpected cell character at row: " << rowIndex << ", column: " << colIndex << std::endl;
+                    delete pCell;
+                }
+            }//for ( unsigned int colIndex
+        }//for ( unsigned int rowIndex
+    }//if ( dungeonFile.is_open() )
+
+
+#pragma endregion
 
     ::g_pDebugSphereMesh = new cMesh();
 //    ::g_pDebugSphereMesh->meshName = "Sphere_1_unit_Radius.ply";

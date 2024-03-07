@@ -58,6 +58,12 @@
     <Filter Include="FBO">
       <UniqueIdentifier>{862162fc-f62f-4d53-adff-9323571c3ce0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Persist">
+      <UniqueIdentifier>{f02fe718-48fb-43f1-a972-fa9250b9c95b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Physics_Stuff\PhysX">
+      <UniqueIdentifier>{9a5b3cf9-1321-4aa4-ae99-3503f74254d3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="theMain.cpp">

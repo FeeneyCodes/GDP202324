@@ -411,21 +411,30 @@ int main(void)
     ::g_pMeshManager = new cVAOManager();
 
 #pragma region mining_complex
-    {
-        sModelDrawInfo miningComplex;
-        ::g_pMeshManager->setBasePath("assets/models/42IsisMiningComplex");
-        ::g_pMeshManager->LoadModelIntoVAO("asteroid_industrial_xyz_n_rgba_uv.ply", miningComplex, shaderProgramID);
-        PrintDrawInfo(miningComplex);
-        ::g_pMeshManager->LoadModelIntoVAO("asteroid_main_xyz_n_rgba_uv.ply", miningComplex, shaderProgramID);
-        PrintDrawInfo(miningComplex);
-        ::g_pMeshManager->LoadModelIntoVAO("asteroid_other_xyz_n_rgba_uv.ply", miningComplex, shaderProgramID);
-        PrintDrawInfo(miningComplex);
-        ::g_pMeshManager->LoadModelIntoVAO("stuff_main_asteroid_xyz_n_rgba_uv.ply", miningComplex, shaderProgramID);
-        PrintDrawInfo(miningComplex);
-    }
+//     {
+//        sModelDrawInfo miningComplex;
+//        ::g_pMeshManager->setBasePath("assets/models/42IsisMiningComplex");
+//        ::g_pMeshManager->LoadModelIntoVAO("asteroid_industrial_xyz_n_rgba_uv.ply", miningComplex, shaderProgramID);
+//        PrintDrawInfo(miningComplex);
+//        ::g_pMeshManager->LoadModelIntoVAO("asteroid_main_xyz_n_rgba_uv.ply", miningComplex, shaderProgramID);
+//        PrintDrawInfo(miningComplex);
+//        ::g_pMeshManager->LoadModelIntoVAO("asteroid_other_xyz_n_rgba_uv.ply", miningComplex, shaderProgramID);
+//        PrintDrawInfo(miningComplex);
+//        ::g_pMeshManager->LoadModelIntoVAO("stuff_main_asteroid_xyz_n_rgba_uv.ply", miningComplex, shaderProgramID);
+//        PrintDrawInfo(miningComplex);
+//    }
 #pragma endregion
 
-    ::g_pMeshManager->setBasePath("assets/models");
+    {
+        ::g_pMeshManager->setBasePath("assets/models");
+        sModelDrawInfo flatPlane;
+        ::g_pMeshManager->LoadModelIntoVAO("Flat_1x1_units.ply", flatPlane, shaderProgramID);
+        PrintDrawInfo(flatPlane);
+        sModelDrawInfo cubeMesh;
+        ::g_pMeshManager->LoadModelIntoVAO("Cube_1x1x1_xyz_n_rgba.ply", cubeMesh, shaderProgramID);
+        PrintDrawInfo(cubeMesh);
+    }
+
 
     // START OF: FOR THE SOFT BODY OBJECTS
     sModelDrawInfo bunnyDrawingInfo;
