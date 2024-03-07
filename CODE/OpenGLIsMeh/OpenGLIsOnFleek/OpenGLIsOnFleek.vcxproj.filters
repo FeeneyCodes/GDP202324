@@ -269,6 +269,9 @@
     <ClInclude Include="sSoftBodyThreadInfo.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="PhysX_header.h">
+      <Filter>Physics_Stuff\PhysX</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="assets\shaders\fragmentShader01.glsl">

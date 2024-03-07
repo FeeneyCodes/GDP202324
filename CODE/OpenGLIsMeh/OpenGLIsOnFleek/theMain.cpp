@@ -52,6 +52,9 @@
 DWORD WINAPI UpdateSoftBodyThread(LPVOID lpParameter);
 //unsigned long UpdateEntityThread( void* lpParameter );
 
+// PhyX stuff (will be moving this to a library later)
+#include "PhysX_header.h"
+
 
 // Frame Buffer Object (i.e. we render to this instead of the main screen)
 #include "FBO/cFBO.h"
