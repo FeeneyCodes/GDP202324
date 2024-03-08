@@ -1,6 +1,6 @@
 You'll find the PhyX files on FOL, in the content area of the "Phsyics & Simualation 2" course. 
 
-You'll need the "include" and the "bin" (i.e. library) folders (and the "snippets" folder if you want to see the examples).&nbsp;
+You'll need the "include" and the "bin" (i.e. library) folders (and the "snippets" folder if you want to see the examples).
 
 BUT the bin (library) folder is around 2.5 GIGA-bytes in size, so I won't be placing that on github.
 

@@ -1,0 +1,15 @@
+ Volume in drive C is OS
+ Volume Serial Number is 8C62-3D9B
+
+ Directory of C:\PhysX (git)\PhysX\physx\bin\win.x86_64.vc143.mt\release
+
+2024-02-06  11:54 AM           257,536 freeglut.dll
+2024-02-09  10:28 AM         2,242,048 PhysXCommon_64.dll
+2024-02-09  10:28 AM           200,704 PhysXCooking_64.dll
+2023-10-11  07:07 AM           712,744 PhysXDevice64.dll
+2024-02-09  10:27 AM           269,824 PhysXFoundation_64.dll
+2023-12-08  09:30 AM       236,846,104 PhysXGpu_64.dll
+2024-02-09  10:28 AM         2,107,904 PhysX_64.dll
+2024-02-09  10:27 AM           516,608 PVDRuntime_64.dll
+               8 File(s)    243,153,472 bytes
+               0 Dir(s)  66,518,241,280 bytes free

@@ -1,0 +1,25 @@
+ Volume in drive C is OS
+ Volume Serial Number is 8C62-3D9B
+
+ Directory of C:\PhysX (git)\PhysX\physx\bin\win.x86_64.vc143.mt\release
+
+2024-02-09  10:27 AM         1,702,490 LowLevelAABB_static_64.lib
+2024-02-09  10:27 AM         6,286,766 LowLevelDynamics_static_64.lib
+2024-02-09  10:27 AM         2,426,160 LowLevel_static_64.lib
+2024-02-09  10:27 AM         1,333,564 PhysXCharacterKinematic_static_64.lib
+2024-02-09  10:28 AM           297,020 PhysXCommon_64.lib
+2024-02-09  10:28 AM            19,994 PhysXCooking_64.lib
+2024-02-09  10:28 AM        17,236,902 PhysXExtensions_static_64.lib
+2024-02-09  10:27 AM            57,040 PhysXFoundation_64.lib
+2024-02-09  10:27 AM         2,063,526 PhysXPvdSDK_static_64.lib
+2024-02-09  10:27 AM           104,930 PhysXTask_static_64.lib
+2024-02-09  10:28 AM         1,163,720 PhysXVehicle2_static_64.lib
+2024-02-09  10:28 AM         5,818,402 PhysXVehicle_static_64.lib
+2024-02-09  10:28 AM            72,010 PhysX_64.lib
+2024-02-09  10:27 AM             4,200 PVDRuntime_64.lib
+2024-02-09  10:27 AM           921,910 SceneQuery_static_64.lib
+2024-02-09  10:27 AM        10,558,542 SimulationController_static_64.lib
+2024-02-09  10:42 AM         2,740,990 SnippetRender_static_64.lib
+2024-02-09  10:27 AM           111,194 SnippetUtils_static_64.lib
+              18 File(s)     52,919,360 bytes
+               0 Dir(s)  66,910,957,568 bytes free

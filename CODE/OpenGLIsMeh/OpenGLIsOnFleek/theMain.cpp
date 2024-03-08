@@ -53,7 +53,7 @@ DWORD WINAPI UpdateSoftBodyThread(LPVOID lpParameter);
 //unsigned long UpdateEntityThread( void* lpParameter );
 
 // PhyX stuff (will be moving this to a library later)
-#include "PhysX_header.h"
+#include "../PhysXWrap/cPhysXWrap.h"
 
 
 // Frame Buffer Object (i.e. we render to this instead of the main screen)
@@ -112,6 +112,8 @@ std::vector< cMesh* > g_vec_pMeshesToDraw;
 //std::vector< sPhsyicsProperties* > g_vec_pPhysicalProps;
 cPhysics* g_pPhysics = NULL;
 
+// The PhysX wrapper object
+cPhysXWrap* g_pPhysX = NULL;
 
 // Returns NULL if not found
 cMesh* g_pFindMeshByFriendlyName(std::string friendlyNameToFind);
@@ -313,6 +315,11 @@ void PrintDrawInfo(sModelDrawInfo& drawInfo)
 int main(void)
 {
     TestSort();
+
+
+    ::g_pPhysX = new cPhysXWrap();
+
+
 
     cMesh bob;
 

@@ -4,6 +4,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 17.7.34018.315
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OpenGLIsOnFleek", "OpenGLIsOnFleek\OpenGLIsOnFleek.vcxproj", "{FAAB37A9-C81F-4E91-B817-0F65BA453C41}"
+	ProjectSection(ProjectDependencies) = postProject
+		{76D00911-3ECC-45A2-B4AE-D084D11E4CE4} = {76D00911-3ECC-45A2-B4AE-D084D11E4CE4}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PhysXWrap", "PhysXWrap\PhysXWrap.vcxproj", "{76D00911-3ECC-45A2-B4AE-D084D11E4CE4}"
 EndProject
