@@ -319,7 +319,9 @@ int main(void)
 
     ::g_pPhysX = new cPhysXWrap();
 
+    ::g_pPhysX->initPhysics(true, "127.0.0.1");
 
+    ::g_pPhysX->update();
 
     cMesh bob;
 
@@ -814,6 +816,11 @@ int main(void)
     while (!glfwWindowShouldClose(window))
     {
 
+        // Update PhysX...
+        ::g_pPhysX->update();
+
+
+
 // STARTOF: Pass #1   
         // Draw original scene
 
@@ -1027,6 +1034,8 @@ int main(void)
     }
 
     // Delete everything
+
+    ::g_pPhysX->cleanupPhysics(true);
 
 
     glfwDestroyWindow(window);

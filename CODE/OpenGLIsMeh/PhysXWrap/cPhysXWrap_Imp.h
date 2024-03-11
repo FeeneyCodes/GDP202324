@@ -14,6 +14,8 @@ public:
 	void initPhysics(bool interactive, std::string PVD_Host_Address);
 	void cleanupPhysics(bool interactive);
 
+	void update(void);
+
 private:
 
 };

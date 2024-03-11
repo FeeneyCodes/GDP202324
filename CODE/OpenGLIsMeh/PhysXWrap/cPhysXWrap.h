@@ -16,6 +16,8 @@ public:
 	void initPhysics(bool interactive, std::string PVD_Host_Address = "127.0.0.1");
 	void cleanupPhysics(bool interactive);
 
+	void update(void);
+
 private:
 	cPhysXWrap_Imp* m_pImp = nullptr;
 };

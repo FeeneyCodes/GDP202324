@@ -25,6 +25,12 @@ void cPhysXWrap::initPhysics(bool interactive, std::string PVD_Host_Address /*= 
 	return;
 }
 
+void cPhysXWrap::update(void)
+{
+	this->m_pImp->update();
+	return;
+}
+
 void cPhysXWrap::cleanupPhysics(bool interactive)
 {
 	this->m_pImp->cleanupPhysics(interactive);

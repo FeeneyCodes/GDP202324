@@ -39,6 +39,10 @@ public:
 	bool textureIsFromFBO = false;
 	unsigned int FBOTextureNumber = 0;
 
+//	pThePhysXMesh* pPhysXObjectIMatchUpWith;
+//	unsigned int PhysX_UniqueID;
+//
+//	PxRigidActor* pOPhysicObject;
 
 	std::string meshName;
 
