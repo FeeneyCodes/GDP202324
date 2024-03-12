@@ -30,20 +30,8 @@ uniform bool bDoNotLight;		// Really a float (0.0 or not zero)
 
 uniform vec4 eyeLocation;
 
-
-//uniform bool bUseDebugColour;	// if this is true, then use debugColourRGBA for the colour
-//uniform vec4 debugColourRGBA;	
-
-layout (std140) uniform debugSettingsBlockNUB
-{
-	bool bUseDebugColour;	// if this is true, then use debugColourRGBA for the colour
-	// float
-	// float
-	// float
-	vec4 debugColourRGBA;	
-} debugDrawSettings;
-
-
+uniform bool bUseDebugColour;	// if this is true, then use debugColourRGBA for the colour
+uniform vec4 debugColourRGBA;		
 
 // If FALSE, we use the texture colour as the vertex colour
 // (NOT the one from the model file)
@@ -126,8 +114,7 @@ vec3 BasicBlurScreen();
 vec3 BlurScreen(int pixelOffset);
 vec3 BlurScreenFaster(int pixelOffset);
 
-uniform vec4 theColours[100];
-uniform mat4 theBones[100];
+
 
 void main()
 {
@@ -239,11 +226,9 @@ void main()
 		vertexRGBA = fColour;
 	}
 	
-//	if ( bUseDebugColour )
-	if ( debugDrawSettings.bUseDebugColour )
+	if ( bUseDebugColour )
 	{	
-//		vertexRGBA = debugColourRGBA;
-		vertexRGBA = debugDrawSettings.debugColourRGBA;
+		vertexRGBA = debugColourRGBA;
 	}
 	
 	if ( bDoNotLight )

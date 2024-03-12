@@ -163,6 +163,7 @@
     <ClCompile Include="cSoftBodyVerlet.cpp" />
     <ClCompile Include="cVAOManager\cVAOManager.cpp" />
     <ClCompile Include="cVAOManager\sModelDrawInfo.cpp" />
+    <ClCompile Include="DrawObject.cpp" />
     <ClCompile Include="FBO\cFBO.cpp" />
     <ClCompile Include="glad.c" />
     <ClCompile Include="GLFW_Callbacks.cpp" />

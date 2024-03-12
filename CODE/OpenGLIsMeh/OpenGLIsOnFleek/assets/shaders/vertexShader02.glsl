@@ -25,14 +25,6 @@ out vec4 gVertexWorldPos;
 out vec4 gVertexWorldNormal;
 out vec2 gTextureCoords;		// ADDED
 
-out gOutput
-{
-	vec4 Colour;
-	vec4 VertexWorldPos;	
-	vec4 VertexWorldNormal;
-	vec2 TextureCoords;		// ADDED
-};
-
 uniform bool bUseHeightMap;
 uniform sampler2D heightMapSampler;		// Texture unit 20
 uniform float heightScale;
