@@ -35,7 +35,7 @@ struct sDebugSettingNUB
 {
     // vec4
     bool bUseDebugColour;       // vec4   x
-//    float padding_discard[3];   //        y, x, w
+    float padding_discard[3];   //        y, x, w
 
     // vec4
     glm::vec4 debugColourRGBA;  // vec4 

@@ -146,6 +146,7 @@
     <ClCompile Include="cCommand_MoveTo.cpp" />
     <ClCompile Include="cEvilLuaRobot.cpp" />
     <ClCompile Include="cHiResTimer.cpp" />
+    <ClCompile Include="cLightManager_NUB.cpp" />
     <ClCompile Include="cParticleSystem.cpp" />
     <ClCompile Include="cPhysics_AABB_Subdivide.cpp" />
     <ClCompile Include="Basic Shader Manager\cShader.cpp" />

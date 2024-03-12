@@ -365,6 +365,20 @@ int main(void)
     gladLoadGLLoader( (GLADloadproc)glfwGetProcAddress);
     glfwSwapInterval(1);
 
+    // GL_MAX_UNIFORM_BUFFER_BINDINGS
+    //  The maximum number of uniform buffer binding points on the context, which must be at least 36.
+    GLint max_uniform_buffer_bindings = 0;
+    glGetIntegerv(GL_MAX_UNIFORM_BUFFER_BINDINGS, &max_uniform_buffer_bindings);
+    std::cout << "GL_MAX_UNIFORM_BUFFER_BINDINGS = " << max_uniform_buffer_bindings << std::endl;
+
+    // GL_MAX_UNIFORM_BLOCK_SIZE
+    //  data returns one value, the maximum size in basic machine units of a uniform block, 
+    //  which must be at least 16384.
+    GLint max_uniform_block_size_bytes = 0;
+    glGetIntegerv(GL_MAX_UNIFORM_BLOCK_SIZE, &max_uniform_block_size_bytes);
+    std::cout << "GL_MAX_UNIFORM_BLOCK_SIZE = " << max_uniform_block_size_bytes << std::endl;
+
+
 //    glShaderSource(GLuint shader, GLsizei count, const GLchar** string, const GLint* length);
 //    FARPROC gl_glShaderSourceFucntion = GetProcAddress(NULL, "glShaderSource");
 //    gl_glShaderSourceFucntion(...);
@@ -794,6 +808,16 @@ int main(void)
     ::g_pTheLights = new cLightManager();
     // 
     ::g_pTheLights->SetUniformLocations(shaderProgramID);
+
+    // Init the NUB
+    if ( ::g_pTheLights->SetUpLightNUB(shaderProgramID) )
+    {
+        std::cout << "Light manager NUB set up OK" << std::endl;
+    }
+    else
+    {
+        std::cout << "Error: Couldn't set up the light NUB." << std::endl;
+    }
 
     ::g_pTheLights->theLights[0].param2.x = 1.0f;   // Turn on
     ::g_pTheLights->theLights[0].param1.x = 0.0f;   // 0 = point light
@@ -1276,6 +1300,9 @@ void DrawPass_2(GLuint shaderProgramID, GLFWwindow* pWindow,
 
     ::g_pTheLights->UpdateUniformValues(shaderProgramID);
 
+    // Update the light information via the NUB.
+    ::g_pTheLights->UpdateLightNUB(shaderProgramID);
+
 
 // *****************************************************************
         //uniform vec4 eyeLocation;
@@ -1394,6 +1421,10 @@ void DrawPass_1(GLuint shaderProgramID,
 // *****************************************************************
 
     ::g_pTheLights->UpdateUniformValues(shaderProgramID);
+
+
+    // Update lights from NUB
+    ::g_pTheLights->UpdateLightNUB(shaderProgramID);
 
 
 // *****************************************************************
