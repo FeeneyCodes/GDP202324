@@ -8,7 +8,8 @@ cLight::cLight()
 	this->specular = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);		// White light
 
 	// x = constant, y = linear, z = quadratic, w = DistanceCutOff
-	this->atten = glm::vec4(0.5f, 0.5f, 0.5f, 1.0f);	
+	const float MAX_LIGHT_DISTANCE_CUTOFF = FLT_MAX;
+	this->atten = glm::vec4(0.5f, 0.5f, 0.5f, FLT_MAX);
 	// Spot, directional lights
 	// (Default is stright down)
 	this->direction = glm::vec4(0.0f, -1.0f, 0.0f, 1.0f);	

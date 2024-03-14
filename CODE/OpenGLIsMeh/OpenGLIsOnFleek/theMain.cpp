@@ -438,8 +438,33 @@ int main(void)
         return -1;
     }
 
+    // Original uniform caching...
+    cShaderManager::cShaderProgram* pShader01 = pShaderThing->pGetShaderProgramFromFriendlyName("shader01");
 
-//
+    //pShader01->LoadUniformLocation("bUseVertexColours");    // uniform bool bUseVertexColours;	
+    //pShader01->LoadUniformLocation("transparencyAlpha");    // uniform float transparencyAlpha;
+    //pShader01->LoadUniformLocation("texture_00");           // uniform sampler2D texture_00;			// 2D meaning x,y or s,t or u,v
+    //pShader01->LoadUniformLocation("texture_01");           // uniform sampler2D texture_01;
+    //pShader01->LoadUniformLocation("texture_02");    // uniform sampler2D texture_02;
+    //pShader01->LoadUniformLocation("texture_03");    // uniform sampler2D texture_03;
+    //pShader01->LoadUniformLocation("texture_04");    // uniform sampler2D texture_04;
+    //pShader01->LoadUniformLocation("texture_05");    // uniform sampler2D texture_05;
+    //pShader01->LoadUniformLocation("texture_06");    // uniform sampler2D texture_06;
+    //pShader01->LoadUniformLocation("texture_07");    // uniform sampler2D texture_07;
+    //pShader01->LoadUniformLocation("bUseHeightMap");        // uniform bool bUseHeightMap;
+    //pShader01->LoadUniformLocation("heightMapSampler");    // uniform sampler2D heightMapSampler;		// Texture unit 20
+    //pShader01->LoadUniformLocation("discardSampler");       // uniform sampler2D discardSampler;		// Texture unit 21
+    //pShader01->LoadUniformLocation("bIsSkyBox");            // uniform bool bIsSkyBox;
+    //pShader01->LoadUniformLocation("skyBoxTexture");        // uniform samplerCube skyBoxTexture;
+    //.. and so on...
+
+    pShader01->LoadActiveUniforms();
+
+    int skyBoxTexture_UniLoc = pShader01->getUniformID_From_Name("skyBoxTexture");
+
+
+    
+    
     GLuint shaderProgramID = pShaderThing->getIDFromFriendlyName("shader01");
 
 // Compile another shader program...
@@ -1237,6 +1262,10 @@ void DrawPass_FSQ(GLuint shaderProgramID, GLFWwindow* pWindow,
     glUniform2f(screenWidthAndHeight_UL, 
                 (GLfloat)screenWidth, 
                 (GLfloat)screenHeight);
+
+
+//   glUniform1f(pShader01->getUniformID_From_Name("screenWidthAndHeight"), (GLfloat)screenWidth, (GLfloat)screenHeight));
+
 
 
     // Point the FBO from the 1st pass to this texture...

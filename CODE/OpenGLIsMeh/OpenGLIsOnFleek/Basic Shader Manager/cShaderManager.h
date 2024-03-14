@@ -45,6 +45,13 @@ public:
 		// Look up the uniform location and save it.
 		bool LoadUniformLocation(std::string variableName);
 
+		// Will call glGetActiveUniform(), etc.
+		bool LoadActiveUniforms(void);
+
+		// Translates the GLenum uniform type to a human readable string
+		// GL_FLOAT, GL_FLOAT_VEC2, GL_DOUBLE, etc.
+		// typedef unsigned int GLenum;
+		std::string getTypeFromGLenum(unsigned int typeEnum);
 	};
 
 	cShaderManager();

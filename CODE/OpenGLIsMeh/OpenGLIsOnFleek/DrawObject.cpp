@@ -296,6 +296,7 @@ void DrawObject(cMesh* pCurrentMesh, glm::mat4 matModelParent, GLuint shaderProg
     {
         GLint bUseDiscardMaskTexture_UL = glGetUniformLocation(shaderProgramID, "bUseDiscardMaskTexture");
 
+
         // uniform bool bUseHeightMap;
 //        if ( pCurrentMesh->friendlyName == "Ground" )
 //        {

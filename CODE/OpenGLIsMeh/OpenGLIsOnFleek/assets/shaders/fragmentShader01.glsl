@@ -85,6 +85,8 @@ uniform vec2 screenWidthAndHeight;	// x is width
 uniform vec4 textureMixRatio_0_3;		// 1, 0, 0, 0 
 uniform vec4 textureMixRatio_4_7;
 
+//uniform vec4 hackExampleArray[2];
+
 //uniform samplerCube skyBox;
 
 struct sLight
@@ -120,6 +122,21 @@ layout (std140) uniform lightDataNUB
 } lightInfo;
 
 
+// Really common to separate the Uniform Blocks into 3 (or more) frequencies
+
+//	layout (std140) uniform NUM_PerScene ...
+//		- Projection matrix
+//		- Skybox texture
+//
+//	layout (std140) uniform NUM_PerFrame ...
+//		- Camera eye
+//		- Lighting 
+//		- view matrix (camera)
+//
+//	layout (std140) uniform NUM_PerObject ...
+// 		- Model matrix
+//		- some textures
+//		- per object material stuff
 
 
 vec4 calculateLightContrib( vec3 vertexMaterialColour, vec3 vertexNormal, 
@@ -189,6 +206,8 @@ void main()
 //		outputColour.rgb = BlurScreenFaster(5);
 		
 		outputColour.rgb = getFBOColour();
+		
+//		outputColour.rgb += hackExampleArray[0].rgb + hackExampleArray[1].rgb;
 						   
 		outputColour.a = 1.0f;
 		return;
@@ -501,6 +520,19 @@ vec4 calculateLightContrib( vec3 vertexMaterialColour, vec3 vertexNormal,
 //		vec3 vLightToVertex = theLights[index].position.xyz - vertexWorldPos.xyz;
 		vec3 vLightToVertex = lightInfo.theLights[index].position.xyz - vertexWorldPos.xyz;
 		float distanceToLight = length(vLightToVertex);	
+		
+		// If you are using a LOT of small lights, you can also use 
+		//	the distance cut off to avoid doing pointless calculations on lights
+		//	that have no (or little) impact on this vertex
+		float lightDistanceCutoff = lightInfo.theLights[index].atten.w;
+		if ( distanceToLight >= lightDistanceCutoff )
+		{
+			// Skip this light
+			continue;
+		}
+		
+		
+		
 		vec3 lightVector = normalize(vLightToVertex);
 		float dotProduct = dot(lightVector, vertexNormal.xyz);	 
 		
