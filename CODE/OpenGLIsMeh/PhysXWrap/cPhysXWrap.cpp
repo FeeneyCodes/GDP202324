@@ -3,6 +3,8 @@
 
 #include "cPhysXWrap.h"
 
+// For PIMPL pattern, this include is ONLY in the CPP file
+// (not in the header)
 #include "cPhysXWrap_Imp.h"
 
 cPhysXWrap::cPhysXWrap()
@@ -15,6 +17,20 @@ cPhysXWrap::~cPhysXWrap()
 {
 	delete this->m_pImp;
 }
+
+// HACK: Remove this later
+void cPhysXWrap::HACK_ShootBall(void)
+{
+	this->m_pImp->HACK_ShootBall();
+	return;
+}
+
+void cPhysXWrap::getSceneActors(std::vector<cPhysicsObjectTypes> &vecPhysActors)
+{
+	this->m_pImp->getSceneActors(vecPhysActors);
+	return;
+}
+
 
 
 void cPhysXWrap::initPhysics(bool interactive, std::string PVD_Host_Address /*= "127.0.0.1"*/)

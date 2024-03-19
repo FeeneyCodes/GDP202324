@@ -84,6 +84,8 @@ cVAOManager* g_pMeshManager = NULL;
 cBasicTextureManager* g_pTextureManager = NULL;
 
 cMesh* g_pDebugSphereMesh = NULL;
+cMesh* g_pDebugCubeMesh = NULL;
+
 // Used by g_DrawDebugSphere()
 GLuint g_DebugSphereMesh_shaderProgramID = 0;
 
@@ -769,27 +771,27 @@ int main(void)
         }
     }
 
-    // Spawn thread to handle the soft body
-    sSoftBodyThreadInfo SBIParams;
-    SBIParams.p_theSoftBody = &::g_SoftBody;
-    SBIParams.desiredUpdateTime = 1.0 / 60.0;   // 60FPS
-    SBIParams.bIsAlive = true;
-
-    // Maybe set this to false and right before the while, set it to true
-    SBIParams.bRun = true;
-
-    sSoftBodyThreadInfo* pSBI = &SBIParams;
-
-    DWORD ThreadId = 0;
-    HANDLE threadHandle = 0;
-    threadHandle = CreateThread(
-        NULL,					// lpThreadAttributes,
-        0,						// dwStackSize,
-        UpdateSoftBodyThread,		// lpStartAddress,
-        (void*)pSBI,				//  lpParameter,
-        0,						// dwCreationFlags (0 or CREATE_SUSPENDED)
-        &ThreadId); // lpThreadId
-
+//    // Spawn thread to handle the soft body
+//    sSoftBodyThreadInfo SBIParams;
+//    SBIParams.p_theSoftBody = &::g_SoftBody;
+//    SBIParams.desiredUpdateTime = 1.0 / 60.0;   // 60FPS
+//    SBIParams.bIsAlive = true;
+//
+//    // Maybe set this to false and right before the while, set it to true
+//    SBIParams.bRun = true;
+//
+//    sSoftBodyThreadInfo* pSBI = &SBIParams;
+//
+//    DWORD ThreadId = 0;
+//    HANDLE threadHandle = 0;
+//    threadHandle = CreateThread(
+//        NULL,					// lpThreadAttributes,
+//        0,						// dwStackSize,
+//        UpdateSoftBodyThread,		// lpStartAddress,
+//        (void*)pSBI,				//  lpParameter,
+//        0,						// dwCreationFlags (0 or CREATE_SUSPENDED)
+//        &ThreadId); // lpThreadId
+//
 
     // And a squishy wheel
     sModelDrawInfo wheelDrawInfo;
@@ -916,8 +918,7 @@ int main(void)
     while (!glfwWindowShouldClose(window))
     {
 
-        // Update PhysX...
-        ::g_pPhysX->update();
+
 
 
         // Example of updating an array of uniforms:
@@ -958,7 +959,7 @@ int main(void)
 //            glfwGetFramebufferSize(window, &width, &height);
 //            ratio = width / (float)height;
             ratio = ::g_pFBO_1->width / (float)::g_pFBO_1->height;
-            glViewport(0, 0, ::g_pFBO_1->width, (float)::g_pFBO_1->height);
+            glViewport(0, 0, ::g_pFBO_1->width, ::g_pFBO_1->height);
 
 //            glViewport(0, 0, width, height);
 //            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -1051,6 +1052,81 @@ int main(void)
            ::g_Wheel.vec_pParticles[167]->position.y = heightOfWheelOverGround;
         }
         
+
+        // Draw what's being simulated in the PhyX world
+
+        ::g_pPhysX->update();
+        
+        std::vector<cPhysicsObjectTypes> vecPhysShapes;
+        ::g_pPhysX->getSceneActors(vecPhysShapes);
+
+        // Go through this list of objects and draw them in the scene
+        for (const cPhysicsObjectTypes &shape : vecPhysShapes )
+        {
+            //extern cMesh* g_pDebugSphereMesh;
+            //extern cMesh* g_pDebugCubeMesh;
+            
+            switch ( shape.shapeType )
+            {
+            case cPhysicsObjectTypes::BOX:
+                {
+                    glm::vec4 half_extents = shape.map_ParamToValue.find("half-extents")->second;
+
+                    ::g_pDebugCubeMesh->ResetOrientationAndOrigin();
+
+                    bool bOldWireFrame = ::g_pDebugCubeMesh->bIsWireframe;
+                    bool bOldDoNotLight = ::g_pDebugCubeMesh->bDoNotLight;
+                    glm::vec3 oldScale = ::g_pDebugCubeMesh->drawScale;
+
+                    ::g_pDebugCubeMesh->bIsWireframe = false;
+                    ::g_pDebugCubeMesh->bDoNotLight = false;
+                    ::g_pDebugCubeMesh->textureName[0] = "SpidermanUV_square.bmp";
+                    ::g_pDebugCubeMesh->textureRatios[0] = 1.0f;
+
+                    ::g_pDebugCubeMesh->drawScale.x = half_extents.x * 2.0f;
+                    ::g_pDebugCubeMesh->drawScale.y = half_extents.y * 2.0f;
+                    ::g_pDebugCubeMesh->drawScale.z = half_extents.z * 2.0f;
+
+                    DrawObject(::g_pDebugCubeMesh, shape.matModel, shaderProgramID);
+
+                    ::g_pDebugCubeMesh->bIsWireframe = bOldWireFrame;
+                    ::g_pDebugCubeMesh->bDoNotLight = bOldDoNotLight;
+                    ::g_pDebugCubeMesh->drawScale = oldScale;
+
+                }
+                break;
+
+            case cPhysicsObjectTypes::SPHERE:
+                {
+                    glm::vec4 radius = shape.map_ParamToValue.find("radius")->second;
+
+                    ::g_pDebugSphereMesh->ResetOrientationAndOrigin();
+
+                    ::g_pDebugSphereMesh->setUniformDrawScale(radius.x);
+
+                    bool bOldWireFrame = ::g_pDebugSphereMesh->bIsWireframe;
+                    bool bOldDoNotLight = ::g_pDebugSphereMesh->bDoNotLight;
+                    glm::vec3 oldScale = ::g_pDebugSphereMesh->drawScale;
+
+
+                    ::g_pDebugSphereMesh->bIsWireframe = false;
+                    ::g_pDebugSphereMesh->bDoNotLight = false;
+                    ::g_pDebugSphereMesh->textureName[0] = "Yellow.bmp";
+                    ::g_pDebugSphereMesh->textureRatios[0] = 1.0f;
+
+
+                    DrawObject(::g_pDebugSphereMesh, shape.matModel, shaderProgramID);
+
+                    ::g_pDebugSphereMesh->bIsWireframe = bOldWireFrame;
+                    ::g_pDebugSphereMesh->bDoNotLight = bOldDoNotLight;
+                    ::g_pDebugSphereMesh->drawScale = oldScale;
+                }
+
+                break;
+            }
+
+        }//for (const cPhysicsObjectTypes &shape : vecPhysShapes )
+
 
         // Only a full screen quad
         {

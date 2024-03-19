@@ -47,6 +47,13 @@ unsigned int cMesh::getUniqueID(void)
 // static
 unsigned int cMesh::m_nextUniqueID = cMesh::FIRST_UNIQUE_ID;
 
+void cMesh::ResetOrientationAndOrigin(void)
+{
+	this->drawPosition = glm::vec3(0.0f);
+	this->setRotationFromEuler(glm::vec3(0.0f));
+	return;
+}
+
 
 // Destructor: Called on deletion   d'tor
 cMesh::~cMesh()

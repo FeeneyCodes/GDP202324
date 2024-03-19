@@ -11,6 +11,12 @@
 
 #include "cParticleSystem.h"
 
+
+// PhyX stuff (will be moving this to a library later)
+#include "../PhysXWrap/cPhysXWrap.h"
+// The PhysX wrapper object
+extern cPhysXWrap* g_pPhysX;
+
 extern int g_selectedMesh;// = 0;
 extern std::vector< cMesh* > g_vec_pMeshesToDraw;
 
@@ -33,6 +39,7 @@ extern cLuaBrain g_LuaBrain;
 extern cParticleSystem g_anEmitter;
 
 
+
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
@@ -45,6 +52,11 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
         ::g_anEmitter.Explode(1000, 35.0f, 50.0f);
     }
     
+    if (key == GLFW_KEY_J && action == GLFW_PRESS)
+    {
+        ::g_pPhysX->HACK_ShootBall();
+        return;
+    }
 
 
     if (key == GLFW_KEY_F10 && action)

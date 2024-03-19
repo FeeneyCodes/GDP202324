@@ -71,11 +71,11 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>C:/PhysX (git)/PhysX/physx/include;$(IncludePath)</IncludePath>
+    <IncludePath>C:/PhysX (git)/PhysX/physx/include;$(ProjectDir)include;$(IncludePath)</IncludePath>
     <LibraryPath>C:/PhysX (git)/PhysX/physx/bin/win.x86_64.vc143.mt/debug;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>C:/PhysX (git)/PhysX/physx/include;$(IncludePath)</IncludePath>
+    <IncludePath>C:/PhysX (git)/PhysX/physx/include;$(ProjectDir)include;$(IncludePath)</IncludePath>
     <LibraryPath>C:/PhysX (git)/PhysX/physx/bin/win.x86_64.vc143.mt/release;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -157,6 +157,7 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="cPhysicsObjectTypes.h" />
     <ClInclude Include="cPhysXWrap_Imp.h" />
     <ClInclude Include="cPhysXWrap.h" />
   </ItemGroup>

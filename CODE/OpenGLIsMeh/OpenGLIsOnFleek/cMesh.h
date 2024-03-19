@@ -88,6 +88,8 @@ public:
 //		this->m_qOrientation = this->m_qOrientation * qChange;
 	}
 
+	void ResetOrientationAndOrigin(void);
+
 	void Update(double deltaTime);
 	bool bNeedsUpdate = true;
 
