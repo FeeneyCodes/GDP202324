@@ -145,6 +145,7 @@
     <ClCompile Include="cCommandGroup.cpp" />
     <ClCompile Include="cCommand_MoveTo.cpp" />
     <ClCompile Include="cEvilLuaRobot.cpp" />
+    <ClCompile Include="cGLBuffer_1D.cpp" />
     <ClCompile Include="cHiResTimer.cpp" />
     <ClCompile Include="cLightManager_NUB.cpp" />
     <ClCompile Include="cParticleSystem.cpp" />
@@ -196,6 +197,7 @@
     <ClInclude Include="cCommand_MoveTo.h" />
     <ClInclude Include="cDebugRender.h" />
     <ClInclude Include="cEvilLuaRobot.h" />
+    <ClInclude Include="cGLBuffer_1D.h" />
     <ClInclude Include="cGlobal.h" />
     <ClInclude Include="cHiResTimer.h" />
     <ClInclude Include="cLightHelper.h" />
@@ -220,6 +222,7 @@
     <ClInclude Include="TextureManager\CTextureFromBMP.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="assets\shaders\compute_01.glsl" />
     <None Include="assets\shaders\fragmentShader01.glsl" />
     <None Include="assets\shaders\geometryPassThrough.glsl" />
     <None Include="assets\shaders\vertexShader01.glsl" />

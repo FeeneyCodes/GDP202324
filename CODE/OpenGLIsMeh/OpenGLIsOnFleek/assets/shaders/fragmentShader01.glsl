@@ -264,6 +264,8 @@ void main()
 		// Use model vertex colour and NOT the texture colour
 		vertexRGBA = fColour;
 	}
+	vertexRGBA.rgb *= 0.001f;
+	vertexRGBA.rgb += fColour.rgb;
 	
 //	if ( bUseDebugColour )
 	if ( debugDrawSettings.bUseDebugColour )
@@ -297,6 +299,10 @@ void main()
 	// This is where the alpha transparency happens
 //	outputColour.a = 1.0f;
 	outputColour.a = transparencyAlpha;
+	
+	
+	outputColour.rgb *= 0.001f;
+	outputColour.rgb += fColour.rgb;
 	
 	
 	// DEBUG HACK

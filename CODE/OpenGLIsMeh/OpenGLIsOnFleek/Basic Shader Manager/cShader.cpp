@@ -30,6 +30,10 @@ std::string cShaderManager::cShader::getShaderTypeString(void)
 		return "GEOMETRY_SHADER";
 		break;
 	//
+	case cShader::COMPUTE_SHADER:
+		return "COMPUTE_SHADER";
+		break;
+	//
 	case cShader::UNKNOWN:
 	default:
 		return "UNKNOWN_SHADER_TYPE";

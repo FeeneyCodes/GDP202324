@@ -38,11 +38,20 @@ uniform sampler2D heightMapSampler;		// Texture unit 20
 uniform float heightScale;
 uniform vec2 UVOffset;
 
+// Instance ID example:
+//		gl_VertexID: the index of the vertex currently being processed. 
+uniform float numVerticesInModel; 
+uniform bool bColourBasedOnVertexID;
+
+
 void main()
 {
 	vec4 vertexModelPosition = vPos;	
 
 	vec2 UVFinal = vTextureCoords.st;
+	
+
+	
 	
 	if ( bUseHeightMap )
 	{
@@ -74,7 +83,16 @@ void main()
 	
 	gVertexWorldPos = matModel * vec4( vertexModelPosition.xyz, 1.0f);
 	
-	gColour = vCol;
+	//	uniform float numVerticesInModel; 
+	if ( bColourBasedOnVertexID )
+	{
+		float theColour = float(gl_VertexID) / numVerticesInModel; 
+		gColour = vec4( theColour, theColour, theColour, 1.0f );
+	}
+	else
+	{
+		gColour = vCol;
+	}
 	
 	// Copy the UV coordinates unchanged (to the fragment shader)
 //	textureCoords = vTextureCoords;

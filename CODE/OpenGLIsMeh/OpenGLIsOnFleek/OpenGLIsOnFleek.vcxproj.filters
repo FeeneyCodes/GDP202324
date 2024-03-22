@@ -177,6 +177,9 @@
     <ClCompile Include="cLightManager_NUB.cpp">
       <Filter>Lights</Filter>
     </ClCompile>
+    <ClCompile Include="cGLBuffer_1D.cpp">
+      <Filter>TextureManager</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Basic Shader Manager\cShaderManager.h">
@@ -272,6 +275,9 @@
     <ClInclude Include="sSoftBodyThreadInfo.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="cGLBuffer_1D.h">
+      <Filter>TextureManager</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="assets\shaders\fragmentShader01.glsl">
@@ -281,6 +287,9 @@
       <Filter>ShaderManager\Shaders</Filter>
     </None>
     <None Include="assets\shaders\geometryPassThrough.glsl">
+      <Filter>ShaderManager\Shaders</Filter>
+    </None>
+    <None Include="assets\shaders\compute_01.glsl">
       <Filter>ShaderManager\Shaders</Filter>
     </None>
   </ItemGroup>

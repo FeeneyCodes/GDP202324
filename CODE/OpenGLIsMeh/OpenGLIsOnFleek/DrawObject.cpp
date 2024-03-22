@@ -339,10 +339,25 @@ void DrawObject(cMesh* pCurrentMesh, glm::mat4 matModelParent, GLuint shaderProg
 
     }//if ( ! pCurrentMesh->vecLODs.empty() )
 
+// HACK: Colour the pixel based on the vertexID
+#pragma region Colour the pixel based on the vertexID
+//    uniform float numVerticesInModel;
+//    uniform bool bColourBasedOnVertexID;
+
+    GLint numVerticesInModel_UL = glGetUniformLocation(shaderProgramID, "numVerticesInModel");
+    GLint bColourBasedOnVertexID_ID = glGetUniformLocation(shaderProgramID, "bColourBasedOnVertexID");
+
+    glUniform1f(bColourBasedOnVertexID_ID, (GLfloat)GL_TRUE);
+
+#pragma endregion 
+
+
     sModelDrawInfo modelInfo;
     if (::g_pMeshManager->FindDrawInfoByModelName(meshToDraw, modelInfo))
     {
         // Found it!!!
+        glUniform1f(numVerticesInModel_UL, modelInfo.numberOfVertices);
+
 
         glBindVertexArray(modelInfo.VAO_ID); 		//  enable VAO (and everything else)
         glDrawElements(GL_TRIANGLES,

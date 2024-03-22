@@ -274,7 +274,61 @@ bool cShaderManager::m_compileShaderFromSource( cShaderManager::cShader &shader,
 	return true;
 }
 
+bool cShaderManager::createProgramFromFile(
+			std::string friendlyName,
+			cShader& computeShader)
+{
+	std::string errorText = "";
 
+
+	// Shader loading happening before vertex buffer array
+	computeShader.ID = glCreateShader(GL_COMPUTE_SHADER);
+	computeShader.shaderType = cShader::COMPUTE_SHADER;
+	//  char* vertex_shader_text = "wewherlkherlkh";
+	// Load some text from a file...
+	if (!this->m_loadSourceFromFile(computeShader))
+	{
+		return false;
+	}//if ( ! this->m_loadSourceFromFile(...
+
+	errorText = "";
+	if (!this->m_compileShaderFromSource(computeShader, errorText))
+	{
+		this->m_lastError = errorText;
+		return false;
+	}//if ( this->m_compileShaderFromSource(...
+
+
+
+	cShaderProgram curProgram;
+	curProgram.ID = glCreateProgram();
+
+	// Compute shader programs have only one shader component
+	glAttachShader(curProgram.ID, computeShader.ID);
+	glLinkProgram(curProgram.ID);
+
+	// Was there a link error? 
+	errorText = "";
+	if (this->m_wasThereALinkError(curProgram.ID, errorText))
+	{
+		std::stringstream ssError;
+		ssError << "Shader program link error: ";
+		ssError << errorText;
+		this->m_lastError = ssError.str();
+		return false;
+	}
+
+	// At this point, shaders are compiled and linked into a program
+
+	curProgram.friendlyName = friendlyName;
+
+	// Add the shader to the map
+	this->m_ID_to_Shader[curProgram.ID] = curProgram;
+	// Save to other map, too
+	this->m_name_to_ID[curProgram.friendlyName] = curProgram.ID;
+
+	return true;
+}
 
 bool cShaderManager::createProgramFromFile( 
 	        std::string friendlyName,

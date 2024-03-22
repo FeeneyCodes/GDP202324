@@ -55,6 +55,9 @@ DWORD WINAPI UpdateSoftBodyThread(LPVOID lpParameter);
 // PhyX stuff (will be moving this to a library later)
 #include "../PhysXWrap/cPhysXWrap.h"
 
+// For the compute shader example
+#include "cGLBuffer_1D.h"
+
 
 // Frame Buffer Object (i.e. we render to this instead of the main screen)
 #include "FBO/cFBO.h"
@@ -349,8 +352,11 @@ int main(void)
     if (!glfwInit())
         exit(EXIT_FAILURE);
 
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
+    //glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
+    //glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+
 
     window = glfwCreateWindow(640, 480, "Simple example", NULL, NULL);
     if (!window)
@@ -380,6 +386,67 @@ int main(void)
     glGetIntegerv(GL_MAX_UNIFORM_BLOCK_SIZE, &max_uniform_block_size_bytes);
     std::cout << "GL_MAX_UNIFORM_BLOCK_SIZE = " << max_uniform_block_size_bytes << std::endl;
 
+
+
+
+//GL_MAX_COMPUTE_WORK_GROUP_INVOCATIONS:
+//data returns one value, the number of invocations in a single local work group (i.e., the product of the three dimensions) that may be dispatched to a compute shader.
+//    GL_MAX_COMPUTE_WORK_GROUP_COUNT :
+//    Accepted by the indexed versions of glGet.data the maximum number of work groups that may be dispatched to a compute shader.Indices 0, 1, and 2 correspond to the X, Y and Z dimensions, respectively.
+//    Note : You call glGetIntegeri_v() passing an array of 3 integers
+//    GLint maxComputeWorkGroupCount[3] = { 0 };
+//glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_COUNT, maxComputeWorkGroupCount)
+//    GL_MAX_COMPUTE_WORK_GROUP_SIZE:
+//Accepted by the indexed versions of glGet.data the maximum size of a work groups that may be used during compilation of a compute shader.Indices 0, 1, and 2 correspond to the X, Y and Z dimensions, respectively.
+
+
+    // data returns one value, the number of invocations in a single local work group (i.e., the product of the three dimensions) 
+    //  that may be dispatched to a compute shader.
+    GLint maxComputeWorkGroupInvocations = 0;
+    glGetIntegerv(GL_MAX_COMPUTE_WORK_GROUP_INVOCATIONS, &maxComputeWorkGroupInvocations);
+    std::cout << "GL_MAX_COMPUTE_WORK_GROUP_INVOCATIONS: " << maxComputeWorkGroupInvocations << std::endl;
+    
+
+    GLint maxComputeWorkGroupCount[3] = { 0 };
+    glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_COUNT, 0, &(maxComputeWorkGroupCount[0]) );
+    glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_COUNT, 1, &(maxComputeWorkGroupCount[1]) );
+    glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_COUNT, 2, &(maxComputeWorkGroupCount[2]) );
+    std::cout << "GL_MAX_COMPUTE_WORK_GROUP_COUNT (x,y,z) : "
+        << maxComputeWorkGroupCount[0] << ", "
+        << maxComputeWorkGroupCount[1] << ", "
+        << maxComputeWorkGroupCount[2] << std::endl;
+
+
+    GLint maxComputeWorkGroupSize[3] = { 0 };
+    glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_SIZE, 0, &(maxComputeWorkGroupSize[0]) );
+    glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_SIZE, 1, &(maxComputeWorkGroupSize[1]) );
+    glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_SIZE, 2, &(maxComputeWorkGroupSize[2]) );
+    std::cout << "GL_MAX_COMPUTE_WORK_GROUP_SIZE (x,y,z) : "
+        << maxComputeWorkGroupSize[0] << ", "
+        << maxComputeWorkGroupSize[1] << ", "
+        << maxComputeWorkGroupSize[2] << std::endl;
+
+    std::cout << std::endl;
+
+    GLint GLVersion[2] = { 0 };
+    glGetIntegerv(GL_MAJOR_VERSION, &(GLVersion[0]));
+    glGetIntegerv(GL_MINOR_VERSION, &(GLVersion[1]));
+
+    std::cout << "OpenGL Version: " << GLVersion[0] << "." << GLVersion[1] << std::endl;
+
+
+// On my machine (notebook 3080 RTX), it's:
+//    GL_MAX_COMPUTE_WORK_GROUP_INVOCATIONS: 1024      --> how many threads per local worlkgroup
+//    GL_MAX_COMPUTE_WORK_GROUP_COUNT (x, y, z) : 2,147,483,647, 65535, 65535
+//      glDispatch( 2,147,483,647, 65,535, 65,535 ) would work, I guess? Wow.
+// 
+//    GL_MAX_COMPUTE_WORK_GROUP_SIZE (x, y, z) : 1024, 1024, 64
+//
+//      layout (local_size_x = 1024, local_size_y = 1024, local_size_z = 64) in;
+//     
+//     So if you wanted a 1D array of a million indices, you'd have to do something
+//     'old school' like int finalIndex = x * 1024 + y
+//
 
 //    glShaderSource(GLuint shader, GLsizei count, const GLchar** string, const GLint* length);
 //    FARPROC gl_glShaderSourceFucntion = GetProcAddress(NULL, "glShaderSource");
@@ -420,6 +487,100 @@ int main(void)
 
     cShaderManager* pShaderThing = new cShaderManager();
     pShaderThing->setBasePath("assets/shaders");
+
+#pragma region Computer Shader 
+
+    cShaderManager::cShader computeShader;
+    computeShader.shaderType = cShaderManager::cShader::COMPUTE_SHADER;
+    computeShader.fileName = "compute_01.glsl";
+
+    //    if ( ! pShaderThing->createProgramFromFile("shader01", vertexShader, fragmentShader ) )
+    if (!pShaderThing->createProgramFromFile( "computeShader01", computeShader))
+    {
+        std::cout << "Error: Couldn't compile or link:" << std::endl;
+        std::cout << pShaderThing->getLastError();
+        return -1;
+    }
+    else
+    {
+        std::cout << "Compute shader compiled OK" << std::endl;
+    }
+
+
+    cGLBuffer_1D dataBuffer;
+    // Load with some random numbers
+
+    std::vector<glm::vec4> vecData;
+    for ( unsigned int index = 0; index != 1'000; index++ )
+    {
+        glm::vec4 curData = glm::vec4(0.0f);
+        curData.x = getRandomFloat(100.0f, 200.0f);
+        // So we can see if the values changed
+        curData.z = curData.x;
+
+        vecData.push_back(curData);
+    }
+
+    dataBuffer.init(computeShader.ID, vecData);
+
+    glUseProgram(computeShader.ID);
+
+
+    GLint numberOfActiveUniforms = 0;
+    glGetProgramiv(computeShader.ID,	// Shader program ID ('name')
+                   GL_ACTIVE_UNIFORMS,		// Give me how many active uniforms there are
+                   &numberOfActiveUniforms);
+
+
+
+    // Bind the input and output buffers
+    // https://registry.khronos.org/OpenGL-Refpages/gl4/html/glBindImageTexture.xhtml
+
+    const GLuint INPUT_TEXTURE_UNIT_ID = 20;
+    const GLuint OUTPUT_TEXTURE_UNIT_ID = 21;
+
+    glActiveTexture(INPUT_TEXTURE_UNIT_ID);
+    glBindTexture(GL_TEXTURE_1D, dataBuffer.getInputBufferID());
+    glBindImageTexture(INPUT_TEXTURE_UNIT_ID,           // Texture unit ID (GLuint unit(,)
+                       dataBuffer.getInputBufferID(),   // GLuint textureID,
+                       0,                               // GLint level,
+                       GL_FALSE,                        // GLboolean layered,
+                       0,                               // GLint layer,
+                       GL_READ_WRITE, /*GL_WRITE_ONLY*/                   // GLenum access,
+                       GL_RGBA32F);                     // GLenum format);
+
+    GLint arrayInput_ID = glGetUniformLocation(computeShader.ID, "arrayInput");
+//    GLint arrayInput_ID = glGetProgramResourceIndex(computeShader.ID, GL_UNIFORM, "arrayInput");
+    glUniform1i(INPUT_TEXTURE_UNIT_ID, arrayInput_ID);
+
+
+    glActiveTexture(OUTPUT_TEXTURE_UNIT_ID);
+    glBindTexture(GL_TEXTURE_1D, dataBuffer.getOutputBufferID());
+    glBindImageTexture(OUTPUT_TEXTURE_UNIT_ID,           // Texture unit ID (GLuint unit(,)
+                       dataBuffer.getOutputBufferID(),   // GLuint textureID,
+                       0,                               // GLint level,
+                       GL_FALSE,                        // GLboolean layered,
+                       0,                               // GLint layer,
+                       GL_READ_WRITE, /*GL_READ_ONLY*/                   // GLenum access,
+                       GL_RGBA32F);                     // GLenum format);
+
+
+    GLint arrayOutput_ID = glGetUniformLocation(computeShader.ID, "arrayOutput");
+//    GLint arrayOutput_ID = glGetProgramResourceIndex(computeShader.ID, GL_UNIFORM, "arrayOutput");
+    glUniform1i(OUTPUT_TEXTURE_UNIT_ID, arrayOutput_ID);
+
+
+    glDispatchCompute(1000, 1, 1);
+
+    dataBuffer.getData(vecData);
+
+
+#pragma endregion
+
+
+
+
+
 
     cShaderManager::cShader vertexShader;
     vertexShader.fileName = "vertexShader01.glsl";

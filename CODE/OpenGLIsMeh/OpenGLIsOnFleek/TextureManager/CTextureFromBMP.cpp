@@ -561,6 +561,9 @@ bool CTextureFromBMP::LoadBMP2( std::string fileName )
 	long numberOfPaddingBytes = bytesPerRow - 3 * this->m_numberOfColumns;
 
 	// Allocate enough space...
+	// 	uchar redPixel;
+	//	uchar greenPixel;
+	//	uchar bluePixel;
 	this->m_p_theImages = new C24BitBMPpixel[this->m_numberOfColumns * this->m_numberOfRows];
 	
 	// Did we run out of memory?
